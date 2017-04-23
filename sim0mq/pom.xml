@@ -17,21 +17,6 @@
 
   <inceptionYear>2016</inceptionYear>
 
-  <profiles>
-    <!-- select profiles with -P option, e.g. "mvn install -P all" -->
-    <profile>
-      <id>all</id>
-      <activation>
-        <property>
-          <name>all</name>
-        </property>
-      </activation>
-      <modules>
-        <module>../sim0mq-demo</module>
-      </modules>
-    </profile>
-  </profiles>
-
   <properties>
     <jdk.version>1.8</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
