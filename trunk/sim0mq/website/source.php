@@ -29,8 +29,10 @@
     <h2>SVN Location</h2>
 
     <p>
-      Source code can be checked out as an anonymous user from <a href="https://svn.tbm.tudelft.nl/OTS/trunk" target="_blank">https://svn.tbm.tudelft.nl/OTS/</a>.
-      Releases can be found at <a href="https://svn.tbm.tudelft.nl/OTS/release" target="_blank">https://svn.tbm.tudelft.nl/OTS/release</a>.
+      Source code can be checked out as an anonymous user from 
+      <a href="https://svn.tbm.tudelft.nl/SIM0MQ/trunk" target="_blank">https://svn.tbm.tudelft.nl/SIM0MQ/</a>.
+      Releases can be found at 
+      <a href="https://svn.tbm.tudelft.nl/SIM0MQ/release" target="_blank">https://svn.tbm.tudelft.nl/SIM0MQ/release</a>.
     </p>
 
     <h2>Documentation</h2>
