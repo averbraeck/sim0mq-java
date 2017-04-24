@@ -47,8 +47,8 @@
     
     <h2>Origin</h2>
     <p>
-      SIM0MQ was developed at the <a href="http://www.tudelft.nl" target="_blank>Delft University of Technology</a> as part of the 
-      <a href="http://www.opentrafficsim.org/" target="_blank>Open Traffic Simulator</a> project (started in 2014).
+      SIM0MQ was developed at the <a href="http://www.tudelft.nl" target="_blank">Delft University of Technology</a> as part of the 
+      <a href="http://www.opentrafficsim.org/" target="_blank">Open Traffic Simulator</a> project (started in 2014).
     </p>
     <p>In November 2016 it became obvious that the simulation message bus developed for the Open Traffic Simulator were sufficiently mature to be used in
       other projects.</p>

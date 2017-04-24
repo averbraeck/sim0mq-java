@@ -121,14 +121,14 @@ public class MM1FederationManager
         {
             fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
                     "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 5502", "/home/alexandv/sim0mq/MM1",
-                    (short) 5502, "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt", false, false,
+                    "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt", false, false,
                     false);
             this.fsSocket.connect("tcp://130.161.3.179:" + fsPort);
         }
         else
         {
             fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
-                    "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 5502", "e:/MM1", (short) 5502, "", "e:/MM1/out.txt",
+                    "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 5502", "e:/MM1", "", "e:/MM1/out.txt",
                     "e:/MM1/err.txt", false, false, false);
             this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
         }

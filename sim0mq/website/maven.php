@@ -38,7 +38,7 @@
   &lt;dependency&gt;
     &lt;groupId&gt;org.sim0mq&lt;/groupId&gt;
     &lt;artifactId&gt;sim0mq&lt;/artifactId&gt;
-    &lt;version&gt;0.00.01&lt;/version&gt;
+    &lt;version&gt;0.01.00&lt;/version&gt;
   &lt;/dependency&gt;
 &lt;/dependencies&gt;
 </pre>

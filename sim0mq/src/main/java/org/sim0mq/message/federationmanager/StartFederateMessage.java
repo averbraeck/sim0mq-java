@@ -303,10 +303,26 @@ public class StartFederateMessage extends Sim0MQMessage
     @Override
     public byte[] createByteArray() throws Sim0MQException
     {
-        return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath, this.argsAfter,
-                this.workingDirectory, this.redirectStdin, this.redirectStdout, this.redirectStderr,
+        return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath,
+                this.argsAfter, this.workingDirectory, this.redirectStdin, this.redirectStdout, this.redirectStderr,
                 this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr);
+    }
+
+    /**
+     * Build a message from an Object[] that was received.
+     * @param fields Object[]; the fields in the message
+     * @param intendedReceiverId id of the intended receiver
+     * @return a Sim0MQ message
+     * @throws Sim0MQException when number of fields is not correct
+     */
+    public static StartFederateMessage createMessage(Object[] fields, final Object intendedReceiverId) throws Sim0MQException
+    {
+        check(fields, 12, MESSAGETYPE, intendedReceiverId);
+        return new StartFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8].toString(),
+                fields[9].toString(), fields[10].toString(), fields[11].toString(), fields[12].toString(),
+                fields[13].toString(), fields[14].toString(), fields[15].toString(), fields[16].toString(),
+                (Boolean) fields[17], (Boolean) fields[18], (Boolean) fields[19]);
     }
 
     /**
@@ -321,7 +337,7 @@ public class StartFederateMessage extends Sim0MQMessage
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder
+    public static class Builder extends Sim0MQMessage.Builder<Builder>
     {
         /**
          * Id to identify the callback to know which model instance has been started, e.g. "IDVV.14". The model instance will
@@ -403,7 +419,7 @@ public class StartFederateMessage extends Sim0MQMessage
          */
         public Builder()
         {
-            // noting to do.
+            // nothing to do.
         }
 
         /**

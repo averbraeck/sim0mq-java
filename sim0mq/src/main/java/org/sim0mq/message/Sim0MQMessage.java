@@ -136,7 +136,7 @@ public abstract class Sim0MQMessage implements Serializable
     {
         return this.messageStatus;
     }
-    
+
     /**
      * Create a Sim0MQ object array of the fields.
      * @return Object[] a Sim0MQ object array of the fields
@@ -151,6 +151,41 @@ public abstract class Sim0MQMessage implements Serializable
     public abstract byte[] createByteArray() throws Sim0MQException;
 
     /**
+     * Check the consistency of a message from an Object[] that was received.
+     * @param fields Object[]; the fields in the message
+     * @param expectedPayloadFields the expected number of payload fields
+     * @param expectedMessageType the expected message type
+     * @param intendedReceiverId id of the intended receiver
+     * @throws Sim0MQException when errors in the message have been detected
+     */
+    public static void check(final Object[] fields, final int expectedPayloadFields, final String expectedMessageType,
+            final Object intendedReceiverId) throws Sim0MQException
+    {
+        Throw.when(fields.length != expectedPayloadFields + 8, Sim0MQException.class,
+                "Message " + expectedMessageType + " does not contain the right number of fields");
+
+        for (int i = 0; i < fields.length; i++)
+        {
+            Object field = fields[i];
+            if (field == null)
+            {
+                throw new Sim0MQException("Message " + expectedMessageType + " field " + i + " equals null");
+            }
+        }
+
+        Throw.when(!expectedMessageType.equals(fields[4].toString()), Sim0MQException.class,
+                "Message type not right -- should have been " + expectedMessageType);
+
+        Throw.when(!fields[3].equals(intendedReceiverId), Sim0MQException.class,
+                "Receiver in message of type " + expectedMessageType + " not right. Should have been: " + intendedReceiverId);
+
+        Throw.when(!(fields[7] instanceof Integer), Sim0MQException.class,
+                "Message " + expectedMessageType + " does not have an integer field[7] for the number of fields");
+        Throw.when(((Integer) fields[7]).intValue() != expectedPayloadFields, Sim0MQException.class,
+                "Message " + expectedMessageType + " does not contain the right number of payload fields in field[7]");
+    }
+
+    /**
      * Builder for the Sim0MQMessage. Can string setters together, and call build() at the end to build the actual message.
      * <p>
      * Copyright (c) 2016-2017 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
@@ -160,8 +195,9 @@ public abstract class Sim0MQMessage implements Serializable
      * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
+     * @param <B> the actual inherited builder for the return types.
      */
-    public static abstract class Builder
+    public static abstract class Builder<B extends Sim0MQMessage.Builder<B>>
     {
         /**
          * the Simulation run ids can be provided in different types. Examples are two 64-bit longs indicating a UUID, or a
@@ -202,67 +238,73 @@ public abstract class Sim0MQMessage implements Serializable
          */
         public Builder()
         {
-            // noting to do.
+            // nothing to do.
         }
 
         /**
          * @param simulationRunId set simulationRunId
          * @return the original object for chaining
          */
-        public final Builder setSimulationRunId(final Object simulationRunId)
+        @SuppressWarnings("unchecked")
+        public final B setSimulationRunId(final Object simulationRunId)
         {
             this.simulationRunId = simulationRunId;
-            return this;
+            return (B) this;
         }
 
         /**
          * @param senderId set senderId
          * @return the original object for chaining
          */
-        public final Builder setSenderId(final Object senderId)
+        @SuppressWarnings("unchecked")
+        public final B setSenderId(final Object senderId)
         {
             this.senderId = senderId;
-            return this;
+            return (B) this;
         }
 
         /**
          * @param receiverId set receiverId
          * @return the original object for chaining
          */
-        public final Builder setReceiverId(final Object receiverId)
+        @SuppressWarnings("unchecked")
+        public final B setReceiverId(final Object receiverId)
         {
             this.receiverId = receiverId;
-            return this;
+            return (B) this;
         }
 
         /**
          * @param messageTypeId set messageTypeId
          * @return the original object for chaining
          */
-        public final Builder setMessageTypeId(final Object messageTypeId)
+        @SuppressWarnings("unchecked")
+        protected final B setMessageTypeId(final Object messageTypeId)
         {
             this.messageTypeId = messageTypeId;
-            return this;
+            return (B) this;
         }
 
         /**
          * @param messageId set messageId
          * @return the original object for chaining
          */
-        public final Builder setMessageId(final long messageId)
+        @SuppressWarnings("unchecked")
+        public final B setMessageId(final long messageId)
         {
             this.messageId = messageId;
-            return this;
+            return (B) this;
         }
 
         /**
          * @param messageStatus set messageStatus
          * @return the original object for chaining
          */
-        public final Builder setMessageStatus(final MessageStatus messageStatus)
+        @SuppressWarnings("unchecked")
+        protected final B setMessageStatus(final MessageStatus messageStatus)
         {
             this.messageStatus = messageStatus;
-            return this;
+            return (B) this;
         }
 
         /**

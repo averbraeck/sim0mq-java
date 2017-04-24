@@ -17,6 +17,8 @@ import java.util.UUID;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.federatestarter.FederateStartedMessage;
+import org.sim0mq.message.federationmanager.StartFederateMessage;
 import org.zeromq.ZMQ;
 
 import nl.tudelft.simulation.language.io.URLResource;
@@ -35,7 +37,13 @@ import nl.tudelft.simulation.language.io.URLResource;
 public class FederateStarter
 {
     /** the port number to listen on. */
-    private final int port;
+    private final int fsPort;
+
+    /** the first port to be used for the models, inclusive. */
+    private final int startPort;
+
+    /** the last port to be used for the models, inclusive. */
+    private final int endPort;
 
     /** the running programs this FederateStarter started. The String identifies the process (e.g., a UUID or a model id). */
     protected Map<String, Process> runningProcessMap = new HashMap<>();
@@ -58,18 +66,23 @@ public class FederateStarter
     /**
      * @param fsPort the port number to listen on
      * @param softwareProperties the software properties to use
+     * @param startPort first port to be used for the models, inclusive
+     * @param endPort last port to be used for the models, inclusive
      * @throws Sim0MQException on error
      */
-    public FederateStarter(final int fsPort, final Properties softwareProperties) throws Sim0MQException
+    public FederateStarter(final int fsPort, final Properties softwareProperties, final int startPort, final int endPort)
+            throws Sim0MQException
     {
         super();
         this.softwareProperties = softwareProperties;
-        this.port = fsPort;
+        this.fsPort = fsPort;
+        this.startPort = startPort;
+        this.endPort = endPort;
 
         this.fsContext = ZMQ.context(1);
 
         this.fsSocket = this.fsContext.socket(ZMQ.ROUTER);
-        this.fsSocket.bind("tcp://*:" + this.port);
+        this.fsSocket.bind("tcp://*:" + this.fsPort);
 
         while (!Thread.currentThread().isInterrupted())
         {
@@ -79,25 +92,21 @@ public class FederateStarter
 
             byte[] request = this.fsSocket.recv(0);
             Object[] fields = SimulationMessage.decode(request);
+            String messageTypeId = fields[4].toString();
+            String receiverId = fields[3].toString();
 
             System.out.println("Received " + SimulationMessage.print(fields));
 
-            Object federationRunId = fields[1];
-            String senderId = fields[2].toString();
-            String receiverId = fields[3].toString();
-            String messageId = fields[4].toString();
-            long uniqueId = ((Long) fields[5]).longValue();
-
             if (receiverId.equals("FS"))
             {
-                switch (messageId)
+                switch (messageTypeId)
                 {
                     case "FM.1":
-                        processStartFederate(identity, federationRunId, senderId, uniqueId, fields);
+                        processStartFederate(identity, fields);
                         break;
 
                     case "FM.8":
-                        processKillFederate(identity, federationRunId, senderId, uniqueId, fields);
+                        processKillFederate(identity, fields);
                         break;
 
                     case "FM.9":
@@ -106,7 +115,7 @@ public class FederateStarter
 
                     default:
                         // wrong message
-                        System.err.println("Received unknown message -- not processed: " + messageId);
+                        System.err.println("Received unknown message -- not processed: " + messageTypeId);
                 }
             }
             else
@@ -122,52 +131,43 @@ public class FederateStarter
     /**
      * Process FM.2 message and send MC.2 message back.
      * @param identity reply id for REQ-ROUTER pattern
-     * @param federationRunId the federation id
-     * @param senderId the receiver of the response
-     * @param replyToMessageId the message to which this is the reply
      * @param fields the message
      * @throws Sim0MQException on error
      */
-    private void processStartFederate(final String identity, final Object federationRunId, final String senderId,
-            final long replyToMessageId, final Object[] fields) throws Sim0MQException
+    private void processStartFederate(final String identity, final Object[] fields) throws Sim0MQException
     {
-        String modelId = fields[8].toString();
+        StartFederateMessage startFederateMessage = StartFederateMessage.createMessage(fields, "FS");
         String error = "";
+
+        int modelPort = findFreePortNumber();
 
         try
         {
             ProcessBuilder pb = new ProcessBuilder();
 
-            String workingDir = fields[13].toString();
-            Path workingPath = Files.createDirectories(Paths.get(workingDir));
+            Path workingPath = Files.createDirectories(Paths.get(startFederateMessage.getWorkingDirectory()));
             pb.directory(workingPath.toFile());
 
-            String softwareAlias = fields[9].toString();
             String softwareCode = "";
-            if (!this.softwareProperties.containsKey(softwareAlias))
+            if (!this.softwareProperties.containsKey(startFederateMessage.getSoftwareCode()))
             {
-                System.err.println("Could not find software alias " + softwareAlias + " in software properties file");
+                System.err.println("Could not find software alias " + startFederateMessage.getSoftwareCode()
+                        + " in software properties file");
             }
             else
             {
-                softwareCode = this.softwareProperties.getProperty(softwareAlias);
-
-                String argsBefore = fields[10].toString();
-                String command = fields[11].toString();
-                String argsAfter = fields[12].toString();
+                softwareCode = this.softwareProperties.getProperty(startFederateMessage.getSoftwareCode());
 
                 List<String> pbArgs = new ArrayList<>();
                 pbArgs.add(softwareCode);
-                pbArgs.add(argsBefore);
-                pbArgs.add(command);
-                pbArgs.addAll(Arrays.asList(argsAfter.split(" ")));
+                pbArgs.add(startFederateMessage.getArgsBefore());
+                pbArgs.add(startFederateMessage.getModelPath());
+                pbArgs.addAll(Arrays.asList(startFederateMessage.getArgsAfter().split(" ")));
                 pb.command(pbArgs);
 
-                int modelPort = ((Number) fields[14]).intValue();
-
-                String stdIn = fields[15].toString();
-                String stdOut = fields[16].toString();
-                String stdErr = fields[17].toString();
+                String stdIn = startFederateMessage.getRedirectStdin();
+                String stdOut = startFederateMessage.getRedirectStdout();
+                String stdErr = startFederateMessage.getRedirectStderr();
 
                 if (stdIn.length() > 0)
                 {
@@ -199,7 +199,7 @@ public class FederateStarter
                         try
                         {
                             Process process = pb.start();
-                            FederateStarter.this.runningProcessMap.put(modelId, process);
+                            FederateStarter.this.runningProcessMap.put(startFederateMessage.getInstanceId(), process);
                             System.err.println("Process started:" + process.isAlive());
                         }
                         catch (IOException exception)
@@ -209,10 +209,11 @@ public class FederateStarter
                     }
                 }.start();
 
-                this.modelPortMap.put(modelId, modelPort);
+                this.modelPortMap.put(startFederateMessage.getInstanceId(), modelPort);
 
                 // wait till the model is ready...
-                error = waitForModelStarted(federationRunId, modelId, modelPort);
+                error = waitForModelStarted(startFederateMessage.getSimulationRunId(), startFederateMessage.getInstanceId(),
+                        modelPort);
             }
         }
         catch (IOException exception)
@@ -224,9 +225,60 @@ public class FederateStarter
         // Send reply back to client
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
-        byte[] fs2Message = SimulationMessage.encode(federationRunId, "FS", senderId, "FS.2", ++this.messageCount,
-                MessageStatus.NEW, modelId, error.isEmpty() ? "started" : "error", error);
+        //@formatter:off
+        byte[] fs2Message = new FederateStartedMessage.Builder()
+                .setSimulationRunId(startFederateMessage.getSimulationRunId())
+                .setInstanceId(startFederateMessage.getInstanceId())
+                .setSenderId("FS")
+                .setReceiverId(startFederateMessage.getSenderId())
+                .setMessageId(++this.messageCount)
+                .setStatus(error.isEmpty() ? "started" : "error")
+                .setError(error)
+                .setModelPort(modelPort)
+                .build()
+                .createByteArray();
         this.fsSocket.send(fs2Message, 0);
+        //@formatter:on
+    }
+
+    /**
+     * Find a free port for the model.
+     * @return the first free fort number in the range startPort - endPort, inclusive
+     */
+    private int findFreePortNumber()
+    {
+        for (int port = this.startPort; port <= this.endPort; port++)
+        {
+            if (!this.modelPortMap.containsValue(port))
+            {
+                // try if the port is really free
+                ZMQ.Socket testSocket = null;
+                try
+                {
+                    testSocket = this.fsContext.socket(ZMQ.REP);
+                    testSocket.bind("tcp://127.0.0.1:" + port);
+                    testSocket.unbind("tcp://127.0.0.1:" + port);
+                    testSocket.close();
+                    return port;
+                }
+                catch (Exception exception)
+                {
+                    // port was not free
+                    if (testSocket != null)
+                    {
+                        try
+                        {
+                            testSocket.close();
+                        }
+                        catch (Exception e)
+                        {
+                            // ignore.
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
     }
 
     /**
@@ -307,17 +359,17 @@ public class FederateStarter
     /**
      * Process FM.8 message and send FS.4 message back.
      * @param identity reply id for REQ-ROUTER pattern
-     * @param federationRunId the federation id
-     * @param senderId the receiver of the response
-     * @param replyToMessageId the message to which this is the reply
      * @param fields the message
      * @throws Sim0MQException on error
      */
-    private void processKillFederate(final String identity, final Object federationRunId, final String senderId,
-            final long replyToMessageId, final Object[] fields) throws Sim0MQException
+    private void processKillFederate(final String identity, final Object[] fields) throws Sim0MQException
     {
         boolean status = true;
         String error = "";
+
+        Object federationRunId = fields[1];
+        String senderId = fields[2].toString();
+        long replyToMessageId = ((Long) fields[5]).longValue();
 
         String modelId = fields[8].toString();
         if (!this.modelPortMap.containsKey(modelId))
@@ -388,11 +440,12 @@ public class FederateStarter
      */
     public static void main(String[] args) throws Sim0MQException
     {
-        if (args.length < 2)
+        if (args.length < 4)
         {
-            System.err.println("Use as FederateStarter portNumber software_properties_file");
+            System.err.println("Use as FederateStarter portNumber software_properties_file startPort endPort");
             System.exit(-1);
         }
+
         String sPort = args[0];
         int port = 0;
         try
@@ -423,7 +476,41 @@ public class FederateStarter
             System.exit(-1);
         }
 
-        new FederateStarter(port, softwareProperties);
+        String sStartPort = args[2];
+        int startPort = 0;
+        try
+        {
+            startPort = Integer.parseInt(sStartPort);
+        }
+        catch (NumberFormatException nfe)
+        {
+            System.err.println("Use as FederateStarter pn file startPort endPort, where startPort is a number");
+            System.exit(-1);
+        }
+        if (startPort == 0 || startPort > 65535)
+        {
+            System.err.println("startPort should be between 1 and 65535");
+            System.exit(-1);
+        }
+
+        String sEndPort = args[2];
+        int endPort = 0;
+        try
+        {
+            endPort = Integer.parseInt(sEndPort);
+        }
+        catch (NumberFormatException nfe)
+        {
+            System.err.println("Use as FederateStarter pn file startPort endPort, where endPort is a number");
+            System.exit(-1);
+        }
+        if (endPort == 0 || endPort > 65535)
+        {
+            System.err.println("endPort should be between 1 and 65535");
+            System.exit(-1);
+        }
+
+        new FederateStarter(port, softwareProperties, startPort, endPort);
     }
 
 }
