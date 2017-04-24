@@ -6,7 +6,7 @@ import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
 
 /**
- * RequestStatus, FS.1. This message is sent by the Federate Starter to the Model until a “started” response is received from
+ * RequestStatus, FS.1. This message is sent by the Federate Starter to the Model until a "started" response is received from
  * the Model. Since the message type id clarifies the function of this message and no information exchange is necessary, the
  * payload field can be empty (number of fields = 0).
  * <p>
@@ -19,12 +19,11 @@ import org.sim0mq.message.SimulationMessage;
  */
 public class RequestStatusMessage extends Sim0MQMessage
 {
+    /** */
+    private static final long serialVersionUID = 20170422L;
 
     /** the unique message id. */
     private static final String MESSAGETYPE = "FS.1";
-
-    /** */
-    private static final long serialVersionUID = 20170422L;
 
     /**
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
@@ -69,6 +68,19 @@ public class RequestStatusMessage extends Sim0MQMessage
     }
 
     /**
+     * Build a message from an Object[] that was received.
+     * @param fields Object[]; the fields in the message
+     * @param intendedReceiverId id of the intended receiver
+     * @return a Sim0MQ message
+     * @throws Sim0MQException when number of fields is not correct
+     */
+    public static RequestStatusMessage createMessage(Object[] fields, Object intendedReceiverId) throws Sim0MQException
+    {
+        check(fields, 0, MESSAGETYPE, intendedReceiverId);
+        return new RequestStatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());
+    }
+
+    /**
      * Builder for the StartFederate Message. Can string setters together, and call build() at the end to build the actual
      * message.
      * <p>
@@ -80,14 +92,14 @@ public class RequestStatusMessage extends Sim0MQMessage
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder
+    public static class Builder extends Sim0MQMessage.Builder<Builder>
     {
         /**
          * Empty constructor.
          */
         public Builder()
         {
-            // noting to do.
+            // nothing to do.
         }
 
         /** {@inheritDoc} */

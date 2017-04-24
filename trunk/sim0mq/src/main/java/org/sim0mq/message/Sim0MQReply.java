@@ -75,7 +75,7 @@ public abstract class Sim0MQReply extends Sim0MQMessage
          */
         public Builder()
         {
-            // noting to do.
+            // nothing to do.
         }
 
         /**
@@ -85,6 +85,17 @@ public abstract class Sim0MQReply extends Sim0MQMessage
         public final Builder setReplyToId(final long replyToId)
         {
             this.replyToId = replyToId;
+            return this;
+        }
+
+        /**
+         * @param message set replyToId and receiver based on the message to which this is a reply
+         * @return the original object for chaining
+         */
+        public final Builder setReplyTo(final Sim0MQMessage message)
+        {
+            this.replyToId = message.getMessageId();
+            this.receiverId = message.getSenderId();
             return this;
         }
 
