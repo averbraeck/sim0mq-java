@@ -93,13 +93,13 @@ public class SimulationMessage
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
      */
-    public static byte[] encodeReply(final String identity, final Object simulationRunId, final Object senderId, final Object receiverId,
-            final Object messageTypeId, final long messageId, final MessageStatus messageStatus, final Object... content)
-            throws Sim0MQException
+    public static byte[] encodeReply(final String identity, final Object simulationRunId, final Object senderId,
+            final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
+            final Object... content) throws Sim0MQException
     {
         Object[] simulationContent = new Object[content.length + 10];
         simulationContent[0] = identity;
-        simulationContent[1] = new byte[] {0}; 
+        simulationContent[1] = new byte[] { 0 };
         simulationContent[2] = TypedMessage.version;
         simulationContent[3] = simulationRunId;
         simulationContent[4] = senderId;
@@ -149,7 +149,7 @@ public class SimulationMessage
         s.append("3. receiver id      : " + message[3] + "\n");
         s.append("4. message type id  : " + message[4] + "\n");
         s.append("5. message id       : " + message[5] + "\n");
-        s.append("6. message status   : " + MessageStatus.getTypes().get((int)(byte)message[6]) + "\n");
+        s.append("6. message status   : " + MessageStatus.getTypes().get((int) (byte) message[6]) + "\n");
         s.append("7. number of fields : " + message[7] + "\n");
         int nr = ((Number) message[7]).intValue();
         if (message.length != nr + 8)
@@ -166,7 +166,7 @@ public class SimulationMessage
         }
         return s.toString();
     }
-    
+
     /**
      * Return a printable line with the payload of the message, e.g. for debugging purposes.
      * @param message the message to parse
@@ -185,8 +185,7 @@ public class SimulationMessage
         {
             for (int i = 0; i < nr; i++)
             {
-                s.append(message[8 + i] + " (" + message[8 + i].getClass().getSimpleName()
-                        + ") | ");
+                s.append(message[8 + i] + " (" + message[8 + i].getClass().getSimpleName() + ") | ");
             }
         }
         return s.toString();
