@@ -55,7 +55,7 @@ public class MM1FederationManager
         this.modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
         this.fsSocket = this.fmContext.socket(ZMQ.REQ);
         this.fsSocket.setIdentity(UUID.randomUUID().toString().getBytes());
-        
+
         this.state = ModelState.NOT_STARTED;
         boolean ready = false;
         while (!ready)
@@ -121,15 +121,14 @@ public class MM1FederationManager
         {
             fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
                     "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 5502", "/home/alexandv/sim0mq/MM1",
-                    "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt", false, false,
-                    false);
+                    "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt", false, false, false);
             this.fsSocket.connect("tcp://130.161.3.179:" + fsPort);
         }
         else
         {
             fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
-                    "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 5502", "e:/MM1", "", "e:/MM1/out.txt",
-                    "e:/MM1/err.txt", false, false, false);
+                    "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 5502", "e:/MM1", "", "e:/MM1/out.txt", "e:/MM1/err.txt",
+                    false, false, false);
             this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
         }
         this.fsSocket.send(fm1Message);
@@ -264,7 +263,8 @@ public class MM1FederationManager
         while (!this.state.isSimulatorEnded() && !this.state.isError())
         {
             byte[] fm5Message;
-            fm5Message = SimulationMessage.encode(federationName, "FM", "MM1.1", "FM.5", ++this.messageCount, MessageStatus.NEW);
+            fm5Message =
+                    SimulationMessage.encode(federationName, "FM", "MM1.1", "FM.5", ++this.messageCount, MessageStatus.NEW);
             this.modelSocket.send(fm5Message);
 
             byte[] reply = this.modelSocket.recv(0);
