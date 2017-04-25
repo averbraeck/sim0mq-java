@@ -38,8 +38,8 @@ public abstract class Sim0MQReply extends Sim0MQMessage
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public Sim0MQReply(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final Object messageTypeId, final long messageId, final MessageStatus messageStatus, final long replyToId)
+    public Sim0MQReply(final Object simulationRunId, final Object senderId, final Object receiverId, final Object messageTypeId,
+            final long messageId, final MessageStatus messageStatus, final long replyToId)
             throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, messageTypeId, messageId, messageStatus);

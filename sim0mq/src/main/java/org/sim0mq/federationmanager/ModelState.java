@@ -14,31 +14,31 @@ public enum ModelState
 {
     /** Model has not yet been started. */
     NOT_STARTED,
-    
+
     /** Model has been started, e.g. bij a FederateStarter. */
     STARTED,
-    
+
     /** SimRunControl has been sent. */
     RUNCONTROL,
-    
+
     /** Parameter(s) have been sent. */
     PARAMETERS,
-    
+
     /** Simulator has been started. */
     SIMULATORSTARTED,
-    
+
     /** Simulator has ended. */
     SIMULATORENDED,
-    
+
     /** Statistics have been gathered. */
     STATISTICSGATHERED,
-    
+
     /** Model terminated. */
     TERMINATED,
-    
+
     /** Error occurred. Sequence should stop. */
     ERROR;
-    
+
     /**
      * Return whether the model has not yet started.
      * @return boolean; whether the model has not yet started
@@ -74,7 +74,7 @@ public enum ModelState
     {
         return this.ordinal() >= PARAMETERS.ordinal() && !this.equals(ERROR);
     }
-    
+
     /**
      * Return whether the simulator has been started.
      * @return boolean; whether the simulator has been started
@@ -83,7 +83,7 @@ public enum ModelState
     {
         return this.ordinal() >= SIMULATORSTARTED.ordinal() && !this.equals(ERROR);
     }
-    
+
     /**
      * Return whether the simulator has ended.
      * @return boolean; whether the simulator has ended
@@ -92,7 +92,7 @@ public enum ModelState
     {
         return this.ordinal() >= SIMULATORENDED.ordinal() && !this.equals(ERROR);
     }
-    
+
     /**
      * Return whether the statistics have been gathered.
      * @return boolean; whether the statistics have been gathered
@@ -101,7 +101,7 @@ public enum ModelState
     {
         return this.ordinal() >= STATISTICSGATHERED.ordinal() && !this.equals(ERROR);
     }
-    
+
     /**
      * Return whether the model has been terminated.
      * @return boolean; whether the model has been terminated
@@ -110,7 +110,7 @@ public enum ModelState
     {
         return this.ordinal() >= TERMINATED.ordinal() && !this.equals(ERROR);
     }
-    
+
     /**
      * Return whether the federation is in the error state.
      * @return boolean; whether the federation is in the error state
@@ -121,4 +121,3 @@ public enum ModelState
     }
 
 }
-
