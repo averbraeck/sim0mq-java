@@ -3,6 +3,7 @@ package org.sim0mq.message.model;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
+import org.sim0mq.message.Sim0MQReply;
 import org.sim0mq.message.SimulationMessage;
 
 import nl.tudelft.simulation.language.Throw;
@@ -18,11 +19,8 @@ import nl.tudelft.simulation.language.Throw;
  * initial version Apr 22, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class StatusMessage extends Sim0MQMessage
+public class StatusMessage extends Sim0MQReply
 {
-    /** The unique message id (Frame 5) of the sender for which this is the reply. */
-    private final long uniqueId;
-
     /** A string that refers to the model status. Four options: "started", "running", "ended", "error". */
     private final String status;
 
@@ -57,7 +55,7 @@ public class StatusMessage extends Sim0MQMessage
     public StatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId, final long messageId,
             final long uniqueId, final String status, final String error) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW, uniqueId);
         Throw.whenNull(status, "status cannot be null");
         Throw.whenNull(error, "error cannot be null");
 
@@ -65,17 +63,8 @@ public class StatusMessage extends Sim0MQMessage
         Throw.when(!status.equals("started") && !status.equals("running") && !status.equals("ended") && !status.equals("error"),
                 Sim0MQException.class, "status should be one of 'started', 'running', 'ended', 'error'");
 
-        this.uniqueId = uniqueId;
         this.status = status;
         this.error = error;
-    }
-
-    /**
-     * @return uniqueId
-     */
-    public final long getUniqueId()
-    {
-        return this.uniqueId;
     }
 
     /**
@@ -107,7 +96,7 @@ public class StatusMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] { getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), this.uniqueId, this.status, this.error };
+                getMessageStatus(), getReplyToId(), this.status, this.error };
     }
 
     /** {@inheritDoc} */
@@ -115,7 +104,7 @@ public class StatusMessage extends Sim0MQMessage
     public byte[] createByteArray() throws Sim0MQException
     {
         return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.uniqueId, this.status, this.error);
+                getMessageId(), getMessageStatus(), getReplyToId(), this.status, this.error);
     }
 
     /**

@@ -185,9 +185,9 @@ public class Sim0MQUnitType implements Serializable
     public static final Sim0MQUnitType MONEYPERMASS =
             new Sim0MQUnitType(104, MoneyPerMassUnit.class, "MoneyPerMass", "Money/Mass (cost/kg)", "[$/kg]");
 
-    /** MoneyPerTime unit type with code 105. */
+    /** MoneyPerDuration unit type with code 105. */
     public static final Sim0MQUnitType MONEYPERTIME =
-            new Sim0MQUnitType(105, MoneyPerTimeUnit.class, "MoneyPerTime", "Money/Duration (cost/s)", "[$/s]");
+            new Sim0MQUnitType(105, MoneyPerTimeUnit.class, "MoneyPerDuration", "Money/Duration (cost/s)", "[$/s]");
 
     /** MoneyPerVolume unit type with code 106. */
     public static final Sim0MQUnitType MONEYPERVOLUME =
