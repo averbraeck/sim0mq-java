@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 import javax.naming.NamingException;
 
-import org.djunits.unit.TimeUnit;
+import org.djunits.unit.DurationUnit;
 import org.djunits.value.vdouble.scalar.Duration;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
@@ -201,7 +201,7 @@ public class MM1Queue41Application
             Object runTimeField = fields[8];
             if (runTimeField instanceof Number)
             {
-                this.runTime = new Duration(((Number) fields[8]).doubleValue(), TimeUnit.SI);
+                this.runTime = new Duration(((Number) fields[8]).doubleValue(), DurationUnit.SI);
             }
             else if (runTimeField instanceof Duration)
             {
@@ -215,7 +215,7 @@ public class MM1Queue41Application
             Object warmupField = fields[8];
             if (warmupField instanceof Number)
             {
-                this.warmupTime = new Duration(((Number) fields[9]).doubleValue(), TimeUnit.SI);
+                this.warmupTime = new Duration(((Number) fields[9]).doubleValue(), DurationUnit.SI);
             }
             else if (warmupField instanceof Duration)
             {

@@ -4,7 +4,7 @@
   
   <groupId>org.sim0mq</groupId>
   <artifactId>sim0mq-demo</artifactId>
-  <version>0.01.00</version>
+  <version>0.02.00</version>
   
   <name>Sim0MQ demo classes</name>
   <description>Demo classes for the Sim0MQ project</description>
@@ -19,7 +19,7 @@
     <sonar.scm.disabled>true</sonar.scm.disabled>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>2.02.00</djunits.version>
+    <djunits.version>3.00.01</djunits.version>
     <dsol.version>3.01.05</dsol.version>
     <jeromq.version>0.3.6</jeromq.version>
     <junit.version>4.11</junit.version>

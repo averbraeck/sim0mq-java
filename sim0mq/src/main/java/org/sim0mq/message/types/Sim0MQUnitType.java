@@ -23,10 +23,10 @@ import org.djunits.unit.LengthUnit;
 import org.djunits.unit.LinearDensityUnit;
 import org.djunits.unit.MassUnit;
 import org.djunits.unit.MoneyPerAreaUnit;
+import org.djunits.unit.MoneyPerDurationUnit;
 import org.djunits.unit.MoneyPerEnergyUnit;
 import org.djunits.unit.MoneyPerLengthUnit;
 import org.djunits.unit.MoneyPerMassUnit;
-import org.djunits.unit.MoneyPerTimeUnit;
 import org.djunits.unit.MoneyPerVolumeUnit;
 import org.djunits.unit.MoneyUnit;
 import org.djunits.unit.PowerUnit;
@@ -186,8 +186,8 @@ public class Sim0MQUnitType implements Serializable
             new Sim0MQUnitType(104, MoneyPerMassUnit.class, "MoneyPerMass", "Money/Mass (cost/kg)", "[$/kg]");
 
     /** MoneyPerDuration unit type with code 105. */
-    public static final Sim0MQUnitType MONEYPERTIME =
-            new Sim0MQUnitType(105, MoneyPerTimeUnit.class, "MoneyPerDuration", "Money/Duration (cost/s)", "[$/s]");
+    public static final Sim0MQUnitType MONEYPERDURATION =
+            new Sim0MQUnitType(105, MoneyPerDurationUnit.class, "MoneyPerDuration", "Money/Duration (cost/s)", "[$/s]");
 
     /** MoneyPerVolume unit type with code 106. */
     public static final Sim0MQUnitType MONEYPERVOLUME =
