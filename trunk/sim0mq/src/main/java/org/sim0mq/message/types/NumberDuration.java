@@ -2,7 +2,7 @@ package org.sim0mq.message.types;
 
 import java.io.Serializable;
 
-import org.djunits.unit.TimeUnit;
+import org.djunits.unit.DurationUnit;
 import org.djunits.value.vdouble.scalar.Duration;
 import org.djunits.value.vfloat.scalar.FloatDuration;
 
@@ -35,7 +35,7 @@ public class NumberDuration extends Number implements Serializable
     public NumberDuration(final Number duration)
     {
         this.duration = duration;
-        this.doubleScalar = new Duration(duration.doubleValue(), TimeUnit.SI);
+        this.doubleScalar = new Duration(duration.doubleValue(), DurationUnit.SI);
     }
 
     /**

@@ -35,7 +35,7 @@ public class NumberTime extends Number implements Serializable
     public NumberTime(final Number duration)
     {
         this.duration = duration;
-        this.doubleScalar = new Time(duration.doubleValue(), TimeUnit.SI);
+        this.doubleScalar = new Time(duration.doubleValue(), TimeUnit.BASE_SECOND);
     }
 
     /**

@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.djunits.unit.AbsoluteTemperatureUnit;
 import org.djunits.unit.AccelerationUnit;
 import org.djunits.unit.AngleSolidUnit;
 import org.djunits.unit.AngleUnit;
 import org.djunits.unit.AreaUnit;
 import org.djunits.unit.DensityUnit;
 import org.djunits.unit.DimensionlessUnit;
+import org.djunits.unit.DirectionUnit;
+import org.djunits.unit.DurationUnit;
 import org.djunits.unit.ElectricalChargeUnit;
 import org.djunits.unit.ElectricalCurrentUnit;
 import org.djunits.unit.ElectricalPotentialUnit;
@@ -23,6 +26,7 @@ import org.djunits.unit.LengthUnit;
 import org.djunits.unit.LinearDensityUnit;
 import org.djunits.unit.MassUnit;
 import org.djunits.unit.MoneyUnit;
+import org.djunits.unit.PositionUnit;
 import org.djunits.unit.PowerUnit;
 import org.djunits.unit.PressureUnit;
 import org.djunits.unit.SpeedUnit;
@@ -47,9 +51,13 @@ public class Sim0MQDisplayType implements Serializable
     /** */
     private static final long serialVersionUID = 20170314L;
 
+    /* ================================================== DIMENSIONLESS ================================================== */
+
     /** Dimensionless.SI unit type with code 0. */
     public static final Sim0MQDisplayType DIMENSIONLESS_SI =
             new Sim0MQDisplayType(Sim0MQUnitType.DIMENSIONLESS, 0, DimensionlessUnit.SI, "SI", "[]");
+
+    /* ================================================== ACCELERATION =================================================== */
 
     /** Acceleration.METER_PER_SECOND_2 unit type with code 0. */
     public static final Sim0MQDisplayType ACCELERATION_METER_PER_SECOND_2 = new Sim0MQDisplayType(Sim0MQUnitType.ACCELERATION,
@@ -87,6 +95,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType ACCELERATION_STANDARD_GRAVITY =
             new Sim0MQDisplayType(Sim0MQUnitType.ACCELERATION, 8, AccelerationUnit.STANDARD_GRAVITY, "STANDARD_GRAVITY", "g");
 
+    /* =================================================== ANGLESOLID ==================================================== */
+
     /** AngleSolid.STERADIAN unit type with code 0. */
     public static final Sim0MQDisplayType ANGLESOLID_STERADIAN =
             new Sim0MQDisplayType(Sim0MQUnitType.ANGLESOLID, 0, AngleSolidUnit.STERADIAN, "STERADIAN", "sr");
@@ -94,6 +104,8 @@ public class Sim0MQDisplayType implements Serializable
     /** AngleSolid.SQUARE_DEGREE unit type with code 1. */
     public static final Sim0MQDisplayType ANGLESOLID_SQUARE_DEGREE =
             new Sim0MQDisplayType(Sim0MQUnitType.ANGLESOLID, 1, AngleSolidUnit.SQUARE_DEGREE, "SQUARE_DEGREE", "sq.deg");
+
+    /* ====================================================== ANGLE ====================================================== */
 
     /** Angle.RADIAN unit type with code 0. */
     public static final Sim0MQDisplayType ANGLE_RADIAN =
@@ -123,33 +135,25 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType ANGLE_GRAD =
             new Sim0MQDisplayType(Sim0MQUnitType.ANGLE, 6, AngleUnit.GRAD, "GRAD", "grad");
 
-    /** Direction.RADIAN unit type with code 0. */
-    public static final Sim0MQDisplayType DIRECTION_RADIAN =
-            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 0, AngleUnit.RADIAN, "RADIAN", "rad");
+    /* ==================================================== DIRECTION ==================================================== */
 
-    /** Direction.ARCMINUTE unit type with code 1. */
-    public static final Sim0MQDisplayType DIRECTION_ARCMINUTE =
-            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 1, AngleUnit.ARCMINUTE, "ARCMINUTE", "arcmin");
+    /** Direction.NORTH_RADIAN unit type with code 0. */
+    public static final Sim0MQDisplayType DIRECTION_NORTH_RADIAN =
+            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 0, DirectionUnit.NORTH_RADIAN, "NORTH_RADIAN", "rad(N)");
 
-    /** Direction.ARCSECOND unit type with code 2. */
-    public static final Sim0MQDisplayType DIRECTION_ARCSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 2, AngleUnit.ARCSECOND, "ARCSECOND", "arcsec");
+    /** Direction.NORTH_DEGREE unit type with code 1. */
+    public static final Sim0MQDisplayType DIRECTION_NORTH_DEGREE =
+            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 1, DirectionUnit.NORTH_DEGREE, "NORTH_DEGREE", "deg(N)");
 
-    /** Direction.CENTESIMAL_ARCMINUTE unit type with code 3. */
-    public static final Sim0MQDisplayType DIRECTION_CENTESIMAL_ARCMINUTE = new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 3,
-            AngleUnit.CENTESIMAL_ARCMINUTE, "CENTESIMAL_ARCMINUTE", "centesimal_arcmin");
+    /** Direction.EAST_RADIAN unit type with code 2. */
+    public static final Sim0MQDisplayType DIRECTION_EAST_RADIAN =
+            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 2, DirectionUnit.EAST_RADIAN, "EAST_RADIAN", "rad(E)");
 
-    /** Direction.CENTESIMAL_ARCSECOND unit type with code 4. */
-    public static final Sim0MQDisplayType DIRECTION_CENTESIMAL_ARCSECOND = new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 4,
-            AngleUnit.CENTESIMAL_ARCSECOND, "CENTESIMAL_ARCSECOND", "centesimal_arcsec");
+    /** Direction.EAST_DEGREE unit type with code 2. */
+    public static final Sim0MQDisplayType DIRECTION_EAST_DEGREE =
+            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 3, DirectionUnit.EAST_DEGREE, "EAST_DEGREE", "deg(E)");
 
-    /** Direction.DEGREE unit type with code 5. */
-    public static final Sim0MQDisplayType DIRECTION_DEGREE =
-            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 5, AngleUnit.DEGREE, "DEGREE", "deg");
-
-    /** Direction.GRAD unit type with code 6. */
-    public static final Sim0MQDisplayType DIRECTION_GRAD =
-            new Sim0MQDisplayType(Sim0MQUnitType.DIRECTION, 6, AngleUnit.GRAD, "GRAD", "grad");
+    /* ====================================================== AREA ======================================================= */
 
     /** Area.SQUARE_METER unit type with code 0. */
     public static final Sim0MQDisplayType AREA_SQUARE_METER =
@@ -238,6 +242,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType AREA_HECTARE =
             new Sim0MQDisplayType(Sim0MQUnitType.AREA, 21, AreaUnit.HECTARE, "HECTARE", "ha");
 
+    /* ===================================================== DENSITY ===================================================== */
+
     /** Density.KG_PER_METER_3 unit type with code 0. */
     public static final Sim0MQDisplayType DENSITY_KG_PER_METER_3 =
             new Sim0MQDisplayType(Sim0MQUnitType.DENSITY, 0, DensityUnit.KG_PER_METER_3, "KG_PER_METER_3", "kg/m3");
@@ -245,6 +251,8 @@ public class Sim0MQDisplayType implements Serializable
     /** Density.GRAM_PER_CENTIMETER_3 unit type with code 1. */
     public static final Sim0MQDisplayType DENSITY_GRAM_PER_CENTIMETER_3 = new Sim0MQDisplayType(Sim0MQUnitType.DENSITY, 1,
             DensityUnit.GRAM_PER_CENTIMETER_3, "GRAM_PER_CENTIMETER_3", "g/cm3");
+
+    /* ================================================ ELECTRICALCHARGE ================================================= */
 
     /** ElectricalCharge.COULOMB unit type with code 0. */
     public static final Sim0MQDisplayType ELECTRICALCHARGE_COULOMB =
@@ -314,6 +322,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType ELECTRICALCHARGE_MILLIAMPERE_SECOND = new Sim0MQDisplayType(
             Sim0MQUnitType.ELECTRICALCHARGE, 16, ElectricalChargeUnit.MILLIAMPERE_SECOND, "MILLIAMPERE_SECOND", "mAs");
 
+    /* ============================================== ELECTRICALCURRENT ================================================== */
+
     /** ElectricalCurrent.AMPERE unit type with code 0. */
     public static final Sim0MQDisplayType ELECTRICALCURRENT_AMPERE =
             new Sim0MQDisplayType(Sim0MQUnitType.ELECTRICALCURRENT, 0, ElectricalCurrentUnit.AMPERE, "AMPERE", "A");
@@ -345,6 +355,8 @@ public class Sim0MQDisplayType implements Serializable
     /** ElectricalCurrent.STATAMPERE unit type with code 7. */
     public static final Sim0MQDisplayType ELECTRICALCURRENT_STATAMPERE =
             new Sim0MQDisplayType(Sim0MQUnitType.ELECTRICALCURRENT, 7, ElectricalCurrentUnit.STATAMPERE, "STATAMPERE", "statA");
+
+    /* ============================================= ELECTRICALPOTENTIAL ================================================= */
 
     /** ElectricalPotential.VOLT unit type with code 0. */
     public static final Sim0MQDisplayType ELECTRICALPOTENTIAL_VOLT =
@@ -382,6 +394,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType ELECTRICALPOTENTIAL_STATVOLT =
             new Sim0MQDisplayType(Sim0MQUnitType.ELECTRICALPOTENTIAL, 8, ElectricalPotentialUnit.STATVOLT, "STATVOLT", "statV");
 
+    /* ============================================ ELECTRICALRESISTANCE ================================================= */
+
     /** ElectricalResistance.OHM unit type with code 0. */
     public static final Sim0MQDisplayType ELECTRICALRESISTANCE_OHM =
             new Sim0MQDisplayType(Sim0MQUnitType.ELECTRICALRESISTANCE, 0, ElectricalResistanceUnit.OHM, "OHM", "Ω");
@@ -417,6 +431,8 @@ public class Sim0MQDisplayType implements Serializable
     /** ElectricalResistance.STATOHM unit type with code 8. */
     public static final Sim0MQDisplayType ELECTRICALRESISTANCE_STATOHM =
             new Sim0MQDisplayType(Sim0MQUnitType.ELECTRICALRESISTANCE, 8, ElectricalResistanceUnit.STATOHM, "STATOHM", "statΩ");
+
+    /* ===================================================== ENERGY ====================================================== */
 
     /** Energy.JOULE unit type with code 0. */
     public static final Sim0MQDisplayType ENERGY_JOULE =
@@ -574,6 +590,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType ENERGY_STHENE_METER =
             new Sim0MQDisplayType(Sim0MQUnitType.ENERGY, 38, EnergyUnit.STHENE_METER, "STHENE_METER", "sth.m");
 
+    /* ==================================================== FLOWMASS ===================================================== */
+
     /** FlowMass.KG_PER_SECOND unit type with code 0. */
     public static final Sim0MQDisplayType FLOWMASS_KG_PER_SECOND =
             new Sim0MQDisplayType(Sim0MQUnitType.FLOWMASS, 0, FlowMassUnit.KILOGRAM_PER_SECOND, "KG_PER_SECOND", "kg/s");
@@ -581,6 +599,8 @@ public class Sim0MQDisplayType implements Serializable
     /** FlowMass.POUND_PER_SECOND unit type with code 1. */
     public static final Sim0MQDisplayType FLOWMASS_POUND_PER_SECOND =
             new Sim0MQDisplayType(Sim0MQUnitType.FLOWMASS, 1, FlowMassUnit.POUND_PER_SECOND, "POUND_PER_SECOND", "lb/s");
+
+    /* =================================================== FLOWVOLUME ==================================================== */
 
     /** FlowVolume.CUBIC_METER_PER_SECOND unit type with code 0. */
     public static final Sim0MQDisplayType FLOWVOLUME_CUBIC_METER_PER_SECOND = new Sim0MQDisplayType(Sim0MQUnitType.FLOWVOLUME,
@@ -646,6 +666,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType FLOWVOLUME_LITER_PER_DAY =
             new Sim0MQDisplayType(Sim0MQUnitType.FLOWVOLUME, 15, FlowVolumeUnit.LITER_PER_DAY, "LITER_PER_DAY", "l/day");
 
+    /* ===================================================== FORCE ======================================================= */
+
     /** Force.NEWTON unit type with code 0. */
     public static final Sim0MQDisplayType FORCE_NEWTON =
             new Sim0MQDisplayType(Sim0MQUnitType.FORCE, 0, ForceUnit.NEWTON, "NEWTON", "N");
@@ -673,6 +695,8 @@ public class Sim0MQDisplayType implements Serializable
     /** Force.STHENE unit type with code 6. */
     public static final Sim0MQDisplayType FORCE_STHENE =
             new Sim0MQDisplayType(Sim0MQUnitType.FORCE, 6, ForceUnit.STHENE, "STHENE", "sth");
+
+    /* =================================================== FREQUENCY ===================================================== */
 
     /** Frequency.HERTZ unit type with code 0. */
     public static final Sim0MQDisplayType FREQUENCY_HERTZ =
@@ -741,6 +765,8 @@ public class Sim0MQDisplayType implements Serializable
     /** Frequency.RPM unit type with code 16. */
     public static final Sim0MQDisplayType FREQUENCY_RPM =
             new Sim0MQDisplayType(Sim0MQUnitType.FREQUENCY, 16, FrequencyUnit.RPM, "RPM", "rpm");
+
+    /* ===================================================== LENGTH ====================================================== */
 
     /** Length.METER unit type with code 0. */
     public static final Sim0MQDisplayType LENGTH_METER =
@@ -830,93 +856,97 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType LENGTH_ANGSTROM =
             new Sim0MQDisplayType(Sim0MQUnitType.LENGTH, 21, LengthUnit.ANGSTROM, "ANGSTROM", "Å");
 
+    /* ==================================================== POSITION ===================================================== */
+
     /** Position.METER unit type with code 0. */
     public static final Sim0MQDisplayType POSITION_METER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 0, LengthUnit.METER, "METER", "m");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 0, PositionUnit.METER, "METER", "m");
 
     /** Position.ATTOMETER unit type with code 1. */
     public static final Sim0MQDisplayType POSITION_ATTOMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 1, LengthUnit.ATTOMETER, "ATTOMETER", "am");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 1, PositionUnit.ATTOMETER, "ATTOMETER", "am");
 
     /** Position.FEMTOMETER unit type with code 2. */
     public static final Sim0MQDisplayType POSITION_FEMTOMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 2, LengthUnit.FEMTOMETER, "FEMTOMETER", "fm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 2, PositionUnit.FEMTOMETER, "FEMTOMETER", "fm");
 
     /** Position.PICOMETER unit type with code 3. */
     public static final Sim0MQDisplayType POSITION_PICOMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 3, LengthUnit.PICOMETER, "PICOMETER", "pm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 3, PositionUnit.PICOMETER, "PICOMETER", "pm");
 
     /** Position.NANOMETER unit type with code 4. */
     public static final Sim0MQDisplayType POSITION_NANOMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 4, LengthUnit.NANOMETER, "NANOMETER", "nm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 4, PositionUnit.NANOMETER, "NANOMETER", "nm");
 
     /** Position.MICROMETER unit type with code 5. */
     public static final Sim0MQDisplayType POSITION_MICROMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 5, LengthUnit.MICROMETER, "MICROMETER", "μm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 5, PositionUnit.MICROMETER, "MICROMETER", "μm");
 
     /** Position.MILLIMETER unit type with code 6. */
     public static final Sim0MQDisplayType POSITION_MILLIMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 6, LengthUnit.MILLIMETER, "MILLIMETER", "mm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 6, PositionUnit.MILLIMETER, "MILLIMETER", "mm");
 
     /** Position.CENTIMETER unit type with code 7. */
     public static final Sim0MQDisplayType POSITION_CENTIMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 7, LengthUnit.CENTIMETER, "CENTIMETER", "cm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 7, PositionUnit.CENTIMETER, "CENTIMETER", "cm");
 
     /** Position.DECIMETER unit type with code 8. */
     public static final Sim0MQDisplayType POSITION_DECIMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 8, LengthUnit.DECIMETER, "DECIMETER", "dm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 8, PositionUnit.DECIMETER, "DECIMETER", "dm");
 
     /** Position.DEKAMETER unit type with code 9. */
     public static final Sim0MQDisplayType POSITION_DEKAMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 9, LengthUnit.DEKAMETER, "DEKAMETER", "dam");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 9, PositionUnit.DEKAMETER, "DEKAMETER", "dam");
 
     /** Position.HECTOMETER unit type with code 10. */
     public static final Sim0MQDisplayType POSITION_HECTOMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 10, LengthUnit.HECTOMETER, "HECTOMETER", "hm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 10, PositionUnit.HECTOMETER, "HECTOMETER", "hm");
 
     /** Position.KILOMETER unit type with code 11. */
     public static final Sim0MQDisplayType POSITION_KILOMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 11, LengthUnit.KILOMETER, "KILOMETER", "km");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 11, PositionUnit.KILOMETER, "KILOMETER", "km");
 
     /** Position.MEGAMETER unit type with code 12. */
     public static final Sim0MQDisplayType POSITION_MEGAMETER =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 12, LengthUnit.MEGAMETER, "MEGAMETER", "Mm");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 12, PositionUnit.MEGAMETER, "MEGAMETER", "Mm");
 
     /** Position.INCH unit type with code 13. */
     public static final Sim0MQDisplayType POSITION_INCH =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 13, LengthUnit.INCH, "INCH", "in");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 13, PositionUnit.INCH, "INCH", "in");
 
     /** Position.FOOT unit type with code 14. */
     public static final Sim0MQDisplayType POSITION_FOOT =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 14, LengthUnit.FOOT, "FOOT", "ft");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 14, PositionUnit.FOOT, "FOOT", "ft");
 
     /** Position.YARD unit type with code 15. */
     public static final Sim0MQDisplayType POSITION_YARD =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 15, LengthUnit.YARD, "YARD", "yd");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 15, PositionUnit.YARD, "YARD", "yd");
 
     /** Position.MILE unit type with code 16. */
     public static final Sim0MQDisplayType POSITION_MILE =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 16, LengthUnit.MILE, "MILE", "mi");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 16, PositionUnit.MILE, "MILE", "mi");
 
     /** Position.NAUTICAL_MILE unit type with code 17. */
     public static final Sim0MQDisplayType POSITION_NAUTICAL_MILE =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 17, LengthUnit.NAUTICAL_MILE, "NAUTICAL_MILE", "NM");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 17, PositionUnit.NAUTICAL_MILE, "NAUTICAL_MILE", "NM");
 
     /** Position.ASTRONOMICAL_UNIT unit type with code 18. */
     public static final Sim0MQDisplayType POSITION_ASTRONOMICAL_UNIT =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 18, LengthUnit.ASTRONOMICAL_UNIT, "ASTRONOMICAL_UNIT", "au");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 18, PositionUnit.ASTRONOMICAL_UNIT, "ASTRONOMICAL_UNIT", "au");
 
     /** Position.PARSEC unit type with code 19. */
     public static final Sim0MQDisplayType POSITION_PARSEC =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 19, LengthUnit.PARSEC, "PARSEC", "pc");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 19, PositionUnit.PARSEC, "PARSEC", "pc");
 
     /** Position.LIGHTYEAR unit type with code 20. */
     public static final Sim0MQDisplayType POSITION_LIGHTYEAR =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 20, LengthUnit.LIGHTYEAR, "LIGHTYEAR", "ly");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 20, PositionUnit.LIGHTYEAR, "LIGHTYEAR", "ly");
 
     /** Position.ANGSTROM unit type with code 21. */
     public static final Sim0MQDisplayType POSITION_ANGSTROM =
-            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 21, LengthUnit.ANGSTROM, "ANGSTROM", "Å");
+            new Sim0MQDisplayType(Sim0MQUnitType.POSITION, 21, PositionUnit.ANGSTROM, "ANGSTROM", "Å");
+
+    /* ================================================== LINEARDENSITY ================================================== */
 
     /** LinearDensity.PER_METER unit type with code 0. */
     public static final Sim0MQDisplayType LINEARDENSITY_PER_METER =
@@ -1005,6 +1035,8 @@ public class Sim0MQDisplayType implements Serializable
     /** LinearDensity.PER_ANGSTROM unit type with code 21. */
     public static final Sim0MQDisplayType LINEARDENSITY_PER_ANGSTROM =
             new Sim0MQDisplayType(Sim0MQUnitType.LINEARDENSITY, 21, LinearDensityUnit.PER_ANGSTROM, "PER_ANGSTROM", "1/Å");
+
+    /* ====================================================== MASS ======================================================= */
 
     /** Mass.KILOGRAM unit type with code 0. */
     public static final Sim0MQDisplayType MASS_KILOGRAM =
@@ -1110,6 +1142,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType MASS_TONNE =
             new Sim0MQDisplayType(Sim0MQUnitType.MASS, 25, MassUnit.TONNE, "TONNE", "tonne");
 
+    /* ===================================================== POWER ======================================================= */
+
     /** Power.WATT unit type with code 0. */
     public static final Sim0MQDisplayType POWER_WATT =
             new Sim0MQDisplayType(Sim0MQUnitType.POWER, 0, PowerUnit.WATT, "WATT", "W");
@@ -1177,6 +1211,8 @@ public class Sim0MQDisplayType implements Serializable
     /** Power.STHENE_METER_PER_SECOND unit type with code 16. */
     public static final Sim0MQDisplayType POWER_STHENE_METER_PER_SECOND = new Sim0MQDisplayType(Sim0MQUnitType.POWER, 16,
             PowerUnit.STHENE_METER_PER_SECOND, "STHENE_METER_PER_SECOND", "sth/s");
+
+    /* ===================================================== PRESSURE ==================================================== */
 
     /** Pressure.PASCAL unit type with code 0. */
     public static final Sim0MQDisplayType PRESSURE_PASCAL =
@@ -1246,6 +1282,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType PRESSURE_TORR =
             new Sim0MQDisplayType(Sim0MQUnitType.PRESSURE, 16, PressureUnit.TORR, "TORR", "torr");
 
+    /* ===================================================== SPEED ======================================================= */
+
     /** Speed.METER_PER_SECOND unit type with code 0. */
     public static final Sim0MQDisplayType SPEED_METER_PER_SECOND =
             new Sim0MQDisplayType(Sim0MQUnitType.SPEED, 0, SpeedUnit.METER_PER_SECOND, "METER_PER_SECOND", "m/s");
@@ -1302,6 +1340,8 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType SPEED_KNOT =
             new Sim0MQDisplayType(Sim0MQUnitType.SPEED, 13, SpeedUnit.KNOT, "KNOT", "kt");
 
+    /* =================================================== TEMPERATURE =================================================== */
+
     /** Temperature.KELVIN unit type with code 0. */
     public static final Sim0MQDisplayType TEMPERATURE_KELVIN =
             new Sim0MQDisplayType(Sim0MQUnitType.TEMPERATURE, 0, TemperatureUnit.KELVIN, "KELVIN", "K");
@@ -1322,112 +1362,141 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType TEMPERATURE_DEGREE_REAUMUR =
             new Sim0MQDisplayType(Sim0MQUnitType.TEMPERATURE, 4, TemperatureUnit.DEGREE_REAUMUR, "DEGREE_REAUMUR", "ORé");
 
+    /* ============================================== ABSOLUTETEMPERATURE ================================================ */
+
     /** AbsoluteTemperature.KELVIN unit type with code 0. */
     public static final Sim0MQDisplayType ABSOLUTETEMPERATURE_KELVIN =
-            new Sim0MQDisplayType(Sim0MQUnitType.ABSOLUTETEMPERATURE, 0, TemperatureUnit.KELVIN, "KELVIN", "K");
+            new Sim0MQDisplayType(Sim0MQUnitType.ABSOLUTETEMPERATURE, 0, AbsoluteTemperatureUnit.KELVIN, "KELVIN", "K");
 
     /** AbsoluteTemperature.DEGREE_CELSIUS unit type with code 1. */
     public static final Sim0MQDisplayType ABSOLUTETEMPERATURE_DEGREE_CELSIUS = new Sim0MQDisplayType(
-            Sim0MQUnitType.ABSOLUTETEMPERATURE, 1, TemperatureUnit.DEGREE_CELSIUS, "DEGREE_CELSIUS", "OC");
+            Sim0MQUnitType.ABSOLUTETEMPERATURE, 1, AbsoluteTemperatureUnit.DEGREE_CELSIUS, "DEGREE_CELSIUS", "OC");
 
     /** AbsoluteTemperature.DEGREE_FAHRENHEIT unit type with code 2. */
     public static final Sim0MQDisplayType ABSOLUTETEMPERATURE_DEGREE_FAHRENHEIT = new Sim0MQDisplayType(
-            Sim0MQUnitType.ABSOLUTETEMPERATURE, 2, TemperatureUnit.DEGREE_FAHRENHEIT, "DEGREE_FAHRENHEIT", "OF");
+            Sim0MQUnitType.ABSOLUTETEMPERATURE, 2, AbsoluteTemperatureUnit.DEGREE_FAHRENHEIT, "DEGREE_FAHRENHEIT", "OF");
 
     /** AbsoluteTemperature.DEGREE_RANKINE unit type with code 3. */
     public static final Sim0MQDisplayType ABSOLUTETEMPERATURE_DEGREE_RANKINE = new Sim0MQDisplayType(
-            Sim0MQUnitType.ABSOLUTETEMPERATURE, 3, TemperatureUnit.DEGREE_RANKINE, "DEGREE_RANKINE", "OR");
+            Sim0MQUnitType.ABSOLUTETEMPERATURE, 3, AbsoluteTemperatureUnit.DEGREE_RANKINE, "DEGREE_RANKINE", "OR");
 
     /** AbsoluteTemperature.DEGREE_REAUMUR unit type with code 4. */
     public static final Sim0MQDisplayType ABSOLUTETEMPERATURE_DEGREE_REAUMUR = new Sim0MQDisplayType(
-            Sim0MQUnitType.ABSOLUTETEMPERATURE, 4, TemperatureUnit.DEGREE_REAUMUR, "DEGREE_REAUMUR", "ORé");
+            Sim0MQUnitType.ABSOLUTETEMPERATURE, 4, AbsoluteTemperatureUnit.DEGREE_REAUMUR, "DEGREE_REAUMUR", "ORé");
+
+    /* ==================================================== DURATION ===================================================== */
 
     /** Duration.SECOND unit type with code 0. */
     public static final Sim0MQDisplayType DURATION_SECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 0, TimeUnit.SECOND, "SECOND", "s");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 0, DurationUnit.SECOND, "SECOND", "s");
 
     /** Duration.ATTOSECOND unit type with code 1. */
     public static final Sim0MQDisplayType DURATION_ATTOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 1, TimeUnit.ATTOSECOND, "ATTOSECOND", "as");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 1, DurationUnit.ATTOSECOND, "ATTOSECOND", "as");
 
     /** Duration.FEMTOSECOND unit type with code 2. */
     public static final Sim0MQDisplayType DURATION_FEMTOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 2, TimeUnit.FEMTOSECOND, "FEMTOSECOND", "fs");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 2, DurationUnit.FEMTOSECOND, "FEMTOSECOND", "fs");
 
     /** Duration.PICOSECOND unit type with code 3. */
     public static final Sim0MQDisplayType DURATION_PICOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 3, TimeUnit.PICOSECOND, "PICOSECOND", "ps");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 3, DurationUnit.PICOSECOND, "PICOSECOND", "ps");
 
     /** Duration.NANOSECOND unit type with code 4. */
     public static final Sim0MQDisplayType DURATION_NANOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 4, TimeUnit.NANOSECOND, "NANOSECOND", "ns");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 4, DurationUnit.NANOSECOND, "NANOSECOND", "ns");
 
     /** Duration.MICROSECOND unit type with code 5. */
     public static final Sim0MQDisplayType DURATION_MICROSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 5, TimeUnit.MICROSECOND, "MICROSECOND", "μs");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 5, DurationUnit.MICROSECOND, "MICROSECOND", "μs");
 
     /** Duration.MILLISECOND unit type with code 6. */
     public static final Sim0MQDisplayType DURATION_MILLISECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 6, TimeUnit.MILLISECOND, "MILLISECOND", "ms");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 6, DurationUnit.MILLISECOND, "MILLISECOND", "ms");
 
     /** Duration.MINUTE unit type with code 7. */
     public static final Sim0MQDisplayType DURATION_MINUTE =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 7, TimeUnit.MINUTE, "MINUTE", "min");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 7, DurationUnit.MINUTE, "MINUTE", "min");
 
     /** Duration.HOUR unit type with code 8. */
     public static final Sim0MQDisplayType DURATION_HOUR =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 8, TimeUnit.HOUR, "HOUR", "hr");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 8, DurationUnit.HOUR, "HOUR", "hr");
 
     /** Duration.DAY unit type with code 9. */
     public static final Sim0MQDisplayType DURATION_DAY =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 9, TimeUnit.DAY, "DAY", "day");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 9, DurationUnit.DAY, "DAY", "day");
 
     /** Duration.WEEK unit type with code 10. */
     public static final Sim0MQDisplayType DURATION_WEEK =
-            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 10, TimeUnit.WEEK, "WEEK", "wk");
+            new Sim0MQDisplayType(Sim0MQUnitType.DURATION, 10, DurationUnit.WEEK, "WEEK", "wk");
 
-    /** Time.SECOND unit type with code 0. */
-    public static final Sim0MQDisplayType TIME_SECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 0, TimeUnit.SECOND, "SECOND", "s");
+    /* ====================================================== TIME ======================================================= */
 
-    /** Time.ATTOSECOND unit type with code 1. */
-    public static final Sim0MQDisplayType TIME_ATTOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 1, TimeUnit.ATTOSECOND, "ATTOSECOND", "as");
+    /** Time.BASE_SECOND unit type with code 0. */
+    public static final Sim0MQDisplayType TIME_BASE_SECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 0, TimeUnit.BASE_SECOND, "SECOND", "s");
 
-    /** Time.FEMTOSECOND unit type with code 2. */
-    public static final Sim0MQDisplayType TIME_FEMTOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 2, TimeUnit.FEMTOSECOND, "FEMTOSECOND", "fs");
+    /** Time.BASE_MICROSECOND unit type with code 1. */
+    public static final Sim0MQDisplayType TIME_BASE_MICROSECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 1, TimeUnit.BASE_MICROSECOND, "MICROSECOND", "μs");
 
-    /** Time.PICOSECOND unit type with code 3. */
-    public static final Sim0MQDisplayType TIME_PICOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 3, TimeUnit.PICOSECOND, "PICOSECOND", "ps");
+    /** Time.BASE_MILLISECOND unit type with code 2. */
+    public static final Sim0MQDisplayType TIME_BASE_MILLISECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 2, TimeUnit.BASE_MILLISECOND, "MILLISECOND", "ms");
 
-    /** Time.NANOSECOND unit type with code 4. */
-    public static final Sim0MQDisplayType TIME_NANOSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 4, TimeUnit.NANOSECOND, "NANOSECOND", "ns");
+    /** Time.BASE_MINUTE unit type with code 3. */
+    public static final Sim0MQDisplayType TIME_BASE_MINUTE =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 3, TimeUnit.BASE_MINUTE, "MINUTE", "min");
 
-    /** Time.MICROSECOND unit type with code 5. */
-    public static final Sim0MQDisplayType TIME_MICROSECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 5, TimeUnit.MICROSECOND, "MICROSECOND", "μs");
+    /** Time.BASE_HOUR unit type with code 4. */
+    public static final Sim0MQDisplayType TIME_BASE_HOUR =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 4, TimeUnit.BASE_HOUR, "HOUR", "hr");
 
-    /** Time.MILLISECOND unit type with code 6. */
-    public static final Sim0MQDisplayType TIME_MILLISECOND =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 6, TimeUnit.MILLISECOND, "MILLISECOND", "ms");
+    /** Time.BASE_DAY unit type with code 5. */
+    public static final Sim0MQDisplayType TIME_BASE_DAY =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 5, TimeUnit.BASE_DAY, "DAY", "day");
 
-    /** Time.MINUTE unit type with code 7. */
-    public static final Sim0MQDisplayType TIME_MINUTE =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 7, TimeUnit.MINUTE, "MINUTE", "min");
+    /** Time.BASE_WEEK unit type with code 6. */
+    public static final Sim0MQDisplayType TIME_BASE_WEEK =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 6, TimeUnit.BASE_WEEK, "WEEK", "wk");
 
-    /** Time.HOUR unit type with code 8. */
-    public static final Sim0MQDisplayType TIME_HOUR =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 8, TimeUnit.HOUR, "HOUR", "hr");
+    /** Time.EPOCH_SECOND unit type with code 7. */
+    public static final Sim0MQDisplayType TIME_EPOCH_SECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 7, TimeUnit.EPOCH_SECOND, "SECOND (1-1-70)", "s(POSIX)");
 
-    /** Time.DAY unit type with code 9. */
-    public static final Sim0MQDisplayType TIME_DAY = new Sim0MQDisplayType(Sim0MQUnitType.TIME, 9, TimeUnit.DAY, "DAY", "day");
+    /** Time.EPOCH_MICROSECOND unit type with code 8. */
+    public static final Sim0MQDisplayType TIME_EPOCH_MICROSECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 8, TimeUnit.BASE_MICROSECOND, "MICROSECOND (1-1-70)", "μs(POSIX)");
 
-    /** Time.WEEK unit type with code 10. */
-    public static final Sim0MQDisplayType TIME_WEEK =
-            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 10, TimeUnit.WEEK, "WEEK", "wk");
+    /** Time.EPOCH_MILLISECOND unit type with code 9. */
+    public static final Sim0MQDisplayType TIME_EPOCH_MILLISECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 9, TimeUnit.BASE_MILLISECOND, "MILLISECOND (1-1-70)", "ms(POSIX)");
+
+    /** Time.EPOCH_MINUTE unit type with code 10. */
+    public static final Sim0MQDisplayType TIME_EPOCH_MINUTE =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 10, TimeUnit.BASE_MINUTE, "MINUTE (1-1-70)", "min(POSIX)");
+
+    /** Time.EPOCH_HOUR unit type with code 11. */
+    public static final Sim0MQDisplayType TIME_EPOCH_HOUR =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 11, TimeUnit.BASE_HOUR, "HOUR (1-1-70)", "hr(POSIX)");
+
+    /** Time.EPOCH_DAY unit type with code 12. */
+    public static final Sim0MQDisplayType TIME_EPOCH_DAY =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 12, TimeUnit.BASE_DAY, "DAY (1-1-70)", "day(POSIX)");
+
+    /** Time.EPOCH_WEEK unit type with code 13. */
+    public static final Sim0MQDisplayType TIME_EPOCH_WEEK =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 13, TimeUnit.BASE_WEEK, "WEEK (1-1-70)", "wk(POSIX)");
+
+    /** Time.TIME_YEAR1_SECOND unit type with code 14. */
+    public static final Sim0MQDisplayType TIME_YEAR1_SECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 14, TimeUnit.EPOCH_YEAR_1, "SECOND (1-1-0001)", "s(1-1-0001)");
+
+    /** Time.TIME_J2000_SECOND unit type with code 15. */
+    public static final Sim0MQDisplayType TIME_J2000_SECOND =
+            new Sim0MQDisplayType(Sim0MQUnitType.TIME, 15, TimeUnit.EPOCH_J2000_1, "SECOND (1-1-2000 12:00)", "s(1-1-2000)");
+
+    /* ===================================================== TORQUE ====================================================== */
 
     /** Torque.NEWTON_METER unit type with code 0. */
     public static final Sim0MQDisplayType TORQUE_NEWTON_METER =
@@ -1444,6 +1513,8 @@ public class Sim0MQDisplayType implements Serializable
     /** Torque.METER_KILOGRAM_FORCE unit type with code 3. */
     public static final Sim0MQDisplayType TORQUE_METER_KILOGRAM_FORCE =
             new Sim0MQDisplayType(Sim0MQUnitType.TORQUE, 3, TorqueUnit.METER_KILOGRAM_FORCE, "METER_KILOGRAM_FORCE", "m.kgf");
+
+    /* ===================================================== VOLUME ====================================================== */
 
     /** Volume.CUBIC_METER unit type with code 0. */
     public static final Sim0MQDisplayType VOLUME_CUBIC_METER =
@@ -1557,725 +1628,729 @@ public class Sim0MQDisplayType implements Serializable
     public static final Sim0MQDisplayType VOLUME_CUBIC_LIGHTYEAR =
             new Sim0MQDisplayType(Sim0MQUnitType.VOLUME, 27, VolumeUnit.CUBIC_LIGHTYEAR, "CUBIC_LIGHTYEAR", "ly3");
 
-    /** Money.AED unit type with code 1. */
+    /* ====================================================== MONEY ====================================================== */
+
+    /** Money.AED unit type with code 784. */
     public static final Sim0MQDisplayType MONEY_AED =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 1, MoneyUnit.AED, "AED", "United Arab Emirates dirham");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 784, MoneyUnit.AED, "AED", "United Arab Emirates dirham");
 
-    /** Money.AFN unit type with code 2. */
+    /** Money.AFN unit type with code 971. */
     public static final Sim0MQDisplayType MONEY_AFN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 2, MoneyUnit.AFN, "AFN", "Afghan afghani");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 971, MoneyUnit.AFN, "AFN", "Afghan afghani");
 
-    /** Money.ALL unit type with code 3. */
+    /** Money.ALL unit type with code 8. */
     public static final Sim0MQDisplayType MONEY_ALL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 3, MoneyUnit.ALL, "ALL", "Albanian lek");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 8, MoneyUnit.ALL, "ALL", "Albanian lek");
 
-    /** Money.AMD unit type with code 4. */
+    /** Money.AMD unit type with code 51. */
     public static final Sim0MQDisplayType MONEY_AMD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 4, MoneyUnit.AMD, "AMD", "Armenian dram");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 51, MoneyUnit.AMD, "AMD", "Armenian dram");
 
-    /** Money.ANG unit type with code 5. */
+    /** Money.ANG unit type with code 532. */
     public static final Sim0MQDisplayType MONEY_ANG =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 5, MoneyUnit.ANG, "ANG", "Netherlands Antillean guilder");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 532, MoneyUnit.ANG, "ANG", "Netherlands Antillean guilder");
 
-    /** Money.AOA unit type with code 6. */
+    /** Money.AOA unit type with code 973. */
     public static final Sim0MQDisplayType MONEY_AOA =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 6, MoneyUnit.AOA, "AOA", "Angolan kwanza");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 973, MoneyUnit.AOA, "AOA", "Angolan kwanza");
 
-    /** Money.ARS unit type with code 7. */
+    /** Money.ARS unit type with code 32. */
     public static final Sim0MQDisplayType MONEY_ARS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 7, MoneyUnit.ARS, "ARS", "Argentine peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 32, MoneyUnit.ARS, "ARS", "Argentine peso");
 
-    /** Money.AUD unit type with code 8. */
+    /** Money.AUD unit type with code 36. */
     public static final Sim0MQDisplayType MONEY_AUD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 8, MoneyUnit.AUD, "AUD", "Australian dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 36, MoneyUnit.AUD, "AUD", "Australian dollar");
 
-    /** Money.AWG unit type with code 9. */
+    /** Money.AWG unit type with code 533. */
     public static final Sim0MQDisplayType MONEY_AWG =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 9, MoneyUnit.AWG, "AWG", "Aruban florin");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 533, MoneyUnit.AWG, "AWG", "Aruban florin");
 
-    /** Money.AZN unit type with code 10. */
+    /** Money.AZN unit type with code 944. */
     public static final Sim0MQDisplayType MONEY_AZN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 10, MoneyUnit.AZN, "AZN", "Azerbaijani manat");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 944, MoneyUnit.AZN, "AZN", "Azerbaijani manat");
 
-    /** Money.BAM unit type with code 11. */
+    /** Money.BAM unit type with code 977. */
     public static final Sim0MQDisplayType MONEY_BAM =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 11, MoneyUnit.BAM, "BAM", "Bosnia and Herzegovina convertible mark");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 977, MoneyUnit.BAM, "BAM", "Bosnia and Herzegovina convertible mark");
 
-    /** Money.BBD unit type with code 12. */
+    /** Money.BBD unit type with code 52. */
     public static final Sim0MQDisplayType MONEY_BBD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 12, MoneyUnit.BBD, "BBD", "Barbados dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 52, MoneyUnit.BBD, "BBD", "Barbados dollar");
 
-    /** Money.BDT unit type with code 13. */
+    /** Money.BDT unit type with code 50. */
     public static final Sim0MQDisplayType MONEY_BDT =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 13, MoneyUnit.BDT, "BDT", "Bangladeshi taka");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 50, MoneyUnit.BDT, "BDT", "Bangladeshi taka");
 
-    /** Money.BGN unit type with code 14. */
+    /** Money.BGN unit type with code 975. */
     public static final Sim0MQDisplayType MONEY_BGN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 14, MoneyUnit.BGN, "BGN", "Bulgarian lev");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 975, MoneyUnit.BGN, "BGN", "Bulgarian lev");
 
-    /** Money.BHD unit type with code 15. */
+    /** Money.BHD unit type with code 48. */
     public static final Sim0MQDisplayType MONEY_BHD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 15, MoneyUnit.BHD, "BHD", "Bahraini dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 48, MoneyUnit.BHD, "BHD", "Bahraini dinar");
 
-    /** Money.BIF unit type with code 16. */
+    /** Money.BIF unit type with code 108. */
     public static final Sim0MQDisplayType MONEY_BIF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 16, MoneyUnit.BIF, "BIF", "Burundian franc");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 108, MoneyUnit.BIF, "BIF", "Burundian franc");
 
-    /** Money.BMD unit type with code 17. */
+    /** Money.BMD unit type with code 60. */
     public static final Sim0MQDisplayType MONEY_BMD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 17, MoneyUnit.BMD, "BMD", "Bermudian dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 60, MoneyUnit.BMD, "BMD", "Bermudian dollar");
 
-    /** Money.BND unit type with code 18. */
+    /** Money.BND unit type with code 96. */
     public static final Sim0MQDisplayType MONEY_BND =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 18, MoneyUnit.BND, "BND", "Brunei dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 96, MoneyUnit.BND, "BND", "Brunei dollar");
 
-    /** Money.BOB unit type with code 19. */
+    /** Money.BOB unit type with code 68. */
     public static final Sim0MQDisplayType MONEY_BOB =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 19, MoneyUnit.BOB, "BOB", "Boliviano");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 68, MoneyUnit.BOB, "BOB", "Boliviano");
 
-    /** Money.BOV unit type with code 20. */
+    /** Money.BOV unit type with code 984. */
     public static final Sim0MQDisplayType MONEY_BOV =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 20, MoneyUnit.BOV, "BOV", "Bolivian Mvdol (funds code)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 984, MoneyUnit.BOV, "BOV", "Bolivian Mvdol (funds code)");
 
-    /** Money.BRL unit type with code 21. */
+    /** Money.BRL unit type with code 986. */
     public static final Sim0MQDisplayType MONEY_BRL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 21, MoneyUnit.BRL, "BRL", "Brazilian real");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 986, MoneyUnit.BRL, "BRL", "Brazilian real");
 
-    /** Money.BSD unit type with code 22. */
+    /** Money.BSD unit type with code 44. */
     public static final Sim0MQDisplayType MONEY_BSD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 22, MoneyUnit.BSD, "BSD", "Bahamian dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 44, MoneyUnit.BSD, "BSD", "Bahamian dollar");
 
-    /** Money.BTN unit type with code 23. */
+    /** Money.BTN unit type with code 64. */
     public static final Sim0MQDisplayType MONEY_BTN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 23, MoneyUnit.BTN, "BTN", "Bhutanese ngultrum");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 64, MoneyUnit.BTN, "BTN", "Bhutanese ngultrum");
 
-    /** Money.BWP unit type with code 24. */
+    /** Money.BWP unit type with code 72. */
     public static final Sim0MQDisplayType MONEY_BWP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 24, MoneyUnit.BWP, "BWP", "Botswana pula");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 72, MoneyUnit.BWP, "BWP", "Botswana pula");
 
-    /** Money.BYN unit type with code 25. */
+    /** Money.BYN unit type with code 933. */
     public static final Sim0MQDisplayType MONEY_BYN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 25, MoneyUnit.BYN, "BYN", "New Belarusian ruble");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 933, MoneyUnit.BYN, "BYN", "New Belarusian ruble");
 
-    /** Money.BYR unit type with code 26. */
+    /** Money.BYR unit type with code 974. */
     public static final Sim0MQDisplayType MONEY_BYR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 26, MoneyUnit.BYR, "BYR", "Belarusian ruble");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 974, MoneyUnit.BYR, "BYR", "Belarusian ruble");
 
-    /** Money.BZD unit type with code 27. */
+    /** Money.BZD unit type with code 84. */
     public static final Sim0MQDisplayType MONEY_BZD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 27, MoneyUnit.BZD, "BZD", "Belize dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 84, MoneyUnit.BZD, "BZD", "Belize dollar");
 
-    /** Money.CAD unit type with code 28. */
+    /** Money.CAD unit type with code 124. */
     public static final Sim0MQDisplayType MONEY_CAD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 28, MoneyUnit.CAD, "CAD", "Canadian dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 124, MoneyUnit.CAD, "CAD", "Canadian dollar");
 
-    /** Money.CDF unit type with code 29. */
+    /** Money.CDF unit type with code 976. */
     public static final Sim0MQDisplayType MONEY_CDF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 29, MoneyUnit.CDF, "CDF", "Congolese franc");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 976, MoneyUnit.CDF, "CDF", "Congolese franc");
 
-    /** Money.CHE unit type with code 30. */
+    /** Money.CHE unit type with code 947. */
     public static final Sim0MQDisplayType MONEY_CHE =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 30, MoneyUnit.CHE, "CHE", "WIR Euro (complementary currency)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 947, MoneyUnit.CHE, "CHE", "WIR Euro (complementary currency)");
 
-    /** Money.CHF unit type with code 31. */
+    /** Money.CHF unit type with code 756. */
     public static final Sim0MQDisplayType MONEY_CHF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 31, MoneyUnit.CHF, "CHF", "Swiss franc");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 756, MoneyUnit.CHF, "CHF", "Swiss franc");
 
-    /** Money.CHW unit type with code 32. */
+    /** Money.CHW unit type with code 948. */
     public static final Sim0MQDisplayType MONEY_CHW =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 32, MoneyUnit.CHW, "CHW", "WIR Franc (complementary currency)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 948, MoneyUnit.CHW, "CHW", "WIR Franc (complementary currency)");
 
-    /** Money.CLF unit type with code 33. */
+    /** Money.CLF unit type with code 990. */
     public static final Sim0MQDisplayType MONEY_CLF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 33, MoneyUnit.CLF, "CLF", "Unidad de Fomento (funds code)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 990, MoneyUnit.CLF, "CLF", "Unidad de Fomento (funds code)");
 
-    /** Money.CLP unit type with code 34. */
+    /** Money.CLP unit type with code 152. */
     public static final Sim0MQDisplayType MONEY_CLP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 34, MoneyUnit.CLP, "CLP", "Chilean peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 152, MoneyUnit.CLP, "CLP", "Chilean peso");
 
-    /** Money.CNY unit type with code 35. */
+    /** Money.CNY unit type with code 156. */
     public static final Sim0MQDisplayType MONEY_CNY =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 35, MoneyUnit.CNY, "CNY", "Chinese yuan");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 156, MoneyUnit.CNY, "CNY", "Chinese yuan");
 
-    /** Money.COP unit type with code 36. */
+    /** Money.COP unit type with code 170. */
     public static final Sim0MQDisplayType MONEY_COP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 36, MoneyUnit.COP, "COP", "Colombian peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 170, MoneyUnit.COP, "COP", "Colombian peso");
 
-    /** Money.COU unit type with code 37. */
+    /** Money.COU unit type with code 970. */
     public static final Sim0MQDisplayType MONEY_COU =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 37, MoneyUnit.COU, "COU", "Unidad de Valor Real (UVR) (funds code)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 970, MoneyUnit.COU, "COU", "Unidad de Valor Real (UVR) (funds code)");
 
-    /** Money.CRC unit type with code 38. */
+    /** Money.CRC unit type with code 188. */
     public static final Sim0MQDisplayType MONEY_CRC =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 38, MoneyUnit.CRC, "CRC", "Costa Rican colon");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 188, MoneyUnit.CRC, "CRC", "Costa Rican colon");
 
-    /** Money.CUC unit type with code 39. */
+    /** Money.CUC unit type with code 931. */
     public static final Sim0MQDisplayType MONEY_CUC =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 39, MoneyUnit.CUC, "CUC", "Cuban convertible peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 931, MoneyUnit.CUC, "CUC", "Cuban convertible peso");
 
-    /** Money.CUP unit type with code 40. */
+    /** Money.CUP unit type with code 192. */
     public static final Sim0MQDisplayType MONEY_CUP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 40, MoneyUnit.CUP, "CUP", "Cuban peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 192, MoneyUnit.CUP, "CUP", "Cuban peso");
 
-    /** Money.CVE unit type with code 41. */
+    /** Money.CVE unit type with code 132. */
     public static final Sim0MQDisplayType MONEY_CVE =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 41, MoneyUnit.CVE, "CVE", "Cape Verde escudo");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 132, MoneyUnit.CVE, "CVE", "Cape Verde escudo");
 
-    /** Money.CZK unit type with code 42. */
+    /** Money.CZK unit type with code 203. */
     public static final Sim0MQDisplayType MONEY_CZK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 42, MoneyUnit.CZK, "CZK", "Czech koruna");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 203, MoneyUnit.CZK, "CZK", "Czech koruna");
 
-    /** Money.DJF unit type with code 43. */
+    /** Money.DJF unit type with code 262. */
     public static final Sim0MQDisplayType MONEY_DJF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 43, MoneyUnit.DJF, "DJF", "Djiboutian franc");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 262, MoneyUnit.DJF, "DJF", "Djiboutian franc");
 
-    /** Money.DKK unit type with code 44. */
+    /** Money.DKK unit type with code 208. */
     public static final Sim0MQDisplayType MONEY_DKK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 44, MoneyUnit.DKK, "DKK", "Danish krone");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 208, MoneyUnit.DKK, "DKK", "Danish krone");
 
-    /** Money.DOP unit type with code 45. */
+    /** Money.DOP unit type with code 214. */
     public static final Sim0MQDisplayType MONEY_DOP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 45, MoneyUnit.DOP, "DOP", "Dominican peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 214, MoneyUnit.DOP, "DOP", "Dominican peso");
 
-    /** Money.DZD unit type with code 46. */
+    /** Money.DZD unit type with code 12. */
     public static final Sim0MQDisplayType MONEY_DZD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 46, MoneyUnit.DZD, "DZD", "Algerian dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 12, MoneyUnit.DZD, "DZD", "Algerian dinar");
 
-    /** Money.EGP unit type with code 47. */
+    /** Money.EGP unit type with code 818. */
     public static final Sim0MQDisplayType MONEY_EGP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 47, MoneyUnit.EGP, "EGP", "Egyptian pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 818, MoneyUnit.EGP, "EGP", "Egyptian pound");
 
-    /** Money.ERN unit type with code 48. */
+    /** Money.ERN unit type with code 232. */
     public static final Sim0MQDisplayType MONEY_ERN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 48, MoneyUnit.ERN, "ERN", "Eritrean nakfa");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 232, MoneyUnit.ERN, "ERN", "Eritrean nakfa");
 
-    /** Money.ETB unit type with code 49. */
+    /** Money.ETB unit type with code 230. */
     public static final Sim0MQDisplayType MONEY_ETB =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 49, MoneyUnit.ETB, "ETB", "Ethiopian birr");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 230, MoneyUnit.ETB, "ETB", "Ethiopian birr");
 
-    /** Money.EUR unit type with code 50. */
+    /** Money.EUR unit type with code 978. */
     public static final Sim0MQDisplayType MONEY_EUR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 50, MoneyUnit.EUR, "EUR", "Euro");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 978, MoneyUnit.EUR, "EUR", "Euro");
 
-    /** Money.FJD unit type with code 51. */
+    /** Money.FJD unit type with code 242. */
     public static final Sim0MQDisplayType MONEY_FJD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 51, MoneyUnit.FJD, "FJD", "Fiji dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 242, MoneyUnit.FJD, "FJD", "Fiji dollar");
 
-    /** Money.FKP unit type with code 52. */
+    /** Money.FKP unit type with code 238. */
     public static final Sim0MQDisplayType MONEY_FKP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 52, MoneyUnit.FKP, "FKP", "Falkland Islands pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 238, MoneyUnit.FKP, "FKP", "Falkland Islands pound");
 
-    /** Money.GBP unit type with code 53. */
+    /** Money.GBP unit type with code 826. */
     public static final Sim0MQDisplayType MONEY_GBP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 53, MoneyUnit.GBP, "GBP", "Pound sterling");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 826, MoneyUnit.GBP, "GBP", "Pound sterling");
 
-    /** Money.GEL unit type with code 54. */
+    /** Money.GEL unit type with code 981. */
     public static final Sim0MQDisplayType MONEY_GEL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 54, MoneyUnit.GEL, "GEL", "Georgian lari");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 981, MoneyUnit.GEL, "GEL", "Georgian lari");
 
-    /** Money.GHS unit type with code 55. */
+    /** Money.GHS unit type with code 936. */
     public static final Sim0MQDisplayType MONEY_GHS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 55, MoneyUnit.GHS, "GHS", "Ghanaian cedi");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 936, MoneyUnit.GHS, "GHS", "Ghanaian cedi");
 
-    /** Money.GIP unit type with code 56. */
+    /** Money.GIP unit type with code 292. */
     public static final Sim0MQDisplayType MONEY_GIP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 56, MoneyUnit.GIP, "GIP", "Gibraltar pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 292, MoneyUnit.GIP, "GIP", "Gibraltar pound");
 
-    /** Money.GMD unit type with code 57. */
+    /** Money.GMD unit type with code 270. */
     public static final Sim0MQDisplayType MONEY_GMD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 57, MoneyUnit.GMD, "GMD", "Gambian dalasi");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 270, MoneyUnit.GMD, "GMD", "Gambian dalasi");
 
-    /** Money.GNF unit type with code 58. */
+    /** Money.GNF unit type with code 324. */
     public static final Sim0MQDisplayType MONEY_GNF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 58, MoneyUnit.GNF, "GNF", "Guinean franc");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 324, MoneyUnit.GNF, "GNF", "Guinean franc");
 
-    /** Money.GTQ unit type with code 59. */
+    /** Money.GTQ unit type with code 320. */
     public static final Sim0MQDisplayType MONEY_GTQ =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 59, MoneyUnit.GTQ, "GTQ", "Guatemalan quetzal");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 320, MoneyUnit.GTQ, "GTQ", "Guatemalan quetzal");
 
-    /** Money.GYD unit type with code 60. */
+    /** Money.GYD unit type with code 328. */
     public static final Sim0MQDisplayType MONEY_GYD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 60, MoneyUnit.GYD, "GYD", "Guyanese dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 328, MoneyUnit.GYD, "GYD", "Guyanese dollar");
 
-    /** Money.HKD unit type with code 61. */
+    /** Money.HKD unit type with code 344. */
     public static final Sim0MQDisplayType MONEY_HKD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 61, MoneyUnit.HKD, "HKD", "Hong Kong dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 344, MoneyUnit.HKD, "HKD", "Hong Kong dollar");
 
-    /** Money.HNL unit type with code 62. */
+    /** Money.HNL unit type with code 340. */
     public static final Sim0MQDisplayType MONEY_HNL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 62, MoneyUnit.HNL, "HNL", "Honduran lempira");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 340, MoneyUnit.HNL, "HNL", "Honduran lempira");
 
-    /** Money.HRK unit type with code 63. */
+    /** Money.HRK unit type with code 191. */
     public static final Sim0MQDisplayType MONEY_HRK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 63, MoneyUnit.HRK, "HRK", "Croatian kuna");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 191, MoneyUnit.HRK, "HRK", "Croatian kuna");
 
-    /** Money.HTG unit type with code 64. */
+    /** Money.HTG unit type with code 332. */
     public static final Sim0MQDisplayType MONEY_HTG =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 64, MoneyUnit.HTG, "HTG", "Haitian gourde");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 332, MoneyUnit.HTG, "HTG", "Haitian gourde");
 
-    /** Money.HUF unit type with code 65. */
+    /** Money.HUF unit type with code 348. */
     public static final Sim0MQDisplayType MONEY_HUF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 65, MoneyUnit.HUF, "HUF", "Hungarian forint");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 348, MoneyUnit.HUF, "HUF", "Hungarian forint");
 
-    /** Money.IDR unit type with code 66. */
+    /** Money.IDR unit type with code 360. */
     public static final Sim0MQDisplayType MONEY_IDR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 66, MoneyUnit.IDR, "IDR", "Indonesian rupiah");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 360, MoneyUnit.IDR, "IDR", "Indonesian rupiah");
 
-    /** Money.ILS unit type with code 67. */
+    /** Money.ILS unit type with code 376. */
     public static final Sim0MQDisplayType MONEY_ILS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 67, MoneyUnit.ILS, "ILS", "Israeli new shekel");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 376, MoneyUnit.ILS, "ILS", "Israeli new shekel");
 
-    /** Money.INR unit type with code 68. */
+    /** Money.INR unit type with code 356. */
     public static final Sim0MQDisplayType MONEY_INR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 68, MoneyUnit.INR, "INR", "Indian rupee");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 356, MoneyUnit.INR, "INR", "Indian rupee");
 
-    /** Money.IQD unit type with code 69. */
+    /** Money.IQD unit type with code 368. */
     public static final Sim0MQDisplayType MONEY_IQD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 69, MoneyUnit.IQD, "IQD", "Iraqi dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 368, MoneyUnit.IQD, "IQD", "Iraqi dinar");
 
-    /** Money.IRR unit type with code 70. */
+    /** Money.IRR unit type with code 364. */
     public static final Sim0MQDisplayType MONEY_IRR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 70, MoneyUnit.IRR, "IRR", "Iranian rial");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 364, MoneyUnit.IRR, "IRR", "Iranian rial");
 
-    /** Money.ISK unit type with code 71. */
+    /** Money.ISK unit type with code 352. */
     public static final Sim0MQDisplayType MONEY_ISK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 71, MoneyUnit.ISK, "ISK", "Icelandic króna");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 352, MoneyUnit.ISK, "ISK", "Icelandic króna");
 
-    /** Money.JMD unit type with code 72. */
+    /** Money.JMD unit type with code 388. */
     public static final Sim0MQDisplayType MONEY_JMD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 72, MoneyUnit.JMD, "JMD", "Jamaican dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 388, MoneyUnit.JMD, "JMD", "Jamaican dollar");
 
-    /** Money.JOD unit type with code 73. */
+    /** Money.JOD unit type with code 400. */
     public static final Sim0MQDisplayType MONEY_JOD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 73, MoneyUnit.JOD, "JOD", "Jordanian dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 400, MoneyUnit.JOD, "JOD", "Jordanian dinar");
 
-    /** Money.JPY unit type with code 74. */
+    /** Money.JPY unit type with code 392. */
     public static final Sim0MQDisplayType MONEY_JPY =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 74, MoneyUnit.JPY, "JPY", "Japanese yen");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 392, MoneyUnit.JPY, "JPY", "Japanese yen");
 
-    /** Money.KES unit type with code 75. */
+    /** Money.KES unit type with code 404. */
     public static final Sim0MQDisplayType MONEY_KES =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 75, MoneyUnit.KES, "KES", "Kenyan shilling");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 404, MoneyUnit.KES, "KES", "Kenyan shilling");
 
-    /** Money.KGS unit type with code 76. */
+    /** Money.KGS unit type with code 417. */
     public static final Sim0MQDisplayType MONEY_KGS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 76, MoneyUnit.KGS, "KGS", "Kyrgyzstani som");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 417, MoneyUnit.KGS, "KGS", "Kyrgyzstani som");
 
-    /** Money.KHR unit type with code 77. */
+    /** Money.KHR unit type with code 116. */
     public static final Sim0MQDisplayType MONEY_KHR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 77, MoneyUnit.KHR, "KHR", "Cambodian riel");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 116, MoneyUnit.KHR, "KHR", "Cambodian riel");
 
-    /** Money.KMF unit type with code 78. */
+    /** Money.KMF unit type with code 174. */
     public static final Sim0MQDisplayType MONEY_KMF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 78, MoneyUnit.KMF, "KMF", "Comoro franc");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 174, MoneyUnit.KMF, "KMF", "Comoro franc");
 
-    /** Money.KPW unit type with code 79. */
+    /** Money.KPW unit type with code 408. */
     public static final Sim0MQDisplayType MONEY_KPW =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 79, MoneyUnit.KPW, "KPW", "North Korean won");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 408, MoneyUnit.KPW, "KPW", "North Korean won");
 
-    /** Money.KRW unit type with code 80. */
+    /** Money.KRW unit type with code 410. */
     public static final Sim0MQDisplayType MONEY_KRW =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 80, MoneyUnit.KRW, "KRW", "South Korean won");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 410, MoneyUnit.KRW, "KRW", "South Korean won");
 
-    /** Money.KWD unit type with code 81. */
+    /** Money.KWD unit type with code 414. */
     public static final Sim0MQDisplayType MONEY_KWD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 81, MoneyUnit.KWD, "KWD", "Kuwaiti dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 414, MoneyUnit.KWD, "KWD", "Kuwaiti dinar");
 
-    /** Money.KYD unit type with code 82. */
+    /** Money.KYD unit type with code 136. */
     public static final Sim0MQDisplayType MONEY_KYD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 82, MoneyUnit.KYD, "KYD", "Cayman Islands dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 136, MoneyUnit.KYD, "KYD", "Cayman Islands dollar");
 
-    /** Money.KZT unit type with code 83. */
+    /** Money.KZT unit type with code 398. */
     public static final Sim0MQDisplayType MONEY_KZT =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 83, MoneyUnit.KZT, "KZT", "Kazakhstani tenge");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 398, MoneyUnit.KZT, "KZT", "Kazakhstani tenge");
 
-    /** Money.LAK unit type with code 84. */
+    /** Money.LAK unit type with code 418. */
     public static final Sim0MQDisplayType MONEY_LAK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 84, MoneyUnit.LAK, "LAK", "Lao kip");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 418, MoneyUnit.LAK, "LAK", "Lao kip");
 
-    /** Money.LBP unit type with code 85. */
+    /** Money.LBP unit type with code 422. */
     public static final Sim0MQDisplayType MONEY_LBP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 85, MoneyUnit.LBP, "LBP", "Lebanese pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 422, MoneyUnit.LBP, "LBP", "Lebanese pound");
 
-    /** Money.LKR unit type with code 86. */
+    /** Money.LKR unit type with code 144. */
     public static final Sim0MQDisplayType MONEY_LKR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 86, MoneyUnit.LKR, "LKR", "Sri Lankan rupee");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 144, MoneyUnit.LKR, "LKR", "Sri Lankan rupee");
 
-    /** Money.LRD unit type with code 87. */
+    /** Money.LRD unit type with code 430. */
     public static final Sim0MQDisplayType MONEY_LRD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 87, MoneyUnit.LRD, "LRD", "Liberian dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 430, MoneyUnit.LRD, "LRD", "Liberian dollar");
 
-    /** Money.LSL unit type with code 88. */
+    /** Money.LSL unit type with code 426. */
     public static final Sim0MQDisplayType MONEY_LSL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 88, MoneyUnit.LSL, "LSL", "Lesotho loti");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 426, MoneyUnit.LSL, "LSL", "Lesotho loti");
 
-    /** Money.LYD unit type with code 89. */
+    /** Money.LYD unit type with code 434. */
     public static final Sim0MQDisplayType MONEY_LYD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 89, MoneyUnit.LYD, "LYD", "Libyan dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 434, MoneyUnit.LYD, "LYD", "Libyan dinar");
 
-    /** Money.MAD unit type with code 90. */
+    /** Money.MAD unit type with code 504. */
     public static final Sim0MQDisplayType MONEY_MAD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 90, MoneyUnit.MAD, "MAD", "Moroccan dirham");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 504, MoneyUnit.MAD, "MAD", "Moroccan dirham");
 
-    /** Money.MDL unit type with code 91. */
+    /** Money.MDL unit type with code 498. */
     public static final Sim0MQDisplayType MONEY_MDL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 91, MoneyUnit.MDL, "MDL", "Moldovan leu");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 498, MoneyUnit.MDL, "MDL", "Moldovan leu");
 
-    /** Money.MGA unit type with code 92. */
+    /** Money.MGA unit type with code 969. */
     public static final Sim0MQDisplayType MONEY_MGA =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 92, MoneyUnit.MGA, "MGA", "Malagasy ariary");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 969, MoneyUnit.MGA, "MGA", "Malagasy ariary");
 
-    /** Money.MKD unit type with code 93. */
+    /** Money.MKD unit type with code 807. */
     public static final Sim0MQDisplayType MONEY_MKD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 93, MoneyUnit.MKD, "MKD", "Macedonian denar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 807, MoneyUnit.MKD, "MKD", "Macedonian denar");
 
-    /** Money.MMK unit type with code 94. */
+    /** Money.MMK unit type with code 104. */
     public static final Sim0MQDisplayType MONEY_MMK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 94, MoneyUnit.MMK, "MMK", "Myanmar kyat");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 104, MoneyUnit.MMK, "MMK", "Myanmar kyat");
 
-    /** Money.MNT unit type with code 95. */
+    /** Money.MNT unit type with code 496. */
     public static final Sim0MQDisplayType MONEY_MNT =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 95, MoneyUnit.MNT, "MNT", "Mongolian tögrög");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 496, MoneyUnit.MNT, "MNT", "Mongolian tögrög");
 
-    /** Money.MOP unit type with code 96. */
+    /** Money.MOP unit type with code 446. */
     public static final Sim0MQDisplayType MONEY_MOP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 96, MoneyUnit.MOP, "MOP", "Macanese pataca");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 446, MoneyUnit.MOP, "MOP", "Macanese pataca");
 
-    /** Money.MRO unit type with code 97. */
+    /** Money.MRO unit type with code 478. */
     public static final Sim0MQDisplayType MONEY_MRO =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 97, MoneyUnit.MRO, "MRO", "Mauritanian ouguiya");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 478, MoneyUnit.MRO, "MRO", "Mauritanian ouguiya");
 
-    /** Money.MUR unit type with code 98. */
+    /** Money.MUR unit type with code 480. */
     public static final Sim0MQDisplayType MONEY_MUR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 98, MoneyUnit.MUR, "MUR", "Mauritian rupee");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 480, MoneyUnit.MUR, "MUR", "Mauritian rupee");
 
-    /** Money.MVR unit type with code 99. */
+    /** Money.MVR unit type with code 462. */
     public static final Sim0MQDisplayType MONEY_MVR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 99, MoneyUnit.MVR, "MVR", "Maldivian rufiyaa");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 462, MoneyUnit.MVR, "MVR", "Maldivian rufiyaa");
 
-    /** Money.MWK unit type with code 100. */
+    /** Money.MWK unit type with code 454. */
     public static final Sim0MQDisplayType MONEY_MWK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 100, MoneyUnit.MWK, "MWK", "Malawian kwacha");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 454, MoneyUnit.MWK, "MWK", "Malawian kwacha");
 
-    /** Money.MXN unit type with code 101. */
+    /** Money.MXN unit type with code 484. */
     public static final Sim0MQDisplayType MONEY_MXN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 101, MoneyUnit.MXN, "MXN", "Mexican peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 484, MoneyUnit.MXN, "MXN", "Mexican peso");
 
-    /** Money.MXV unit type with code 102. */
-    public static final Sim0MQDisplayType MONEY_MXV = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 102, MoneyUnit.MXV, "MXV",
+    /** Money.MXV unit type with code 979. */
+    public static final Sim0MQDisplayType MONEY_MXV = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 979, MoneyUnit.MXV, "MXV",
             "Mexican Unidad de Inversion (UDI) (funds code)");
 
-    /** Money.MYR unit type with code 103. */
+    /** Money.MYR unit type with code 458. */
     public static final Sim0MQDisplayType MONEY_MYR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 103, MoneyUnit.MYR, "MYR", "Malaysian ringgit");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 458, MoneyUnit.MYR, "MYR", "Malaysian ringgit");
 
-    /** Money.MZN unit type with code 104. */
+    /** Money.MZN unit type with code 943. */
     public static final Sim0MQDisplayType MONEY_MZN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 104, MoneyUnit.MZN, "MZN", "Mozambican metical");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 943, MoneyUnit.MZN, "MZN", "Mozambican metical");
 
-    /** Money.NAD unit type with code 105. */
+    /** Money.NAD unit type with code 516. */
     public static final Sim0MQDisplayType MONEY_NAD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 105, MoneyUnit.NAD, "NAD", "Namibian dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 516, MoneyUnit.NAD, "NAD", "Namibian dollar");
 
-    /** Money.NGN unit type with code 106. */
+    /** Money.NGN unit type with code 566. */
     public static final Sim0MQDisplayType MONEY_NGN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 106, MoneyUnit.NGN, "NGN", "Nigerian naira");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 566, MoneyUnit.NGN, "NGN", "Nigerian naira");
 
-    /** Money.NIO unit type with code 107. */
+    /** Money.NIO unit type with code 558. */
     public static final Sim0MQDisplayType MONEY_NIO =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 107, MoneyUnit.NIO, "NIO", "Nicaraguan córdoba");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 558, MoneyUnit.NIO, "NIO", "Nicaraguan córdoba");
 
-    /** Money.NOK unit type with code 108. */
+    /** Money.NOK unit type with code 578. */
     public static final Sim0MQDisplayType MONEY_NOK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 108, MoneyUnit.NOK, "NOK", "Norwegian krone");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 578, MoneyUnit.NOK, "NOK", "Norwegian krone");
 
-    /** Money.NPR unit type with code 109. */
+    /** Money.NPR unit type with code 524. */
     public static final Sim0MQDisplayType MONEY_NPR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 109, MoneyUnit.NPR, "NPR", "Nepalese rupee");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 524, MoneyUnit.NPR, "NPR", "Nepalese rupee");
 
-    /** Money.NZD unit type with code 110. */
+    /** Money.NZD unit type with code 554. */
     public static final Sim0MQDisplayType MONEY_NZD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 110, MoneyUnit.NZD, "NZD", "New Zealand dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 554, MoneyUnit.NZD, "NZD", "New Zealand dollar");
 
-    /** Money.OMR unit type with code 111. */
+    /** Money.OMR unit type with code 512. */
     public static final Sim0MQDisplayType MONEY_OMR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 111, MoneyUnit.OMR, "OMR", "Omani rial");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 512, MoneyUnit.OMR, "OMR", "Omani rial");
 
-    /** Money.PAB unit type with code 112. */
+    /** Money.PAB unit type with code 590. */
     public static final Sim0MQDisplayType MONEY_PAB =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 112, MoneyUnit.PAB, "PAB", "Panamanian balboa");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 590, MoneyUnit.PAB, "PAB", "Panamanian balboa");
 
-    /** Money.PEN unit type with code 113. */
+    /** Money.PEN unit type with code 604. */
     public static final Sim0MQDisplayType MONEY_PEN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 113, MoneyUnit.PEN, "PEN", "Peruvian Sol");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 604, MoneyUnit.PEN, "PEN", "Peruvian Sol");
 
-    /** Money.PGK unit type with code 114. */
+    /** Money.PGK unit type with code 598. */
     public static final Sim0MQDisplayType MONEY_PGK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 114, MoneyUnit.PGK, "PGK", "Papua New Guinean kina");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 598, MoneyUnit.PGK, "PGK", "Papua New Guinean kina");
 
-    /** Money.PHP unit type with code 115. */
+    /** Money.PHP unit type with code 608. */
     public static final Sim0MQDisplayType MONEY_PHP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 115, MoneyUnit.PHP, "PHP", "Philippine peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 608, MoneyUnit.PHP, "PHP", "Philippine peso");
 
-    /** Money.PKR unit type with code 116. */
+    /** Money.PKR unit type with code 586. */
     public static final Sim0MQDisplayType MONEY_PKR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 116, MoneyUnit.PKR, "PKR", "Pakistani rupee");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 586, MoneyUnit.PKR, "PKR", "Pakistani rupee");
 
-    /** Money.PLN unit type with code 117. */
+    /** Money.PLN unit type with code 985. */
     public static final Sim0MQDisplayType MONEY_PLN =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 117, MoneyUnit.PLN, "PLN", "Polish zloty");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 985, MoneyUnit.PLN, "PLN", "Polish zloty");
 
-    /** Money.PYG unit type with code 118. */
+    /** Money.PYG unit type with code 600. */
     public static final Sim0MQDisplayType MONEY_PYG =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 118, MoneyUnit.PYG, "PYG", "Paraguayan guaraní");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 600, MoneyUnit.PYG, "PYG", "Paraguayan guaraní");
 
-    /** Money.QAR unit type with code 119. */
+    /** Money.QAR unit type with code 634. */
     public static final Sim0MQDisplayType MONEY_QAR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 119, MoneyUnit.QAR, "QAR", "Qatari riyal");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 634, MoneyUnit.QAR, "QAR", "Qatari riyal");
 
-    /** Money.RON unit type with code 120. */
+    /** Money.RON unit type with code 946. */
     public static final Sim0MQDisplayType MONEY_RON =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 120, MoneyUnit.RON, "RON", "Romanian leu");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 946, MoneyUnit.RON, "RON", "Romanian leu");
 
-    /** Money.RSD unit type with code 121. */
+    /** Money.RSD unit type with code 941. */
     public static final Sim0MQDisplayType MONEY_RSD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 121, MoneyUnit.RSD, "RSD", "Serbian dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 941, MoneyUnit.RSD, "RSD", "Serbian dinar");
 
-    /** Money.RUB unit type with code 122. */
+    /** Money.RUB unit type with code 643. */
     public static final Sim0MQDisplayType MONEY_RUB =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 122, MoneyUnit.RUB, "RUB", "Russian ruble");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 643, MoneyUnit.RUB, "RUB", "Russian ruble");
 
-    /** Money.RWF unit type with code 123. */
+    /** Money.RWF unit type with code 646. */
     public static final Sim0MQDisplayType MONEY_RWF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 123, MoneyUnit.RWF, "RWF", "Rwandan franc");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 646, MoneyUnit.RWF, "RWF", "Rwandan franc");
 
-    /** Money.SAR unit type with code 124. */
+    /** Money.SAR unit type with code 682. */
     public static final Sim0MQDisplayType MONEY_SAR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 124, MoneyUnit.SAR, "SAR", "Saudi riyal");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 682, MoneyUnit.SAR, "SAR", "Saudi riyal");
 
-    /** Money.SBD unit type with code 125. */
+    /** Money.SBD unit type with code 90. */
     public static final Sim0MQDisplayType MONEY_SBD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 125, MoneyUnit.SBD, "SBD", "Solomon Islands dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 90, MoneyUnit.SBD, "SBD", "Solomon Islands dollar");
 
-    /** Money.SCR unit type with code 126. */
+    /** Money.SCR unit type with code 690. */
     public static final Sim0MQDisplayType MONEY_SCR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 126, MoneyUnit.SCR, "SCR", "Seychelles rupee");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 690, MoneyUnit.SCR, "SCR", "Seychelles rupee");
 
-    /** Money.SDG unit type with code 127. */
+    /** Money.SDG unit type with code 938. */
     public static final Sim0MQDisplayType MONEY_SDG =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 127, MoneyUnit.SDG, "SDG", "Sudanese pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 938, MoneyUnit.SDG, "SDG", "Sudanese pound");
 
-    /** Money.SEK unit type with code 128. */
+    /** Money.SEK unit type with code 752. */
     public static final Sim0MQDisplayType MONEY_SEK =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 128, MoneyUnit.SEK, "SEK", "Swedish krona/kronor");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 752, MoneyUnit.SEK, "SEK", "Swedish krona/kronor");
 
-    /** Money.SGD unit type with code 129. */
+    /** Money.SGD unit type with code 702. */
     public static final Sim0MQDisplayType MONEY_SGD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 129, MoneyUnit.SGD, "SGD", "Singapore dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 702, MoneyUnit.SGD, "SGD", "Singapore dollar");
 
-    /** Money.SHP unit type with code 130. */
+    /** Money.SHP unit type with code 654. */
     public static final Sim0MQDisplayType MONEY_SHP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 130, MoneyUnit.SHP, "SHP", "Saint Helena pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 654, MoneyUnit.SHP, "SHP", "Saint Helena pound");
 
-    /** Money.SLL unit type with code 131. */
+    /** Money.SLL unit type with code 694. */
     public static final Sim0MQDisplayType MONEY_SLL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 131, MoneyUnit.SLL, "SLL", "Sierra Leonean leone");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 694, MoneyUnit.SLL, "SLL", "Sierra Leonean leone");
 
-    /** Money.SOS unit type with code 132. */
+    /** Money.SOS unit type with code 706. */
     public static final Sim0MQDisplayType MONEY_SOS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 132, MoneyUnit.SOS, "SOS", "Somali shilling");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 706, MoneyUnit.SOS, "SOS", "Somali shilling");
 
-    /** Money.SRD unit type with code 133. */
+    /** Money.SRD unit type with code 968. */
     public static final Sim0MQDisplayType MONEY_SRD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 133, MoneyUnit.SRD, "SRD", "Surinamese dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 968, MoneyUnit.SRD, "SRD", "Surinamese dollar");
 
-    /** Money.SSP unit type with code 134. */
+    /** Money.SSP unit type with code 728. */
     public static final Sim0MQDisplayType MONEY_SSP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 134, MoneyUnit.SSP, "SSP", "South Sudanese pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 728, MoneyUnit.SSP, "SSP", "South Sudanese pound");
 
-    /** Money.STD unit type with code 135. */
+    /** Money.STD unit type with code 678. */
     public static final Sim0MQDisplayType MONEY_STD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 135, MoneyUnit.STD, "STD", "São Tomé and Príncipe dobra");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 678, MoneyUnit.STD, "STD", "São Tomé and Príncipe dobra");
 
-    /** Money.SVC unit type with code 136. */
+    /** Money.SVC unit type with code 222. */
     public static final Sim0MQDisplayType MONEY_SVC =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 136, MoneyUnit.SVC, "SVC", "Salvadoran colón");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 222, MoneyUnit.SVC, "SVC", "Salvadoran colón");
 
-    /** Money.SYP unit type with code 137. */
+    /** Money.SYP unit type with code 760. */
     public static final Sim0MQDisplayType MONEY_SYP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 137, MoneyUnit.SYP, "SYP", "Syrian pound");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 760, MoneyUnit.SYP, "SYP", "Syrian pound");
 
-    /** Money.SZL unit type with code 138. */
+    /** Money.SZL unit type with code 748. */
     public static final Sim0MQDisplayType MONEY_SZL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 138, MoneyUnit.SZL, "SZL", "Swazi lilangeni");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 748, MoneyUnit.SZL, "SZL", "Swazi lilangeni");
 
-    /** Money.THB unit type with code 139. */
+    /** Money.THB unit type with code 764. */
     public static final Sim0MQDisplayType MONEY_THB =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 139, MoneyUnit.THB, "THB", "Thai baht");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 764, MoneyUnit.THB, "THB", "Thai baht");
 
-    /** Money.TJS unit type with code 140. */
+    /** Money.TJS unit type with code 972. */
     public static final Sim0MQDisplayType MONEY_TJS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 140, MoneyUnit.TJS, "TJS", "Tajikistani somoni");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 972, MoneyUnit.TJS, "TJS", "Tajikistani somoni");
 
-    /** Money.TMT unit type with code 141. */
+    /** Money.TMT unit type with code 934. */
     public static final Sim0MQDisplayType MONEY_TMT =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 141, MoneyUnit.TMT, "TMT", "Turkmenistani manat");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 934, MoneyUnit.TMT, "TMT", "Turkmenistani manat");
 
-    /** Money.TND unit type with code 142. */
+    /** Money.TND unit type with code 788. */
     public static final Sim0MQDisplayType MONEY_TND =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 142, MoneyUnit.TND, "TND", "Tunisian dinar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 788, MoneyUnit.TND, "TND", "Tunisian dinar");
 
-    /** Money.TOP unit type with code 143. */
+    /** Money.TOP unit type with code 776. */
     public static final Sim0MQDisplayType MONEY_TOP =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 143, MoneyUnit.TOP, "TOP", "Tongan pa?anga");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 776, MoneyUnit.TOP, "TOP", "Tongan pa?anga");
 
-    /** Money.TRY unit type with code 144. */
+    /** Money.TRY unit type with code 949. */
     public static final Sim0MQDisplayType MONEY_TRY =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 144, MoneyUnit.TRY, "TRY", "Turkish lira");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 949, MoneyUnit.TRY, "TRY", "Turkish lira");
 
-    /** Money.TTD unit type with code 145. */
+    /** Money.TTD unit type with code 780. */
     public static final Sim0MQDisplayType MONEY_TTD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 145, MoneyUnit.TTD, "TTD", "Trinidad and Tobago dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 780, MoneyUnit.TTD, "TTD", "Trinidad and Tobago dollar");
 
-    /** Money.TWD unit type with code 146. */
+    /** Money.TWD unit type with code 901. */
     public static final Sim0MQDisplayType MONEY_TWD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 146, MoneyUnit.TWD, "TWD", "New Taiwan dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 901, MoneyUnit.TWD, "TWD", "New Taiwan dollar");
 
-    /** Money.TZS unit type with code 147. */
+    /** Money.TZS unit type with code 834. */
     public static final Sim0MQDisplayType MONEY_TZS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 147, MoneyUnit.TZS, "TZS", "Tanzanian shilling");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 834, MoneyUnit.TZS, "TZS", "Tanzanian shilling");
 
-    /** Money.UAH unit type with code 148. */
+    /** Money.UAH unit type with code 980. */
     public static final Sim0MQDisplayType MONEY_UAH =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 148, MoneyUnit.UAH, "UAH", "Ukrainian hryvnia");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 980, MoneyUnit.UAH, "UAH", "Ukrainian hryvnia");
 
-    /** Money.UGX unit type with code 149. */
+    /** Money.UGX unit type with code 800. */
     public static final Sim0MQDisplayType MONEY_UGX =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 149, MoneyUnit.UGX, "UGX", "Ugandan shilling");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 800, MoneyUnit.UGX, "UGX", "Ugandan shilling");
 
-    /** Money.USD unit type with code 150. */
+    /** Money.USD unit type with code 840. */
     public static final Sim0MQDisplayType MONEY_USD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 150, MoneyUnit.USD, "USD", "United States dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 840, MoneyUnit.USD, "USD", "United States dollar");
 
-    /** Money.USN unit type with code 151. */
-    public static final Sim0MQDisplayType MONEY_USN = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 151, MoneyUnit.USN, "USN",
+    /** Money.USN unit type with code 997. */
+    public static final Sim0MQDisplayType MONEY_USN = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 997, MoneyUnit.USN, "USN",
             "United States dollar (next day) (funds code)");
 
-    /** Money.UYI unit type with code 152. */
-    public static final Sim0MQDisplayType MONEY_UYI = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 152, MoneyUnit.UYI, "UYI",
+    /** Money.UYI unit type with code 940. */
+    public static final Sim0MQDisplayType MONEY_UYI = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 940, MoneyUnit.UYI, "UYI",
             "Uruguay Peso en Unidades Indexadas (URUIURUI) (funds code)");
 
-    /** Money.UYU unit type with code 153. */
+    /** Money.UYU unit type with code 858. */
     public static final Sim0MQDisplayType MONEY_UYU =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 153, MoneyUnit.UYU, "UYU", "Uruguayan peso");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 858, MoneyUnit.UYU, "UYU", "Uruguayan peso");
 
-    /** Money.UZS unit type with code 154. */
+    /** Money.UZS unit type with code 860. */
     public static final Sim0MQDisplayType MONEY_UZS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 154, MoneyUnit.UZS, "UZS", "Uzbekistan som");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 860, MoneyUnit.UZS, "UZS", "Uzbekistan som");
 
-    /** Money.VEF unit type with code 155. */
+    /** Money.VEF unit type with code 937. */
     public static final Sim0MQDisplayType MONEY_VEF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 155, MoneyUnit.VEF, "VEF", "Venezuelan bolívar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 937, MoneyUnit.VEF, "VEF", "Venezuelan bolívar");
 
-    /** Money.VND unit type with code 156. */
+    /** Money.VND unit type with code 704. */
     public static final Sim0MQDisplayType MONEY_VND =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 156, MoneyUnit.VND, "VND", "Vietnamese dong");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 704, MoneyUnit.VND, "VND", "Vietnamese dong");
 
-    /** Money.VUV unit type with code 157. */
+    /** Money.VUV unit type with code 548. */
     public static final Sim0MQDisplayType MONEY_VUV =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 157, MoneyUnit.VUV, "VUV", "Vanuatu vatu");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 548, MoneyUnit.VUV, "VUV", "Vanuatu vatu");
 
-    /** Money.WST unit type with code 158. */
+    /** Money.WST unit type with code 882. */
     public static final Sim0MQDisplayType MONEY_WST =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 158, MoneyUnit.WST, "WST", "Samoan tala");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 882, MoneyUnit.WST, "WST", "Samoan tala");
 
-    /** Money.XAF unit type with code 159. */
+    /** Money.XAF unit type with code 950. */
     public static final Sim0MQDisplayType MONEY_XAF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 159, MoneyUnit.XAF, "XAF", "CFA franc BEAC");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 950, MoneyUnit.XAF, "XAF", "CFA franc BEAC");
 
-    /** Money.XAG unit type with code 160. */
+    /** Money.XAG unit type with code 961. */
     public static final Sim0MQDisplayType MONEY_XAG =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 160, MoneyUnit.XAG, "XAG", "Silver (one troy ounce)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 961, MoneyUnit.XAG, "XAG", "Silver (one troy ounce)");
 
-    /** Money.XAU unit type with code 161. */
+    /** Money.XAU unit type with code 959. */
     public static final Sim0MQDisplayType MONEY_XAU =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 161, MoneyUnit.XAU, "XAU", "Gold (one troy ounce)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 959, MoneyUnit.XAU, "XAU", "Gold (one troy ounce)");
 
-    /** Money.XBA unit type with code 162. */
-    public static final Sim0MQDisplayType MONEY_XBA = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 162, MoneyUnit.XBA, "XBA",
+    /** Money.XBA unit type with code 955. */
+    public static final Sim0MQDisplayType MONEY_XBA = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 955, MoneyUnit.XBA, "XBA",
             "European Composite Unit (EURCO) (bond market unit)");
 
-    /** Money.XBB unit type with code 163. */
-    public static final Sim0MQDisplayType MONEY_XBB = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 163, MoneyUnit.XBB, "XBB",
+    /** Money.XBB unit type with code 956. */
+    public static final Sim0MQDisplayType MONEY_XBB = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 956, MoneyUnit.XBB, "XBB",
             "European Monetary Unit (E.M.U.-6) (bond market unit)");
 
-    /** Money.XBC unit type with code 164. */
-    public static final Sim0MQDisplayType MONEY_XBC = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 164, MoneyUnit.XBC, "XBC",
+    /** Money.XBC unit type with code 957. */
+    public static final Sim0MQDisplayType MONEY_XBC = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 957, MoneyUnit.XBC, "XBC",
             "European Unit of Account 9 (E.U.A.-9) (bond market unit)");
 
-    /** Money.XBD unit type with code 165. */
-    public static final Sim0MQDisplayType MONEY_XBD = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 165, MoneyUnit.XBD, "XBD",
+    /** Money.XBD unit type with code 958. */
+    public static final Sim0MQDisplayType MONEY_XBD = new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 958, MoneyUnit.XBD, "XBD",
             "European Unit of Account 17 (E.U.A.-17) (bond market unit)");
 
-    /** Money.XCD unit type with code 166. */
+    /** Money.XCD unit type with code 951. */
     public static final Sim0MQDisplayType MONEY_XCD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 166, MoneyUnit.XCD, "XCD", "East Caribbean dollar");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 951, MoneyUnit.XCD, "XCD", "East Caribbean dollar");
 
-    /** Money.XDR unit type with code 167. */
+    /** Money.XDR unit type with code 960. */
     public static final Sim0MQDisplayType MONEY_XDR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 167, MoneyUnit.XDR, "XDR", "Special drawing rights");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 960, MoneyUnit.XDR, "XDR", "Special drawing rights");
 
-    /** Money.XOF unit type with code 168. */
+    /** Money.XOF unit type with code 952. */
     public static final Sim0MQDisplayType MONEY_XOF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 168, MoneyUnit.XOF, "XOF", "CFA franc BCEAO");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 952, MoneyUnit.XOF, "XOF", "CFA franc BCEAO");
 
-    /** Money.XPD unit type with code 169. */
+    /** Money.XPD unit type with code 964. */
     public static final Sim0MQDisplayType MONEY_XPD =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 169, MoneyUnit.XPD, "XPD", "Palladium (one troy ounce)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 964, MoneyUnit.XPD, "XPD", "Palladium (one troy ounce)");
 
-    /** Money.XPF unit type with code 170. */
+    /** Money.XPF unit type with code 953. */
     public static final Sim0MQDisplayType MONEY_XPF =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 170, MoneyUnit.XPF, "XPF", "CFP franc (franc Pacifique)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 953, MoneyUnit.XPF, "XPF", "CFP franc (franc Pacifique)");
 
-    /** Money.XPT unit type with code 171. */
+    /** Money.XPT unit type with code 962. */
     public static final Sim0MQDisplayType MONEY_XPT =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 171, MoneyUnit.XPT, "XPT", "Platinum (one troy ounce)");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 962, MoneyUnit.XPT, "XPT", "Platinum (one troy ounce)");
 
-    /** Money.XSU unit type with code 172. */
+    /** Money.XSU unit type with code 994. */
     public static final Sim0MQDisplayType MONEY_XSU =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 172, MoneyUnit.XSU, "XSU", "SUCRE");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 994, MoneyUnit.XSU, "XSU", "SUCRE");
 
-    /** Money.XTS unit type with code 173. */
+    /** Money.XTS unit type with code 963. */
     public static final Sim0MQDisplayType MONEY_XTS =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 173, MoneyUnit.XTS, "XTS", "Code reserved for testing purposes");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 963, MoneyUnit.XTS, "XTS", "Code reserved for testing purposes");
 
-    /** Money.XUA unit type with code 174. */
+    /** Money.XUA unit type with code 965. */
     public static final Sim0MQDisplayType MONEY_XUA =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 174, MoneyUnit.XUA, "XUA", "ADB Unit of Account");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 965, MoneyUnit.XUA, "XUA", "ADB Unit of Account");
 
-    /** Money.X X X unit type with code 175. */
+    /** Money.XX unit type with code 999. */
     public static final Sim0MQDisplayType MONEY_XXX =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 175, MoneyUnit.XXX, "XXX", "No currency");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 999, MoneyUnit.XXX, "XXX", "No currency");
 
-    /** Money.YER unit type with code 176. */
+    /** Money.YER unit type with code 886. */
     public static final Sim0MQDisplayType MONEY_YER =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 176, MoneyUnit.YER, "YER", "Yemeni rial");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 886, MoneyUnit.YER, "YER", "Yemeni rial");
 
-    /** Money.ZAR unit type with code 177. */
+    /** Money.ZAR unit type with code 710. */
     public static final Sim0MQDisplayType MONEY_ZAR =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 177, MoneyUnit.ZAR, "ZAR", "South African rand");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 710, MoneyUnit.ZAR, "ZAR", "South African rand");
 
-    /** Money.ZMW unit type with code 178. */
+    /** Money.ZMW unit type with code 967. */
     public static final Sim0MQDisplayType MONEY_ZMW =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 178, MoneyUnit.ZMW, "ZMW", "Zambian kwacha");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 967, MoneyUnit.ZMW, "ZMW", "Zambian kwacha");
 
-    /** Money.ZWL unit type with code 179. */
+    /** Money.ZWL unit type with code 932. */
     public static final Sim0MQDisplayType MONEY_ZWL =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 179, MoneyUnit.ZWL, "ZWL", "Zimbabwean dollar A/10");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 932, MoneyUnit.ZWL, "ZWL", "Zimbabwean dollar A/10");
 
-    /** Money.XBT unit type with code 180. */
+    /** Money.XBT unit type with code 1000. */
     public static final Sim0MQDisplayType MONEY_XBT =
-            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 180, MoneyUnit.XBT, "XBT", "Bitcoin");
+            new Sim0MQDisplayType(Sim0MQUnitType.MONEY, 1000, MoneyUnit.XBT, "XBT", "Bitcoin");
+
+    /* =================================================== END TYPES ===================================================== */
 
     /** the unit types from number to type. */
     private static Map<Sim0MQUnitType, Map<Byte, Sim0MQDisplayType>> byteDisplayTypeMap = new HashMap<>();
