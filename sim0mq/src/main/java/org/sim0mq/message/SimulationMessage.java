@@ -2,6 +2,8 @@ package org.sim0mq.message;
 
 import org.sim0mq.Sim0MQException;
 
+import nl.tudelft.simulation.language.Throw;
+
 /**
  * The message structure of a typical typed Sim0MQ simulation message looks as follows:<br>
  * Frame 0. Magic number = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 01.<br>
@@ -126,13 +128,17 @@ public class SimulationMessage
      * 6 = message status, 1=NEW, 2=CHANGE, 3=DELETE.<br>
      * 7 = number of fields that follow.<br>
      * 8-n = payload, where the number of fields was defined by message[7].
-     * @param message the ZeroMQ byte array to decode
+     * @param bytes the ZeroMQ byte array to decode
      * @return an array of objects of the right type
      * @throws Sim0MQException on unknown data type
      */
-    public static Object[] decode(final byte[] message) throws Sim0MQException
+    public static Object[] decode(final byte[] bytes) throws Sim0MQException
     {
-        return TypedMessage.decode(message);
+        Object[] message = TypedMessage.decode(bytes);
+        Throw.when(!(message[7] instanceof Number), Sim0MQException.class, "message[7] is not a number");
+        Throw.when(message.length != ((Number) message[7]).intValue() + 8, Sim0MQException.class,
+                "message[7] number of fields not matched by message structure");
+        return message;
     }
 
     /**

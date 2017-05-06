@@ -87,6 +87,9 @@ public class MM1Queue41Application
         this.fsSocket = this.fsContext.socket(ZMQ.ROUTER);
         this.fsSocket.bind("tcp://*:" + port);
 
+        System.out.println("Model started. Listening at port: " + port);
+        System.out.flush();
+
         while (!Thread.currentThread().isInterrupted())
         {
             // Wait for next request from the client -- first the identity (String) and the delimiter (#0)
@@ -98,6 +101,7 @@ public class MM1Queue41Application
             Object[] fields = SimulationMessage.decode(request);
 
             System.out.println("Received " + SimulationMessage.print(fields));
+            System.out.flush();
 
             this.federationRunId = fields[1];
             String senderId = fields[2].toString();
@@ -148,7 +152,7 @@ public class MM1Queue41Application
             }
         }
     }
-
+    
     /**
      * Process FS.1 message and send MC.1 message back.
      * @param identity reply id for REQ-ROUTER pattern
@@ -181,6 +185,9 @@ public class MM1Queue41Application
         byte[] mc1Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.1",
                 ++this.messageCount, MessageStatus.NEW, replyToMessageId, status, "");
         this.fsSocket.send(mc1Message, 0);
+        
+        System.out.println("Sent MC.1");
+        System.out.flush();
     }
 
     /**
@@ -236,6 +243,9 @@ public class MM1Queue41Application
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
         this.fsSocket.send(mc2Message, 0);
+
+        System.out.println("Sent MC.2");
+        System.out.flush();
     }
 
     /**
@@ -270,6 +280,9 @@ public class MM1Queue41Application
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
         this.fsSocket.send(mc2Message, 0);
+        
+        System.out.println("Sent MC.2");
+        System.out.flush();
     }
 
     /**
@@ -292,6 +305,10 @@ public class MM1Queue41Application
 
             switch (parameterName)
             {
+                case "seed":
+                    this.model.seed= ((Number) parameterValueField).longValue();
+                    break;
+
                 case "iat":
                     this.model.iat = ((Number) parameterValueField).doubleValue();
                     break;
@@ -317,6 +334,9 @@ public class MM1Queue41Application
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
         this.fsSocket.send(mc2Message, 0);
+        
+        System.out.println("Sent MC.2");
+        System.out.flush();
     }
 
     /**
@@ -375,7 +395,10 @@ public class MM1Queue41Application
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
             this.fsSocket.send(mc3Message, 0);
-        }
+
+            System.out.println("Sent MC.3");
+            System.out.flush();
+}
         else
         {
             byte[] mc4Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.4",
@@ -383,6 +406,9 @@ public class MM1Queue41Application
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
             this.fsSocket.send(mc4Message, 0);
+            
+            System.out.println("Sent MC.4");
+            System.out.flush();
         }
     }
 

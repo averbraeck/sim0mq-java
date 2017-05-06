@@ -60,6 +60,8 @@ public class MM1FederationManager
         boolean ready = false;
         while (!ready)
         {
+            System.out.println(this.state);
+
             switch (this.state)
             {
                 case NOT_STARTED:
@@ -120,14 +122,14 @@ public class MM1FederationManager
         if (localSk3.equals("sk-3"))
         {
             fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
-                    "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 5502", "/home/alexandv/sim0mq/MM1",
+                    "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 %PORT%", "/home/alexandv/sim0mq/MM1",
                     "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt", false, false, false);
             this.fsSocket.connect("tcp://130.161.3.179:" + fsPort);
         }
         else
         {
             fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
-                    "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 5502", "e:/MM1", "", "e:/MM1/out.txt", "e:/MM1/err.txt",
+                    "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 %PORT%", "e:/MM1", "", "e:/MM1/out.txt", "e:/MM1/err.txt",
                     false, false, false);
             this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
         }
@@ -141,7 +143,7 @@ public class MM1FederationManager
                 && replyMessage[8].toString().equals("MM1.1"))
         {
             this.state = ModelState.STARTED;
-            this.modelSocket.connect("tcp://127.0.0.1:5502");
+            this.modelSocket.connect("tcp://127.0.0.1:" + replyMessage[10].toString());
         }
         else
         {
