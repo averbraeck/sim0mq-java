@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +47,14 @@ public class FederateStarter
     private final int endPort;
 
     /** the running programs this FederateStarter started. The String identifies the process (e.g., a UUID or a model id). */
-    protected Map<String, Process> runningProcessMap = new HashMap<>();
+    protected Map<String, Process> runningProcessMap = Collections.synchronizedMap(new HashMap<>());
 
     /** the ports where the models listen. The String identifies the process (e.g., a UUID or a model id). */
-    private Map<String, Integer> modelPortMap = new HashMap<>();
+    private Map<String, Integer> modelPortMap = Collections.synchronizedMap(new HashMap<>());
 
+    /** the StartFederate messages. */
+    private Map<String, StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new HashMap<>());
+    
     /** the software properties. */
     final Properties softwareProperties;
 
@@ -141,87 +145,102 @@ public class FederateStarter
 
         int modelPort = findFreePortNumber();
 
-        try
+        if (modelPort == -1)
         {
-            ProcessBuilder pb = new ProcessBuilder();
+            error = "No free port number";
+        }
 
-            Path workingPath = Files.createDirectories(Paths.get(startFederateMessage.getWorkingDirectory()));
-            pb.directory(workingPath.toFile());
+        else
 
-            String softwareCode = "";
-            if (!this.softwareProperties.containsKey(startFederateMessage.getSoftwareCode()))
+        {
+            try
             {
-                System.err.println("Could not find software alias " + startFederateMessage.getSoftwareCode()
-                        + " in software properties file");
-            }
-            else
-            {
-                softwareCode = this.softwareProperties.getProperty(startFederateMessage.getSoftwareCode());
+                ProcessBuilder pb = new ProcessBuilder();
 
-                List<String> pbArgs = new ArrayList<>();
-                pbArgs.add(softwareCode);
-                pbArgs.add(startFederateMessage.getArgsBefore());
-                pbArgs.add(startFederateMessage.getModelPath());
-                pbArgs.addAll(Arrays.asList(startFederateMessage.getArgsAfter().split(" ")));
-                pb.command(pbArgs);
+                Path workingPath = Files.createDirectories(Paths.get(startFederateMessage.getWorkingDirectory()));
+                pb.directory(workingPath.toFile());
 
-                String stdIn = startFederateMessage.getRedirectStdin();
-                String stdOut = startFederateMessage.getRedirectStdout();
-                String stdErr = startFederateMessage.getRedirectStderr();
-
-                if (stdIn.length() > 0)
+                String softwareCode = "";
+                if (!this.softwareProperties.containsKey(startFederateMessage.getSoftwareCode()))
                 {
-                    // TODO working dir path if not absolute?
-                    File stdInFile = new File(stdIn);
-                    pb.redirectInput(stdInFile);
+                    System.err.println("Could not find software alias " + startFederateMessage.getSoftwareCode()
+                            + " in software properties file");
                 }
-
-                if (stdOut.length() > 0)
+                else
                 {
-                    // TODO working dir path if not absolute?
-                    File stdOutFile = new File(stdOut);
-                    pb.redirectOutput(stdOutFile);
-                }
+                    softwareCode = this.softwareProperties.getProperty(startFederateMessage.getSoftwareCode());
 
-                if (stdErr.length() > 0)
-                {
-                    // TODO working dir path if not absolute?
-                    File stdErrFile = new File(stdErr);
-                    pb.redirectError(stdErrFile);
-                }
+                    List<String> pbArgs = new ArrayList<>();
+                    pbArgs.add(softwareCode);
+                    pbArgs.add(startFederateMessage.getArgsBefore());
+                    pbArgs.add(startFederateMessage.getModelPath());
+                    pbArgs.addAll(Arrays.asList(
+                            startFederateMessage.getArgsAfter().replaceAll("%PORT%", String.valueOf(modelPort)).split(" ")));
+                    pb.command(pbArgs);
 
-                new Thread()
-                {
-                    /** {@inheritDoc} */
-                    @Override
-                    public void run()
+                    String stdIn = startFederateMessage.getRedirectStdin();
+                    String stdOut = startFederateMessage.getRedirectStdout();
+                    String stdErr = startFederateMessage.getRedirectStderr();
+
+                    if (stdIn.length() > 0)
                     {
-                        try
-                        {
-                            Process process = pb.start();
-                            FederateStarter.this.runningProcessMap.put(startFederateMessage.getInstanceId(), process);
-                            System.err.println("Process started:" + process.isAlive());
-                        }
-                        catch (IOException exception)
-                        {
-                            exception.printStackTrace();
-                        }
+                        // TODO working dir path if not absolute?
+                        File stdInFile = new File(stdIn);
+                        pb.redirectInput(stdInFile);
                     }
-                }.start();
 
-                this.modelPortMap.put(startFederateMessage.getInstanceId(), modelPort);
+                    if (stdOut.length() > 0)
+                    {
+                        // TODO working dir path if not absolute?
+                        File stdOutFile = new File(stdOut);
+                        pb.redirectOutput(stdOutFile);
+                    }
 
-                // wait till the model is ready...
-                error = waitForModelStarted(startFederateMessage.getSimulationRunId(), startFederateMessage.getInstanceId(),
-                        modelPort);
+                    if (stdErr.length() > 0)
+                    {
+                        // TODO working dir path if not absolute?
+                        File stdErrFile = new File(stdErr);
+                        pb.redirectError(stdErrFile);
+                    }
+
+                    new Thread()
+                    {
+                        /** {@inheritDoc} */
+                        @Override
+                        public void run()
+                        {
+                            try
+                            {
+                                Process process = pb.start();
+                                FederateStarter.this.runningProcessMap.put(startFederateMessage.getInstanceId(), process);
+                                System.err.println("Process started:" + process.isAlive());
+                            }
+                            catch (IOException exception)
+                            {
+                                exception.printStackTrace();
+                            }
+                        }
+                    }.start();
+
+                    this.modelPortMap.put(startFederateMessage.getInstanceId(), modelPort);
+                    this.startFederateMessages.put(startFederateMessage.getInstanceId(), startFederateMessage);
+
+                    // Thread.sleep(1000);
+
+                    // wait till the model is ready...
+                    error = waitForModelStarted(startFederateMessage.getSimulationRunId(), startFederateMessage.getInstanceId(),
+                            modelPort);
+                }
+            }
+            catch (IOException exception)
+            {
+                exception.printStackTrace();
+                error = exception.getMessage();
             }
         }
-        catch (IOException exception)
-        {
-            exception.printStackTrace();
-            error = exception.getMessage();
-        }
 
+        System.out.println("SEND MESSAGE FS.2 ABOUT MODEL " + startFederateMessage.getInstanceId() + " @ port " + modelPort);
+        
         // Send reply back to client
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
@@ -369,7 +388,6 @@ public class FederateStarter
 
         Object federationRunId = fields[1];
         String senderId = fields[2].toString();
-        long replyToMessageId = ((Long) fields[5]).longValue();
 
         String modelId = fields[8].toString();
         if (!this.modelPortMap.containsKey(modelId))
@@ -416,6 +434,31 @@ public class FederateStarter
                 {
                     process.destroyForcibly();
                 }
+                
+                StartFederateMessage sfm = this.startFederateMessages.get(modelId);
+                if (sfm.isDeleteStdout())
+                {
+                    if (sfm.getRedirectStdout().length() > 0)
+                    {
+                        File stdOutFile = new File(sfm.getRedirectStdout());
+                        stdOutFile.delete();
+                    }
+                }
+
+                if (sfm.isDeleteStderr())
+                {
+                    if (sfm.getRedirectStderr().length() > 0)
+                    {
+                        File stdErrFile = new File(sfm.getRedirectStderr());
+                        stdErrFile.delete();
+                    }
+                }
+                
+                if (sfm.isDeleteWorkingDirectory())
+                {
+                    File workingDir = new File(sfm.getWorkingDirectory());
+                    workingDir.delete();
+                }
             }
             catch (Exception exception)
             {
@@ -425,7 +468,7 @@ public class FederateStarter
             }
 
             byte[] fs4Message = SimulationMessage.encode(federationRunId, "FS", senderId, "FS.4", ++this.messageCount,
-                    MessageStatus.NEW, replyToMessageId, status, error);
+                    MessageStatus.NEW, modelId, status, error);
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
             this.fsSocket.send(fs4Message, 0);
@@ -493,7 +536,7 @@ public class FederateStarter
             System.exit(-1);
         }
 
-        String sEndPort = args[2];
+        String sEndPort = args[3];
         int endPort = 0;
         try
         {

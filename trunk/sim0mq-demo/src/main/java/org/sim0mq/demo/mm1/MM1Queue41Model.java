@@ -52,9 +52,15 @@ public class MM1Queue41Model implements DSOLModel.TimeDouble
     @SuppressWarnings("checkstyle:visibilitymodifier")
     Utilization uN;
 
+    /** PARAMETER iat. */
     public double iat = Double.NaN;
 
+    /** PARAMETER serviceTime. */
     public double serviceTime = Double.NaN;
+    
+    /** PARAMETER seed. */
+    public long seed = 1;
+    
 
     /** {@inheritDoc} */
     @Override
@@ -71,7 +77,7 @@ public class MM1Queue41Model implements DSOLModel.TimeDouble
         }
 
         this.devsSimulator = (DEVSSimulatorInterface.TimeDouble) simulator;
-        StreamInterface defaultStream = new MersenneTwister();
+        StreamInterface defaultStream = new MersenneTwister(this.seed);
 
         // The Generator
         Generator.TimeDouble generator = new Generator.TimeDouble(this.devsSimulator, Object.class, null);
@@ -88,9 +94,9 @@ public class MM1Queue41Model implements DSOLModel.TimeDouble
         StationInterface release = new Release.TimeDouble(this.devsSimulator, resource, 1.0);
 
         // The server
-        DistContinuousTime.TimeDouble serviceTime =
+        DistContinuousTime.TimeDouble serviceTimeDistribution =
                 new DistContinuousTime.TimeDouble(new DistExponential(defaultStream, this.serviceTime));
-        StationInterface server = new Delay.TimeDouble(this.devsSimulator, serviceTime);
+        StationInterface server = new Delay.TimeDouble(this.devsSimulator, serviceTimeDistribution);
 
         // The flow
         generator.setDestination(queue);

@@ -179,9 +179,9 @@ public abstract class Sim0MQMessage implements Serializable
         Throw.when(!fields[3].equals(intendedReceiverId), Sim0MQException.class,
                 "Receiver in message of type " + expectedMessageType + " not right. Should have been: " + intendedReceiverId);
 
-        Throw.when(!(fields[7] instanceof Integer), Sim0MQException.class,
-                "Message " + expectedMessageType + " does not have an integer field[7] for the number of fields");
-        Throw.when(((Integer) fields[7]).intValue() != expectedPayloadFields, Sim0MQException.class,
+        Throw.when(!(fields[7] instanceof Short), Sim0MQException.class,
+                "Message " + expectedMessageType + " does not have a short field[7] for the number of fields");
+        Throw.when(((Short) fields[7]).intValue() != expectedPayloadFields, Sim0MQException.class,
                 "Message " + expectedMessageType + " does not contain the right number of payload fields in field[7]");
     }
 

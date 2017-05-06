@@ -1,6 +1,7 @@
 package org.sim0mq.test;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.zeromq.ZMQ;
 
@@ -15,16 +16,32 @@ import org.zeromq.ZMQ;
  */
 public class RouterToReqExample
 {
-    private static Random rand = new Random();
+    /** random stream. */
+    static Random rand = new Random();
+    
+    /** static counter for worker. */
+    static AtomicInteger staticWorkerRecv = new AtomicInteger();
 
-    private static final int NBR_WORKERS = 10;
+    /** static counter for broker identity. */
+    static AtomicInteger staticBrokerIdRecv = new AtomicInteger();
 
+    /** static counter for broker Message. */
+    static AtomicInteger staticBrokerMsgRecv = new AtomicInteger();
+
+    /** how many worker threads? */
+    private static final int NBR_WORKERS = 20;
+
+    /** a worker thread... */
     private static class Worker extends Thread
     {
-
+        /** the worker id. */
         private String workerId;
 
-        Worker(String workerId)
+        /**
+         * Construct a worker.
+         * @param workerId worker id
+         */
+        Worker(final String workerId)
         {
             this.workerId = workerId;
         }
@@ -34,7 +51,7 @@ public class RouterToReqExample
         {
             ZMQ.Context context = ZMQ.context(1);
             ZMQ.Socket worker = context.socket(ZMQ.REQ);
-            worker.setIdentity(workerId.getBytes());
+            worker.setIdentity(this.workerId.getBytes());
 
             worker.connect("tcp://localhost:5671");
 
@@ -42,14 +59,20 @@ public class RouterToReqExample
             while (true)
             {
                 // Tell the broker we're ready for work
-                worker.send("Hi Boss");
+                staticWorkerRecv.incrementAndGet();
+                if (!worker.send("Hi Boss"))
+                {
+                    System.err.println("worker " + this.workerId + " failed to send...");
+                }
 
                 // Get workload from broker, until finished
+                
                 String workload = worker.recvStr();
+                staticWorkerRecv.decrementAndGet();
                 boolean finished = workload.equals("Fired!");
                 if (finished)
                 {
-                    System.out.printf(workerId + " completed: %d tasks\n", total);
+                    System.out.printf(this.workerId + " completed: %d tasks\n", total);
                     break;
                 }
                 total++;
@@ -57,10 +80,11 @@ public class RouterToReqExample
                 // Do some random work
                 try
                 {
-                    Thread.sleep(rand.nextInt(500) + 1);
+                    Thread.sleep(rand.nextInt(50) + 1);
                 }
                 catch (InterruptedException e)
                 {
+                    // ignore
                 }
             }
 
@@ -88,31 +112,73 @@ public class RouterToReqExample
             worker.start();
         }
 
+        // start a monitoring thread of 6 seconds to check hanging program...
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    Thread.sleep(6000);
+                    System.err.println("staticWorkerRecv    = " + staticWorkerRecv);
+                    System.err.println("staticBrokerIdRecv  = " + staticBrokerIdRecv);
+                    System.err.println("staticBrokerMsgRecv = " + staticBrokerMsgRecv);
+                    System.exit(-1);
+                }
+                catch (InterruptedException exception)
+                {
+                    // ignore
+                }
+            }
+        }.start();
+        
         // Run for five seconds and then tell workers to end
         long endTime = System.currentTimeMillis() + 5000;
         int workersFired = 0;
         while (true)
         {
             // Next message gives us least recently used worker
+            staticBrokerIdRecv.incrementAndGet();
             String identity = broker.recvStr();
-            broker.sendMore(identity);
+            staticBrokerIdRecv.decrementAndGet();
+            if (!broker.sendMore(identity))
+            {
+                System.err.println("broker failed to send identity...");
+            }
+            staticBrokerMsgRecv.incrementAndGet();
             broker.recvStr(); // Envelope delimiter
             broker.recvStr(); // Response from worker
-            broker.sendMore("");
+            staticBrokerMsgRecv.decrementAndGet();
+            if (!broker.sendMore(""))
+            {
+                System.err.println("broker failed to send delimiter...");
+            }
 
             // Encourage workers until it's time to fire them
             if (System.currentTimeMillis() < endTime)
-                broker.send("Work harder");
+            {
+                if (!broker.send("Work harder"))
+                {
+                    System.err.println("broker failed to send work...");
+                }
+            }
             else
             {
-                broker.send("Fired!");
+                if (!broker.send("Fired!"))
+                {
+                    System.err.println("broker failed to send fired...");
+                }
                 if (++workersFired == NBR_WORKERS)
+                {
                     break;
+                }
             }
         }
 
         broker.close();
         context.term();
+        System.exit(0);
     }
 
 }
