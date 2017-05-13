@@ -342,7 +342,7 @@ public class MM1FederationManager20
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("iat", new Double(1.0));
             parameters.put("servicetime", new Double(0.85));
-            parameters.put("seed", Math.abs(this.modelName.hashCode()));
+            parameters.put("seed", this.modelName.hashCode());
 
             for (String parameterName : parameters.keySet())
             {
