@@ -331,7 +331,7 @@ public final class Sim0MQTypes
     /**
      * Utility class, cannot be instantiated.
      */
-    public Sim0MQTypes()
+    private Sim0MQTypes()
     {
         // Utility class
     }

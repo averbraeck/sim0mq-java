@@ -28,7 +28,7 @@ import nl.tudelft.simulation.language.Throw;
  * initial version Mar 3, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class SimulationMessage
+public final class SimulationMessage
 {
     /**
      * Do not instantiate this utility class.
@@ -39,7 +39,8 @@ public class SimulationMessage
     }
 
     /**
-     * Encode the object array into a message.
+     * Encode the object array into a message. Use UTF8 or UTF16 to code Strings.
+     * @param utf8 choice to use Use UTF8 or UTF16 to code Strings
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
      *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
      *            int with a simulation run number.
@@ -56,12 +57,13 @@ public class SimulationMessage
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
      */
-    public static byte[] encode(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final Object messageTypeId, final long messageId, final MessageStatus messageStatus, final Object... content)
-            throws Sim0MQException
+    @SuppressWarnings("checkstyle:parameternumber")
+    private static byte[] encode(final Encoding utf8, final Object simulationRunId, final Object senderId,
+            final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
+            final Object... content) throws Sim0MQException
     {
         Object[] simulationContent = new Object[content.length + 8];
-        simulationContent[0] = TypedMessage.version;
+        simulationContent[0] = TypedMessage.VERSION;
         simulationContent[1] = simulationRunId;
         simulationContent[2] = senderId;
         simulationContent[3] = receiverId;
@@ -73,11 +75,12 @@ public class SimulationMessage
         {
             simulationContent[i + 8] = content[i];
         }
-        return TypedMessage.encode(simulationContent);
+        return TypedMessage.encode0MQMessageUTF8(simulationContent);
     }
 
     /**
-     * Encode the object array into a message.
+     * Encode the object array into a message. Use UTF8 or UTF16 to code Strings.
+     * @param utf8 choice to use Use UTF8 or UTF16 to code Strings
      * @param identity the identity of the federate to which this is the reply
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
      *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
@@ -95,14 +98,15 @@ public class SimulationMessage
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
      */
-    public static byte[] encodeReply(final String identity, final Object simulationRunId, final Object senderId,
-            final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
-            final Object... content) throws Sim0MQException
+    @SuppressWarnings("checkstyle:parameternumber")
+    private static byte[] encodeReply(final Encoding utf8, final String identity, final Object simulationRunId,
+            final Object senderId, final Object receiverId, final Object messageTypeId, final long messageId,
+            final MessageStatus messageStatus, final Object... content) throws Sim0MQException
     {
         Object[] simulationContent = new Object[content.length + 10];
         simulationContent[0] = identity;
         simulationContent[1] = new byte[] { 0 };
-        simulationContent[2] = TypedMessage.version;
+        simulationContent[2] = TypedMessage.VERSION;
         simulationContent[3] = simulationRunId;
         simulationContent[4] = senderId;
         simulationContent[5] = receiverId;
@@ -114,7 +118,113 @@ public class SimulationMessage
         {
             simulationContent[i + 10] = content[i];
         }
-        return TypedMessage.encode(simulationContent);
+        return TypedMessage.encode0MQMessageUTF8(simulationContent);
+    }
+
+    /**
+     * Encode the object array into a message. Use UTF8 to code Strings.
+     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
+     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
+     *            int with a simulation run number.
+     * @param senderId The sender id can be used to send back a message to the sender at some later time.
+     * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
+     *            error can be sent if we receive a message not meant for us).
+     * @param messageTypeId Message type ids can be defined per type of simulation, and can be provided in different types.
+     *            Examples are a String with a meaningful identification, or a short or an int with a message type number.
+     * @param messageId The unique message number is meant to confirm with a callback that the message has been received
+     *            correctly. The number is unique for the sender, so not globally within the federation.
+     * @param messageStatus Three different status messages are defined: 1 for new, 2 for change, and 3 for delete. This field
+     *            is coded as a byte.
+     * @param content the objects to encode
+     * @return the zeroMQ message to send as a byte array
+     * @throws Sim0MQException on unknown data type
+     */
+    public static byte[] encodeUTF8(final Object simulationRunId, final Object senderId, final Object receiverId,
+            final Object messageTypeId, final long messageId, final MessageStatus messageStatus, final Object... content)
+            throws Sim0MQException
+    {
+        return encode(Encoding.UTF8, simulationRunId, senderId, receiverId, messageTypeId, messageId, messageStatus, content);
+    }
+
+    /**
+     * Encode the object array into a message. Use UTF16 to code Strings.
+     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
+     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
+     *            int with a simulation run number.
+     * @param senderId The sender id can be used to send back a message to the sender at some later time.
+     * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
+     *            error can be sent if we receive a message not meant for us).
+     * @param messageTypeId Message type ids can be defined per type of simulation, and can be provided in different types.
+     *            Examples are a String with a meaningful identification, or a short or an int with a message type number.
+     * @param messageId The unique message number is meant to confirm with a callback that the message has been received
+     *            correctly. The number is unique for the sender, so not globally within the federation.
+     * @param messageStatus Three different status messages are defined: 1 for new, 2 for change, and 3 for delete. This field
+     *            is coded as a byte.
+     * @param content the objects to encode
+     * @return the zeroMQ message to send as a byte array
+     * @throws Sim0MQException on unknown data type
+     */
+    public static byte[] encodeUTF16(final Object simulationRunId, final Object senderId, final Object receiverId,
+            final Object messageTypeId, final long messageId, final MessageStatus messageStatus, final Object... content)
+            throws Sim0MQException
+    {
+        return encode(Encoding.UTF16, simulationRunId, senderId, receiverId, messageTypeId, messageId, messageStatus, content);
+    }
+
+    /**
+     * Encode the object array into a reply message. Use UTF8 to code Strings.
+     * @param identity the identity of the federate to which this is the reply
+     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
+     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
+     *            int with a simulation run number.
+     * @param senderId The sender id can be used to send back a message to the sender at some later time.
+     * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
+     *            error can be sent if we receive a message not meant for us).
+     * @param messageTypeId Message type ids can be defined per type of simulation, and can be provided in different types.
+     *            Examples are a String with a meaningful identification, or a short or an int with a message type number.
+     * @param messageId The unique message number is meant to confirm with a callback that the message has been received
+     *            correctly. The number is unique for the sender, so not globally within the federation.
+     * @param messageStatus Three different status messages are defined: 1 for new, 2 for change, and 3 for delete. This field
+     *            is coded as a byte.
+     * @param content the objects to encode
+     * @return the zeroMQ message to send as a byte array
+     * @throws Sim0MQException on unknown data type
+     */
+    @SuppressWarnings("checkstyle:parameternumber")
+    public static byte[] encodeReplyUTF8(final String identity, final Object simulationRunId, final Object senderId,
+            final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
+            final Object... content) throws Sim0MQException
+    {
+        return encodeReply(Encoding.UTF8, identity, simulationRunId, senderId, receiverId, messageTypeId, messageId,
+                messageStatus, content);
+    }
+
+    /**
+     * Encode the object array into a reply message. Use UTF16 to code Strings.
+     * @param identity the identity of the federate to which this is the reply
+     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
+     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
+     *            int with a simulation run number.
+     * @param senderId The sender id can be used to send back a message to the sender at some later time.
+     * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
+     *            error can be sent if we receive a message not meant for us).
+     * @param messageTypeId Message type ids can be defined per type of simulation, and can be provided in different types.
+     *            Examples are a String with a meaningful identification, or a short or an int with a message type number.
+     * @param messageId The unique message number is meant to confirm with a callback that the message has been received
+     *            correctly. The number is unique for the sender, so not globally within the federation.
+     * @param messageStatus Three different status messages are defined: 1 for new, 2 for change, and 3 for delete. This field
+     *            is coded as a byte.
+     * @param content the objects to encode
+     * @return the zeroMQ message to send as a byte array
+     * @throws Sim0MQException on unknown data type
+     */
+    @SuppressWarnings("checkstyle:parameternumber")
+    public static byte[] encodeReplyUTF16(final String identity, final Object simulationRunId, final Object senderId,
+            final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
+            final Object... content) throws Sim0MQException
+    {
+        return encodeReply(Encoding.UTF16, identity, simulationRunId, senderId, receiverId, messageTypeId, messageId,
+                messageStatus, content);
     }
 
     /**

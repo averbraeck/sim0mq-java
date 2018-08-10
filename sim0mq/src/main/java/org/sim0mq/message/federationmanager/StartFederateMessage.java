@@ -94,7 +94,7 @@ public class StartFederateMessage extends Sim0MQMessage
 
     /**
      * Whether to delete the redirected stderr after running or not (in case it is stored in a different place than the working
-     * directory)
+     * directory).
      */
     private final boolean deleteStderr;
 
@@ -303,7 +303,7 @@ public class StartFederateMessage extends Sim0MQMessage
     @Override
     public byte[] createByteArray() throws Sim0MQException
     {
-        return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
                 getMessageId(), getMessageStatus(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath,
                 this.argsAfter, this.workingDirectory, this.redirectStdin, this.redirectStdout, this.redirectStderr,
                 this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr);
@@ -316,7 +316,8 @@ public class StartFederateMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static StartFederateMessage createMessage(Object[] fields, final Object intendedReceiverId) throws Sim0MQException
+    public static StartFederateMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+            throws Sim0MQException
     {
         check(fields, 12, MESSAGETYPE, intendedReceiverId);
         return new StartFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8].toString(),
@@ -337,7 +338,7 @@ public class StartFederateMessage extends Sim0MQMessage
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<Builder>
+    public static class Builder extends Sim0MQMessage.Builder<StartFederateMessage.Builder>
     {
         /**
          * Id to identify the callback to know which model instance has been started, e.g. "IDVV.14". The model instance will
@@ -410,7 +411,7 @@ public class StartFederateMessage extends Sim0MQMessage
 
         /**
          * Whether to delete the redirected stderr after running or not (in case it is stored in a different place than the
-         * working directory)
+         * working directory).
          */
         private boolean deleteStderr;
 
@@ -423,122 +424,122 @@ public class StartFederateMessage extends Sim0MQMessage
         }
 
         /**
-         * @param instanceId set instanceId
+         * @param newInstanceId set instanceId
          * @return the original object for chaining
          */
-        public final Builder setInstanceId(String instanceId)
+        public final Builder setInstanceId(final String newInstanceId)
         {
-            this.instanceId = instanceId;
+            this.instanceId = newInstanceId;
             return this;
         }
 
         /**
-         * @param softwareCode set softwareCode
+         * @param newSoftwareCode set softwareCode
          * @return the original object for chaining
          */
-        public final Builder setSoftwareCode(String softwareCode)
+        public final Builder setSoftwareCode(final String newSoftwareCode)
         {
-            this.softwareCode = softwareCode;
+            this.softwareCode = newSoftwareCode;
             return this;
         }
 
         /**
-         * @param argsBefore set argsBefore
+         * @param newArgsBefore set argsBefore
          * @return the original object for chaining
          */
-        public final Builder setArgsBefore(String argsBefore)
+        public final Builder setArgsBefore(final String newArgsBefore)
         {
-            this.argsBefore = argsBefore;
+            this.argsBefore = newArgsBefore;
             return this;
         }
 
         /**
-         * @param modelPath set modelPath
+         * @param newModelPath set modelPath
          * @return the original object for chaining
          */
-        public final Builder setModelPath(String modelPath)
+        public final Builder setModelPath(final String newModelPath)
         {
-            this.modelPath = modelPath;
+            this.modelPath = newModelPath;
             return this;
         }
 
         /**
-         * @param argsAfter set argsAfter
+         * @param newArgsAfter set argsAfter
          * @return the original object for chaining
          */
-        public final Builder setArgsAfter(String argsAfter)
+        public final Builder setArgsAfter(final String newArgsAfter)
         {
-            this.argsAfter = argsAfter;
+            this.argsAfter = newArgsAfter;
             return this;
         }
 
         /**
-         * @param workingDirectory set workingDirectory
+         * @param newWorkingDirectory set workingDirectory
          * @return the original object for chaining
          */
-        public final Builder setWorkingDirectory(String workingDirectory)
+        public final Builder setWorkingDirectory(final String newWorkingDirectory)
         {
-            this.workingDirectory = workingDirectory;
+            this.workingDirectory = newWorkingDirectory;
             return this;
         }
 
         /**
-         * @param redirectStdin set redirectStdin
+         * @param newRedirectStdin set redirectStdin
          * @return the original object for chaining
          */
-        public final Builder setRedirectStdin(String redirectStdin)
+        public final Builder setRedirectStdin(final String newRedirectStdin)
         {
-            this.redirectStdin = redirectStdin;
+            this.redirectStdin = newRedirectStdin;
             return this;
         }
 
         /**
-         * @param redirectStdout set redirectStdout
+         * @param newRedirectStdout set redirectStdout
          * @return the original object for chaining
          */
-        public final Builder setRedirectStdout(String redirectStdout)
+        public final Builder setRedirectStdout(final String newRedirectStdout)
         {
-            this.redirectStdout = redirectStdout;
+            this.redirectStdout = newRedirectStdout;
             return this;
         }
 
         /**
-         * @param redirectStderr set redirectStderr
+         * @param rewRedirectStderr set redirectStderr
          * @return the original object for chaining
          */
-        public final Builder setRedirectStderr(String redirectStderr)
+        public final Builder setRedirectStderr(final String rewRedirectStderr)
         {
-            this.redirectStderr = redirectStderr;
+            this.redirectStderr = rewRedirectStderr;
             return this;
         }
 
         /**
-         * @param deleteWorkingDirectory set deleteWorkingDirectory
+         * @param newDeleteWorkingDirectory set deleteWorkingDirectory
          * @return the original object for chaining
          */
-        public final Builder setDeleteWorkingDirectory(boolean deleteWorkingDirectory)
+        public final Builder setDeleteWorkingDirectory(final boolean newDeleteWorkingDirectory)
         {
-            this.deleteWorkingDirectory = deleteWorkingDirectory;
+            this.deleteWorkingDirectory = newDeleteWorkingDirectory;
             return this;
         }
 
         /**
-         * @param deleteStdout set deleteStdout
+         * @param newDeleteStdout set deleteStdout
          * @return the original object for chaining
          */
-        public final Builder setDeleteStdout(boolean deleteStdout)
+        public final Builder setDeleteStdout(final boolean newDeleteStdout)
         {
-            this.deleteStdout = deleteStdout;
+            this.deleteStdout = newDeleteStdout;
             return this;
         }
 
         /**
-         * @param deleteStderr set deleteStderr
+         * @param newDeleteStderr set deleteStderr
          * @return the original object for chaining
          */
-        public final Builder setDeleteStderr(boolean deleteStderr)
+        public final Builder setDeleteStderr(final boolean newDeleteStderr)
         {
-            this.deleteStderr = deleteStderr;
+            this.deleteStderr = newDeleteStderr;
             return this;
         }
 

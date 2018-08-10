@@ -103,7 +103,7 @@ public class StatusMessage extends Sim0MQReply
     @Override
     public byte[] createByteArray() throws Sim0MQException
     {
-        return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
                 getMessageId(), getMessageStatus(), getReplyToId(), this.status, this.error);
     }
 
@@ -133,7 +133,7 @@ public class StatusMessage extends Sim0MQReply
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<Builder>
+    public static class Builder extends Sim0MQMessage.Builder<StatusMessage.Builder>
     {
         /** The unique message id (Frame 5) of the sender for which this is the reply. */
         private long uniqueId;
@@ -153,32 +153,32 @@ public class StatusMessage extends Sim0MQReply
         }
 
         /**
-         * @param uniqueId set uniqueId
+         * @param newUniqueId set uniqueId
          * @return the original object for chaining
          */
-        public final Builder setUniqueId(final long uniqueId)
+        public final Builder setUniqueId(final long newUniqueId)
         {
-            this.uniqueId = uniqueId;
+            this.uniqueId = newUniqueId;
             return this;
         }
 
         /**
-         * @param status set status
+         * @param newStatus set status
          * @return the original object for chaining
          */
-        public final Builder setStatus(final String status)
+        public final Builder setStatus(final String newStatus)
         {
-            this.status = status;
+            this.status = newStatus;
             return this;
         }
 
         /**
-         * @param error set error
+         * @param newError set error
          * @return the original object for chaining
          */
-        public final Builder setError(final String error)
+        public final Builder setError(final String newError)
         {
-            this.error = error;
+            this.error = newError;
             return this;
         }
 

@@ -86,6 +86,7 @@ public class SimRunControlMessage extends Sim0MQMessage
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
+    @SuppressWarnings("checkstyle:parameternumber")
     public SimRunControlMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final Object runTime, final Object warmupTime, final Object offsetTime, final double speed,
             final int numberReplications, final int numberRandomStreams, final Map<Object, Long> streamMap)
@@ -237,7 +238,7 @@ public class SimRunControlMessage extends Sim0MQMessage
     @Override
     public byte[] createByteArray() throws Sim0MQException
     {
-        return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
                 getMessageId(), getMessageStatus(), this.runTime, this.warmupTime, this.offsetTime, this.speed,
                 this.numberReplications, this.numberRandomStreams, this.streamMap);
     }
@@ -249,7 +250,8 @@ public class SimRunControlMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static SimRunControlMessage createMessage(Object[] fields, final Object intendedReceiverId) throws Sim0MQException
+    public static SimRunControlMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+            throws Sim0MQException
     {
         Map<Object, Long> streams = new HashMap<>();
         int numberStreams = ((Integer) fields[13]).intValue();
@@ -276,7 +278,7 @@ public class SimRunControlMessage extends Sim0MQMessage
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<Builder>
+    public static class Builder extends Sim0MQMessage.Builder<SimRunControlMessage.Builder>
     {
         /**
          * Duration of the run of a single replication, including the warmup time, if present. The type is any numeric type
@@ -314,122 +316,122 @@ public class SimRunControlMessage extends Sim0MQMessage
         }
 
         /**
-         * @param runTime set runTime
+         * @param newRunTime set runTime
          * @return the original object for chaining
          */
-        public final Builder setRunTime(final Number runTime)
+        public final Builder setRunTime(final Number newRunTime)
         {
-            this.runTime = new NumberDuration(runTime);
+            this.runTime = new NumberDuration(newRunTime);
             return this;
         }
 
         /**
-         * @param runTime set runTime
+         * @param newRunTime set runTime
          * @return the original object for chaining
          */
-        public final Builder setRunTime(final Duration runTime)
+        public final Builder setRunTime(final Duration newRunTime)
         {
-            this.runTime = new NumberDuration(runTime);
+            this.runTime = new NumberDuration(newRunTime);
             return this;
         }
 
         /**
-         * @param runTime set runTime
+         * @param newRunTime set runTime
          * @return the original object for chaining
          */
-        public final Builder setRunTime(final FloatDuration runTime)
+        public final Builder setRunTime(final FloatDuration newRunTime)
         {
-            this.runTime = new NumberDuration(runTime);
+            this.runTime = new NumberDuration(newRunTime);
             return this;
         }
 
         /**
-         * @param warmupTime set warmupTime
+         * @param newWarmupTime set warmupTime
          * @return the original object for chaining
          */
-        public final Builder setWarmupTime(final Number warmupTime)
+        public final Builder setWarmupTime(final Number newWarmupTime)
         {
-            this.warmupTime = new NumberDuration(warmupTime);
+            this.warmupTime = new NumberDuration(newWarmupTime);
             return this;
         }
 
         /**
-         * @param warmupTime set warmupTime
+         * @param newWarmupTime set warmupTime
          * @return the original object for chaining
          */
-        public final Builder setWarmupTime(final Duration warmupTime)
+        public final Builder setWarmupTime(final Duration newWarmupTime)
         {
-            this.warmupTime = new NumberDuration(warmupTime);
+            this.warmupTime = new NumberDuration(newWarmupTime);
             return this;
         }
 
         /**
-         * @param warmupTime set warmupTime
+         * @param newWarmupTime set warmupTime
          * @return the original object for chaining
          */
-        public final Builder setWarmupTime(final FloatDuration warmupTime)
+        public final Builder setWarmupTime(final FloatDuration newWarmupTime)
         {
-            this.warmupTime = new NumberDuration(warmupTime);
+            this.warmupTime = new NumberDuration(newWarmupTime);
             return this;
         }
 
         /**
-         * @param offsetTime set offsetTime
+         * @param newOffsetTime set offsetTime
          * @return the original object for chaining
          */
-        public final Builder setOffsetTime(final Number offsetTime)
+        public final Builder setOffsetTime(final Number newOffsetTime)
         {
-            this.offsetTime = new NumberTime(offsetTime);
+            this.offsetTime = new NumberTime(newOffsetTime);
             return this;
         }
 
         /**
-         * @param offsetTime set offsetTime
+         * @param newOffsetTime set offsetTime
          * @return the original object for chaining
          */
-        public final Builder setOffsetTime(final Duration offsetTime)
+        public final Builder setOffsetTime(final Duration newOffsetTime)
         {
-            this.offsetTime = new NumberTime(offsetTime);
+            this.offsetTime = new NumberTime(newOffsetTime);
             return this;
         }
 
         /**
-         * @param offsetTime set offsetTime
+         * @param newOffsetTime set offsetTime
          * @return the original object for chaining
          */
-        public final Builder setOffsetTime(final FloatDuration offsetTime)
+        public final Builder setOffsetTime(final FloatDuration newOffsetTime)
         {
-            this.offsetTime = new NumberTime(offsetTime);
+            this.offsetTime = new NumberTime(newOffsetTime);
             return this;
         }
 
         /**
-         * @param speed set speed
+         * @param newSpeed set speed
          * @return the original object for chaining
          */
-        public final Builder setSpeed(final double speed)
+        public final Builder setSpeed(final double newSpeed)
         {
-            this.speed = speed;
+            this.speed = newSpeed;
             return this;
         }
 
         /**
-         * @param numberReplications set numberReplications
+         * @param newNumberReplications set numberReplications
          * @return the original object for chaining
          */
-        public final Builder setNumberReplications(final int numberReplications)
+        public final Builder setNumberReplications(final int newNumberReplications)
         {
-            this.numberReplications = numberReplications;
+            this.numberReplications = newNumberReplications;
             return this;
         }
 
         /**
-         * @param streamMap set streamMap
+         * @param newStreamMap set streamMap
          * @return the original object for chaining
          */
-        public final Builder setStreamMap(final Map<Object, Long> streamMap)
+        public final Builder setStreamMap(final Map<Object, Long> newStreamMap)
         {
-            this.streamMap = streamMap;
+            this.streamMap = newStreamMap;
             return this;
         }
 

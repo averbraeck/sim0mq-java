@@ -7,4 +7,4 @@
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  * @version Oct 21, 2016
  */
-package org.sim0mq.test;
+package org.sim0mq.test.message;

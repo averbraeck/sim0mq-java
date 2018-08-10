@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.djunits.unit.AbsoluteTemperatureUnit;
 import org.djunits.unit.AccelerationUnit;
 import org.djunits.unit.AngleSolidUnit;
 import org.djunits.unit.AngleUnit;
 import org.djunits.unit.AreaUnit;
 import org.djunits.unit.DensityUnit;
 import org.djunits.unit.DimensionlessUnit;
+import org.djunits.unit.DirectionUnit;
+import org.djunits.unit.DurationUnit;
 import org.djunits.unit.ElectricalChargeUnit;
 import org.djunits.unit.ElectricalCurrentUnit;
 import org.djunits.unit.ElectricalPotentialUnit;
@@ -29,6 +32,7 @@ import org.djunits.unit.MoneyPerLengthUnit;
 import org.djunits.unit.MoneyPerMassUnit;
 import org.djunits.unit.MoneyPerVolumeUnit;
 import org.djunits.unit.MoneyUnit;
+import org.djunits.unit.PositionUnit;
 import org.djunits.unit.PowerUnit;
 import org.djunits.unit.PressureUnit;
 import org.djunits.unit.SpeedUnit;
@@ -76,7 +80,7 @@ public class Sim0MQUnitType implements Serializable
 
     /** Direction unit type with code 4. */
     public static final Sim0MQUnitType DIRECTION =
-            new Sim0MQUnitType(4, AngleUnit.class, "Direction", "Angle  (absolute)", "[rad]");
+            new Sim0MQUnitType(4, DirectionUnit.class, "Direction", "Angle  (absolute)", "[rad]");
 
     /** Area unit type with code 5. */
     public static final Sim0MQUnitType AREA = new Sim0MQUnitType(5, AreaUnit.class, "Area", "Area", "[m^2]");
@@ -125,7 +129,7 @@ public class Sim0MQUnitType implements Serializable
 
     /** Position unit type with code 17. */
     public static final Sim0MQUnitType POSITION =
-            new Sim0MQUnitType(17, LengthUnit.class, "Position", "Length (absolute)", "[m]");
+            new Sim0MQUnitType(17, PositionUnit.class, "Position", "Length (absolute)", "[m]");
 
     /** LinearDensity unit type with code 18. */
     public static final Sim0MQUnitType LINEARDENSITY =
@@ -150,10 +154,10 @@ public class Sim0MQUnitType implements Serializable
 
     /** AbsoluteTemperature unit type with code 24. */
     public static final Sim0MQUnitType ABSOLUTETEMPERATURE =
-            new Sim0MQUnitType(24, TemperatureUnit.class, "AbsoluteTemperature", "Temperature (absolute)", "[K]");
+            new Sim0MQUnitType(24, AbsoluteTemperatureUnit.class, "AbsoluteTemperature", "Temperature (absolute)", "[K]");
 
     /** Duration unit type with code 25. */
-    public static final Sim0MQUnitType DURATION = new Sim0MQUnitType(25, TimeUnit.class, "Duration", "Time (relative)", "[s]");
+    public static final Sim0MQUnitType DURATION = new Sim0MQUnitType(25, DurationUnit.class, "Duration", "Time (relative)", "[s]");
 
     /** Time unit type with code 26. */
     public static final Sim0MQUnitType TIME = new Sim0MQUnitType(26, TimeUnit.class, "Time", "Time (absolute)", "[s]");
@@ -214,6 +218,7 @@ public class Sim0MQUnitType implements Serializable
      * @param name the unit name
      * @param description the unit description
      * @param siUnit the SI or default unit in SI-elements
+     * @param <U> the Unit
      */
     public <U extends Unit<U>> Sim0MQUnitType(final int code, final Class<U> djunitsType, final String name,
             final String description, final String siUnit)
@@ -254,6 +259,7 @@ public class Sim0MQUnitType implements Serializable
      * Return the unit type belonging to the unit class.
      * @param unit the unit to search for.
      * @return the unit type, or null if not found.
+     * @param <U> the Unit
      */
     public static <U extends Unit<U>> Sim0MQUnitType getUnitType(final U unit)
     {
@@ -264,6 +270,7 @@ public class Sim0MQUnitType implements Serializable
      * Return the byte code belonging to the unit class.
      * @param unit the unit to search for.
      * @return the unit type, or null if not found.
+     * @param <U> the Unit
      */
     public static <U extends Unit<U>> byte getUnitCode(final U unit)
     {
@@ -329,7 +336,7 @@ public class Sim0MQUnitType implements Serializable
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings({ "checkstyle:designforextension", "needbraces" })
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (this == obj)
             return true;

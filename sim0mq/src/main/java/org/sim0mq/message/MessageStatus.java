@@ -28,7 +28,7 @@ public enum MessageStatus
     DELETE(3);
 
     /** the status code, 1, 2, or 3. */
-    protected final byte status;
+    private final byte status;
 
     /** the types for retrieval. */
     private static ImmutableHashMap<Integer, MessageStatus> types = null;
@@ -36,7 +36,7 @@ public enum MessageStatus
     /**
      * @param status the status code, 1, 2, or 3.
      */
-    private MessageStatus(final int status)
+    MessageStatus(final int status)
     {
         this.status = (byte) status;
     }

@@ -64,10 +64,12 @@ public abstract class Sim0MQReply extends Sim0MQMessage
      * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
+     * @param <B> the actual inherited builder for the return types.
      */
-    public static abstract class Builder extends Sim0MQMessage.Builder
+    public abstract static class Builder<B extends Sim0MQMessage.Builder<B>> extends Sim0MQMessage.Builder<B>
     {
         /** The unique message id (Frame 5) of the sender for which this is the reply. */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         protected long replyToId;
 
         /**
@@ -79,12 +81,12 @@ public abstract class Sim0MQReply extends Sim0MQMessage
         }
 
         /**
-         * @param replyToId set replyToId
+         * @param newReplyToId set replyToId
          * @return the original object for chaining
          */
-        public final Builder setReplyToId(final long replyToId)
+        public final Builder<B> setReplyToId(final long newReplyToId)
         {
-            this.replyToId = replyToId;
+            this.replyToId = newReplyToId;
             return this;
         }
 
@@ -92,7 +94,7 @@ public abstract class Sim0MQReply extends Sim0MQMessage
          * @param message set replyToId and receiver based on the message to which this is a reply
          * @return the original object for chaining
          */
-        public final Builder setReplyTo(final Sim0MQMessage message)
+        public final Builder<B> setReplyTo(final Sim0MQMessage message)
         {
             this.replyToId = message.getMessageId();
             this.receiverId = message.getSenderId();
