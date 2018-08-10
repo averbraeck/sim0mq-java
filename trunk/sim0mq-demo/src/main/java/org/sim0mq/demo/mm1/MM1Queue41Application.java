@@ -182,7 +182,7 @@ public class MM1Queue41Application
         }
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
-        byte[] mc1Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.1",
+        byte[] mc1Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.1",
                 ++this.messageCount, MessageStatus.NEW, replyToMessageId, status, "");
         this.fsSocket.send(mc1Message, 0);
         
@@ -238,7 +238,7 @@ public class MM1Queue41Application
             status = false;
             error = e.getMessage();
         }
-        byte[] mc2Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.2",
+        byte[] mc2Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.2",
                 ++this.messageCount, MessageStatus.NEW, replyToMessageId, status, error);
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
@@ -275,7 +275,7 @@ public class MM1Queue41Application
             error = e.getMessage();
         }
 
-        byte[] mc2Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.2",
+        byte[] mc2Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.2",
                 ++this.messageCount, MessageStatus.NEW, replyToMessageId, status, error);
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
@@ -329,7 +329,7 @@ public class MM1Queue41Application
             error = e.getMessage();
         }
 
-        byte[] mc2Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.2",
+        byte[] mc2Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.2",
                 ++this.messageCount, MessageStatus.NEW, replyToMessageId, status, error);
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
@@ -390,7 +390,7 @@ public class MM1Queue41Application
 
         if (ok)
         {
-            byte[] mc3Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.3",
+            byte[] mc3Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.3",
                     ++this.messageCount, MessageStatus.NEW, replyToMessageId, variableName, variableValue);
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
@@ -401,7 +401,7 @@ public class MM1Queue41Application
 }
         else
         {
-            byte[] mc4Message = SimulationMessage.encode(this.federationRunId, this.modelId, receiverId, "MC.4",
+            byte[] mc4Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.4",
                     ++this.messageCount, MessageStatus.NEW, replyToMessageId, ok, error);
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");

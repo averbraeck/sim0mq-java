@@ -265,7 +265,7 @@ public class MM1FederationManager20
             byte[] fm1Message;
             if (localSk3.equals("sk-3"))
             {
-                fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", this.messageCount.getAndIncrement(),
+                fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", this.messageCount.getAndIncrement(),
                         MessageStatus.NEW, this.modelName, "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar",
                         this.modelName + " %PORT%", "/home/alexandv/sim0mq/MM1", "",
                         "/home/alexandv/sim0mq/MM1/out_" + this.modelName + ".txt",
@@ -274,7 +274,7 @@ public class MM1FederationManager20
             }
             else
             {
-                fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", this.messageCount.getAndIncrement(),
+                fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", this.messageCount.getAndIncrement(),
                         MessageStatus.NEW, this.modelName, "java8+", "-jar", "e:/MM1/mm1.jar", this.modelName + " %PORT%",
                         "e:/MM1", "", "e:/MM1/out_" + this.modelName + ".txt", "e:/MM1/err_" + this.modelName + ".txt", false,
                         true, true);
@@ -311,7 +311,7 @@ public class MM1FederationManager20
         {
             long messageNumber = this.messageCount.get();
             byte[] fm2Message;
-            fm2Message = SimulationMessage.encode(federationName, "FM", this.modelName, "FM.2",
+            fm2Message = SimulationMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.2",
                     this.messageCount.getAndIncrement(), MessageStatus.NEW, 100.0, 0.0, 0.0, Double.POSITIVE_INFINITY, 1, 0);
             this.modelSocket.send(fm2Message);
 
@@ -342,7 +342,7 @@ public class MM1FederationManager20
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("iat", new Double(1.0));
             parameters.put("servicetime", new Double(0.85));
-            parameters.put("seed", this.modelName.hashCode());
+            parameters.put("seed", Math.abs(this.modelName.hashCode()));
 
             for (String parameterName : parameters.keySet())
             {
@@ -350,7 +350,7 @@ public class MM1FederationManager20
                 {
                     long messageNumber = this.messageCount.get();
                     byte[] fm3Message;
-                    fm3Message = SimulationMessage.encode(federationName, "FM", this.modelName, "FM.3",
+                    fm3Message = SimulationMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.3",
                             this.messageCount.getAndIncrement(), MessageStatus.NEW, parameterName,
                             parameters.get(parameterName));
                     this.modelSocket.send(fm3Message);
@@ -387,7 +387,7 @@ public class MM1FederationManager20
         {
             long messageNumber = this.messageCount.get();
             byte[] fm4Message;
-            fm4Message = SimulationMessage.encode(federationName, "FM", this.modelName, "FM.4",
+            fm4Message = SimulationMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.4",
                     this.messageCount.getAndIncrement(), MessageStatus.NEW);
             this.modelSocket.send(fm4Message);
 
@@ -419,7 +419,7 @@ public class MM1FederationManager20
             {
                 long messageNumber = this.messageCount.get();
                 byte[] fm5Message;
-                fm5Message = SimulationMessage.encode(federationName, "FM", this.modelName, "FM.5",
+                fm5Message = SimulationMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.5",
                         this.messageCount.getAndIncrement(), MessageStatus.NEW);
                 this.modelSocket.send(fm5Message);
 
@@ -474,7 +474,7 @@ public class MM1FederationManager20
                 if (!this.state.isError())
                 {
                     byte[] fm6Message;
-                    fm6Message = SimulationMessage.encode(federationName, "FM", this.modelName, "FM.6",
+                    fm6Message = SimulationMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.6",
                             this.messageCount.getAndIncrement(), MessageStatus.NEW, statName);
                     this.modelSocket.send(fm6Message);
 
@@ -523,7 +523,7 @@ public class MM1FederationManager20
         private void killFederate(final String federationName) throws Sim0MQException
         {
             byte[] fm8Message;
-            fm8Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.8", this.messageCount.getAndIncrement(),
+            fm8Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", this.messageCount.getAndIncrement(),
                     MessageStatus.NEW, this.modelName);
             this.fsSocket.send(fm8Message);
 

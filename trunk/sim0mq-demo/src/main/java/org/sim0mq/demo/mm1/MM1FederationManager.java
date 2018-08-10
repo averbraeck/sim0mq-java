@@ -121,14 +121,14 @@ public class MM1FederationManager
         byte[] fm1Message;
         if (localSk3.equals("sk-3"))
         {
-            fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
+            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
                     "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 %PORT%", "/home/alexandv/sim0mq/MM1",
                     "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt", false, false, false);
             this.fsSocket.connect("tcp://130.161.3.179:" + fsPort);
         }
         else
         {
-            fm1Message = SimulationMessage.encode(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
+            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
                     "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 %PORT%", "e:/MM1", "", "e:/MM1/out.txt", "e:/MM1/err.txt",
                     false, false, false);
             this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
@@ -163,7 +163,7 @@ public class MM1FederationManager
     private void sendSimRunControl(final String federationName) throws Sim0MQException
     {
         byte[] fm2Message;
-        fm2Message = SimulationMessage.encode(federationName, "FM", "MM1.1", "FM.2", ++this.messageCount, MessageStatus.NEW,
+        fm2Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.2", ++this.messageCount, MessageStatus.NEW,
                 100.0, 0.0, 0.0, Double.POSITIVE_INFINITY, 1, 0);
         this.modelSocket.send(fm2Message);
 
@@ -200,7 +200,7 @@ public class MM1FederationManager
             if (!this.state.isError())
             {
                 byte[] fm3Message;
-                fm3Message = SimulationMessage.encode(federationName, "FM", "MM1.1", "FM.3", ++this.messageCount,
+                fm3Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.3", ++this.messageCount,
                         MessageStatus.NEW, parameterName, parameters.get(parameterName));
                 this.modelSocket.send(fm3Message);
 
@@ -235,7 +235,7 @@ public class MM1FederationManager
     private void sendSimStart(final String federationName) throws Sim0MQException
     {
         byte[] fm4Message;
-        fm4Message = SimulationMessage.encode(federationName, "FM", "MM1.1", "FM.4", ++this.messageCount, MessageStatus.NEW);
+        fm4Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.4", ++this.messageCount, MessageStatus.NEW);
         this.modelSocket.send(fm4Message);
 
         byte[] reply = this.modelSocket.recv(0);
@@ -266,7 +266,7 @@ public class MM1FederationManager
         {
             byte[] fm5Message;
             fm5Message =
-                    SimulationMessage.encode(federationName, "FM", "MM1.1", "FM.5", ++this.messageCount, MessageStatus.NEW);
+                    SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.5", ++this.messageCount, MessageStatus.NEW);
             this.modelSocket.send(fm5Message);
 
             byte[] reply = this.modelSocket.recv(0);
@@ -320,7 +320,7 @@ public class MM1FederationManager
             if (!this.state.isError())
             {
                 byte[] fm6Message;
-                fm6Message = SimulationMessage.encode(federationName, "FM", "MM1.1", "FM.6", ++this.messageCount,
+                fm6Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.6", ++this.messageCount,
                         MessageStatus.NEW, statName);
                 this.modelSocket.send(fm6Message);
 
@@ -369,7 +369,7 @@ public class MM1FederationManager
     {
         byte[] fm8Message;
         fm8Message =
-                SimulationMessage.encode(federationName, "FM", "FS", "FM.8", ++this.messageCount, MessageStatus.NEW, "MM1.1");
+                SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, MessageStatus.NEW, "MM1.1");
         this.fsSocket.send(fm8Message);
 
         byte[] reply = this.fsSocket.recv(0);

@@ -1,4 +1,4 @@
-package org.sim0mq.test;
+package org.sim0mq.demo;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +32,7 @@ public class RouterToReqExample
 
     /** completed. */
     static AtomicInteger completed = new AtomicInteger();
-    
+
     /** how many worker threads? */
     private static final int NBR_WORKERS = 100;
 
@@ -81,28 +81,29 @@ public class RouterToReqExample
                     }
                     while (workloadResponse == null || workloadResponse.isEmpty())
                     {
-                        ZMQ.Poller poller = new ZMQ.Poller(1);
+                        ZMQ.Poller poller = context.poller(1);
                         poller.register(worker, ZMQ.Poller.POLLIN);
                         int signalled = poller.poll(TIMEOUT);
                         poller.unregister(worker);
                         if (signalled == 1)
                         {
                             workloadResponse = worker.recvStr();
-//                        }
-//                        
-//                        // Poll socket for a reply, with timeout
-//                        ZMQ.PollItem items[] = { new ZMQ.PollItem(worker, ZMQ.Poller.POLLIN) };
-//                        int rc = ZMQ.poll(items, TIMEOUT);
-//                        if (rc == -1)
-//                        {
-//                            break; // Interrupted
-//                        }
-//
-//                        // Here we process a server reply and exit our loop if the reply is valid. If we didn't a reply we close
-//                        // the client socket and resend the request. We try a number of times before finally abandoning:
-//                        if (items[0].isReadable())
-//                        {
-//                            workloadResponse = worker.recvStr();
+                            // }
+                            //
+                            // // Poll socket for a reply, with timeout
+                            // ZMQ.PollItem items[] = { new ZMQ.PollItem(worker, ZMQ.Poller.POLLIN) };
+                            // int rc = ZMQ.poll(items, TIMEOUT);
+                            // if (rc == -1)
+                            // {
+                            // break; // Interrupted
+                            // }
+                            //
+                            // // Here we process a server reply and exit our loop if the reply is valid. If we didn't a reply
+                            // we close
+                            // // the client socket and resend the request. We try a number of times before finally abandoning:
+                            // if (items[0].isReadable())
+                            // {
+                            // workloadResponse = worker.recvStr();
                             if (workloadResponse == null)
                                 break; // Interrupted
                             if (workloadResponse.equals("Work harder") || workloadResponse.equals("Fired!"))
@@ -270,16 +271,18 @@ public class RouterToReqExample
     }
 
     /**
+     * @param context the context
      * @param socket the socket
      * @param timeoutMs timeout in milliseconds
      * @param resend string to resend if it fails
      * @return the read string after potential resending of the request or even reconnecting
      */
-    static String recvStringWithTimeout(final ZMQ.Socket socket, final long timeoutMs, final String resend)
+    static String recvStringWithTimeout(final ZMQ.Context context, final ZMQ.Socket socket, final long timeoutMs,
+            final String resend)
     {
         for (int i = 0; i < 5; i++)
         {
-            ZMQ.Poller poller = new ZMQ.Poller(1);
+            ZMQ.Poller poller = context.poller(1);
             poller.register(socket, ZMQ.Poller.POLLIN);
             int signalled = poller.poll(timeoutMs);
             poller.unregister(socket);
