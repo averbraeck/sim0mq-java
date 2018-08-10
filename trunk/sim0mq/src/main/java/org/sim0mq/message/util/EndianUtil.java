@@ -16,10 +16,10 @@ import java.nio.ByteOrder;
 public final class EndianUtil
 {
     /** do we want to send the messages in big endian? */
-    public static boolean defaultBigEndian = true;
+    private static boolean defaultBigEndian = true;
 
     /** is the platform big endian? */
-    public static final boolean platformBigEndian = ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN);
+    private static final boolean PLATFORM_BIG_ENDIAN = ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN);
 
     /**
      * Utility class - do not instantiate.
@@ -127,7 +127,7 @@ public final class EndianUtil
     }
 
     /**
-     * Decode a String including the length int from the message byte array
+     * Decode a String including the length int from the message byte array.
      * @param message the message byte array
      * @param pointer the start position in the array
      * @return the Java String at position pointer
@@ -144,7 +144,7 @@ public final class EndianUtil
     }
 
     /**
-     * Decode a String including the length int from the message byte array
+     * Decode a String including the length int from the message byte array.
      * @param message the message byte array
      * @param pointer the start position in the array
      * @return the Java String at position pointer
@@ -155,7 +155,7 @@ public final class EndianUtil
         char[] c = new char[len];
         for (int i = 0; i < len; i++)
         {
-            c[i] = decodeChar(message, 2 * i + 4);
+            c[i] = decodeChar(message, pointer + 2 * i + 4);
         }
         return String.copyValueOf(c);
     }
@@ -338,7 +338,7 @@ public final class EndianUtil
     /**
      * @return defaultBigEndian
      */
-    public static final boolean isDefaultBigEndian()
+    public static boolean isDefaultBigEndian()
     {
         return defaultBigEndian;
     }
@@ -346,7 +346,7 @@ public final class EndianUtil
     /**
      * @param defaultBigEndian set defaultBigEndian
      */
-    public static final void setDefaultBigEndian(final boolean defaultBigEndian)
+    public static void setDefaultBigEndian(final boolean defaultBigEndian)
     {
         EndianUtil.defaultBigEndian = defaultBigEndian;
     }
@@ -354,9 +354,9 @@ public final class EndianUtil
     /**
      * @return platformbigendian
      */
-    public static final boolean isPlatformBigEndian()
+    public static boolean isPlatformBigEndian()
     {
-        return platformBigEndian;
+        return PLATFORM_BIG_ENDIAN;
     }
 
 }

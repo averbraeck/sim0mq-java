@@ -20,6 +20,7 @@ import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
 import org.sim0mq.message.federatestarter.FederateStartedMessage;
 import org.sim0mq.message.federationmanager.StartFederateMessage;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 import nl.tudelft.simulation.language.io.URLResource;
@@ -47,6 +48,7 @@ public class FederateStarter
     private final int endPort;
 
     /** the running programs this FederateStarter started. The String identifies the process (e.g., a UUID or a model id). */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     protected Map<String, Process> runningProcessMap = Collections.synchronizedMap(new HashMap<>());
 
     /** the ports where the models listen. The String identifies the process (e.g., a UUID or a model id). */
@@ -54,15 +56,16 @@ public class FederateStarter
 
     /** the StartFederate messages. */
     private Map<String, StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new HashMap<>());
-    
+
     /** the software properties. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     final Properties softwareProperties;
 
     /** the 0mq socket. */
     private ZMQ.Socket fsSocket;
 
     /** the 0mq context. */
-    private ZMQ.Context fsContext;
+    private ZContext fsContext;
 
     /** message count. */
     private long messageCount = 0;
@@ -83,9 +86,9 @@ public class FederateStarter
         this.startPort = startPort;
         this.endPort = endPort;
 
-        this.fsContext = ZMQ.context(1);
+        this.fsContext = new ZContext(1);
 
-        this.fsSocket = this.fsContext.socket(ZMQ.ROUTER);
+        this.fsSocket = this.fsContext.createSocket(ZMQ.ROUTER);
         this.fsSocket.bind("tcp://*:" + this.fsPort);
 
         while (!Thread.currentThread().isInterrupted())
@@ -129,7 +132,7 @@ public class FederateStarter
             }
         }
         this.fsSocket.close();
-        this.fsContext.term();
+        this.fsContext.destroy();
     }
 
     /**
@@ -240,7 +243,7 @@ public class FederateStarter
         }
 
         System.out.println("SEND MESSAGE FS.2 ABOUT MODEL " + startFederateMessage.getInstanceId() + " @ port " + modelPort);
-        
+
         // Send reply back to client
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
@@ -274,7 +277,7 @@ public class FederateStarter
                 ZMQ.Socket testSocket = null;
                 try
                 {
-                    testSocket = this.fsContext.socket(ZMQ.REP);
+                    testSocket = this.fsContext.createSocket(ZMQ.REP);
                     testSocket.bind("tcp://127.0.0.1:" + port);
                     testSocket.unbind("tcp://127.0.0.1:" + port);
                     testSocket.close();
@@ -316,7 +319,7 @@ public class FederateStarter
         ZMQ.Socket modelSocket = null;
         try
         {
-            modelSocket = this.fsContext.socket(ZMQ.REQ);
+            modelSocket = this.fsContext.createSocket(ZMQ.REQ);
             modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
             modelSocket.connect("tcp://127.0.0.1:" + modelPort);
         }
@@ -330,8 +333,8 @@ public class FederateStarter
         boolean started = false;
         while (ok && !started)
         {
-            byte[] fs1Message =
-                    SimulationMessage.encode(federationRunId, "FS", modelId, "FS.1", ++this.messageCount, MessageStatus.NEW);
+            byte[] fs1Message = SimulationMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.1", ++this.messageCount,
+                    MessageStatus.NEW);
             modelSocket.send(fs1Message, 0);
 
             byte[] reply = modelSocket.recv(0);
@@ -404,12 +407,12 @@ public class FederateStarter
             {
                 try
                 {
-                    ZMQ.Socket modelSocket = this.fsContext.socket(ZMQ.REQ);
+                    ZMQ.Socket modelSocket = this.fsContext.createSocket(ZMQ.REQ);
                     modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
                     modelSocket.connect("tcp://127.0.0.1:" + modelPort);
 
-                    byte[] fs3Message = SimulationMessage.encode(federationRunId, "FS", modelId, "FS.3", ++this.messageCount,
-                            MessageStatus.NEW);
+                    byte[] fs3Message = SimulationMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.3",
+                            ++this.messageCount, MessageStatus.NEW);
                     modelSocket.send(fs3Message, 0);
 
                     modelSocket.close();
@@ -434,7 +437,7 @@ public class FederateStarter
                 {
                     process.destroyForcibly();
                 }
-                
+
                 StartFederateMessage sfm = this.startFederateMessages.get(modelId);
                 if (sfm.isDeleteStdout())
                 {
@@ -453,7 +456,7 @@ public class FederateStarter
                         stdErrFile.delete();
                     }
                 }
-                
+
                 if (sfm.isDeleteWorkingDirectory())
                 {
                     File workingDir = new File(sfm.getWorkingDirectory());
@@ -467,7 +470,7 @@ public class FederateStarter
                 error = exception.getMessage();
             }
 
-            byte[] fs4Message = SimulationMessage.encode(federationRunId, "FS", senderId, "FS.4", ++this.messageCount,
+            byte[] fs4Message = SimulationMessage.encodeUTF8(federationRunId, "FS", senderId, "FS.4", ++this.messageCount,
                     MessageStatus.NEW, modelId, status, error);
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
@@ -481,7 +484,7 @@ public class FederateStarter
      * @param args the federation name and port on which the FederateStarter is listening
      * @throws Sim0MQException on error
      */
-    public static void main(String[] args) throws Sim0MQException
+    public static void main(final String[] args) throws Sim0MQException
     {
         if (args.length < 4)
         {

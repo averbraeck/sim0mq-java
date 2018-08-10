@@ -63,7 +63,7 @@ public class RequestStatusMessage extends Sim0MQMessage
     @Override
     public byte[] createByteArray() throws Sim0MQException
     {
-        return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
                 getMessageId(), getMessageStatus());
     }
 
@@ -74,7 +74,8 @@ public class RequestStatusMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static RequestStatusMessage createMessage(Object[] fields, Object intendedReceiverId) throws Sim0MQException
+    public static RequestStatusMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+            throws Sim0MQException
     {
         check(fields, 0, MESSAGETYPE, intendedReceiverId);
         return new RequestStatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());

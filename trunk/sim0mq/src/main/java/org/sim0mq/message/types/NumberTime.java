@@ -23,67 +23,67 @@ public class NumberTime extends Number implements Serializable
     private static final long serialVersionUID = 20170424L;
 
     /** Number - any of the number types. */
-    private final Number duration;
+    private final Number time;
 
     /** DoubleScalar of type Time. */
     private final Time doubleScalar;
 
     /**
      * Create a duration from a Number.
-     * @param duration the duration as a Number.
+     * @param time the duration as a Number.
      */
-    public NumberTime(final Number duration)
+    public NumberTime(final Number time)
     {
-        this.duration = duration;
-        this.doubleScalar = new Time(duration.doubleValue(), TimeUnit.BASE_SECOND);
+        this.time = time;
+        this.doubleScalar = new Time(time.doubleValue(), TimeUnit.BASE_SECOND);
     }
 
     /**
      * Create a duration from a DoubleScalar Time type.
-     * @param duration the duration as a DoubleScalar Time.
+     * @param time the duration as a DoubleScalar Time.
      */
-    public NumberTime(final Time duration)
+    public NumberTime(final Time time)
     {
-        this.duration = duration;
-        this.doubleScalar = duration;
+        this.time = time;
+        this.doubleScalar = time;
     }
 
     /**
      * Create a duration from a FloatScalar FloatTime type.
-     * @param duration the duration as a FloatScalar FloatTime.
+     * @param time the duration as a FloatScalar FloatTime.
      */
-    public NumberTime(final FloatTime duration)
+    public NumberTime(final FloatTime time)
     {
-        this.duration = duration;
-        this.doubleScalar = new Time(duration.getInUnit(), duration.getUnit());
+        this.time = time;
+        this.doubleScalar = new Time(time.getInUnit(), time.getUnit());
     }
 
     /** {@inheritDoc} */
     @Override
     public int intValue()
     {
-        return this.duration.intValue();
+        return this.time.intValue();
     }
 
     /** {@inheritDoc} */
     @Override
     public long longValue()
     {
-        return this.duration.longValue();
+        return this.time.longValue();
     }
 
     /** {@inheritDoc} */
     @Override
     public float floatValue()
     {
-        return this.duration.floatValue();
+        return this.time.floatValue();
     }
 
     /** {@inheritDoc} */
     @Override
     public double doubleValue()
     {
-        return this.duration.doubleValue();
+        return this.time.doubleValue();
     }
 
     /**

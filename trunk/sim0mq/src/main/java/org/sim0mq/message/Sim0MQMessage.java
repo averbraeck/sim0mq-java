@@ -197,40 +197,46 @@ public abstract class Sim0MQMessage implements Serializable
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      * @param <B> the actual inherited builder for the return types.
      */
-    public static abstract class Builder<B extends Sim0MQMessage.Builder<B>>
+    public abstract static class Builder<B extends Sim0MQMessage.Builder<B>>
     {
         /**
          * the Simulation run ids can be provided in different types. Examples are two 64-bit longs indicating a UUID, or a
          * String with a UUID number, a String with meaningful identification, or a short or an int with a simulation run
          * number.
          */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         protected Object simulationRunId;
 
         /** The sender id can be used to send back a message to the sender at some later time. */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         protected Object senderId;
 
         /**
          * The receiver id can be used to check whether the message is meant for us, or should be discarded (or an error can be
          * sent if we receive a message not meant for us).
          */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         protected Object receiverId;
 
         /**
          * Message type ids can be defined per type of simulation, and can be provided in different types. Examples are a String
          * with a meaningful identification, or a short or an int with a message type number.
          */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         protected Object messageTypeId;
 
         /**
          * The unique message number is meant to confirm with a callback that the message has been received correctly. The
          * number is unique for the sender, so not globally within the federation.
          */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         protected long messageId;
 
         /**
          * Three different status messages are defined: 1 for new, 2 for change, and 3 for delete. This field is coded as a
          * byte.
          */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         protected MessageStatus messageStatus;
 
         /**
@@ -242,68 +248,68 @@ public abstract class Sim0MQMessage implements Serializable
         }
 
         /**
-         * @param simulationRunId set simulationRunId
+         * @param newSimulationRunId set simulationRunId
          * @return the original object for chaining
          */
         @SuppressWarnings("unchecked")
-        public final B setSimulationRunId(final Object simulationRunId)
+        public final B setSimulationRunId(final Object newSimulationRunId)
         {
-            this.simulationRunId = simulationRunId;
+            this.simulationRunId = newSimulationRunId;
             return (B) this;
         }
 
         /**
-         * @param senderId set senderId
+         * @param newSenderId set senderId
          * @return the original object for chaining
          */
         @SuppressWarnings("unchecked")
-        public final B setSenderId(final Object senderId)
+        public final B setSenderId(final Object newSenderId)
         {
-            this.senderId = senderId;
+            this.senderId = newSenderId;
             return (B) this;
         }
 
         /**
-         * @param receiverId set receiverId
+         * @param newReceiverId set receiverId
          * @return the original object for chaining
          */
         @SuppressWarnings("unchecked")
-        public final B setReceiverId(final Object receiverId)
+        public final B setReceiverId(final Object newReceiverId)
         {
-            this.receiverId = receiverId;
+            this.receiverId = newReceiverId;
             return (B) this;
         }
 
         /**
-         * @param messageTypeId set messageTypeId
+         * @param newMessageTypeId set messageTypeId
          * @return the original object for chaining
          */
         @SuppressWarnings("unchecked")
-        protected final B setMessageTypeId(final Object messageTypeId)
+        protected final B setMessageTypeId(final Object newMessageTypeId)
         {
-            this.messageTypeId = messageTypeId;
+            this.messageTypeId = newMessageTypeId;
             return (B) this;
         }
 
         /**
-         * @param messageId set messageId
+         * @param newMessageId set messageId
          * @return the original object for chaining
          */
         @SuppressWarnings("unchecked")
-        public final B setMessageId(final long messageId)
+        public final B setMessageId(final long newMessageId)
         {
-            this.messageId = messageId;
+            this.messageId = newMessageId;
             return (B) this;
         }
 
         /**
-         * @param messageStatus set messageStatus
+         * @param newMessageStatus set messageStatus
          * @return the original object for chaining
          */
         @SuppressWarnings("unchecked")
-        protected final B setMessageStatus(final MessageStatus messageStatus)
+        protected final B setMessageStatus(final MessageStatus newMessageStatus)
         {
-            this.messageStatus = messageStatus;
+            this.messageStatus = newMessageStatus;
             return (B) this;
         }
 

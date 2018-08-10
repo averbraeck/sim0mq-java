@@ -57,6 +57,7 @@ public class FederateStartedMessage extends Sim0MQMessage
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
+    @SuppressWarnings("checkstyle:parameternumber")
     public FederateStartedMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final String instanceId, final String status, final int modelPort, final String error)
             throws Sim0MQException, NullPointerException
@@ -98,7 +99,7 @@ public class FederateStartedMessage extends Sim0MQMessage
     @Override
     public byte[] createByteArray() throws Sim0MQException
     {
-        return SimulationMessage.encode(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
                 getMessageId(), getMessageStatus(), this.instanceId, this.status, this.modelPort, this.error);
     }
 
@@ -129,7 +130,7 @@ public class FederateStartedMessage extends Sim0MQMessage
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<Builder>
+    public static class Builder extends Sim0MQMessage.Builder<FederateStartedMessage.Builder>
     {
         /**
          * The sender id of the model that was started or had an error while starting. This is exactly the same as the
@@ -155,42 +156,42 @@ public class FederateStartedMessage extends Sim0MQMessage
         }
 
         /**
-         * @param instanceId set instanceId
+         * @param newInstanceId set instanceId
          * @return the original object for chaining
          */
-        public final Builder setInstanceId(final String instanceId)
+        public final Builder setInstanceId(final String newInstanceId)
         {
-            this.instanceId = instanceId;
+            this.instanceId = newInstanceId;
             return this;
         }
 
         /**
-         * @param status set status
+         * @param newStatus set status
          * @return the original object for chaining
          */
-        public final Builder setStatus(final String status)
+        public final Builder setStatus(final String newStatus)
         {
-            this.status = status;
+            this.status = newStatus;
             return this;
         }
 
         /**
-         * @param modelPort set modelPort (int instead of short because of signed short in Java)
+         * @param newModelPort set modelPort (int instead of short because of signed short in Java)
          * @return the original object for chaining
          */
-        public final Builder setModelPort(final int modelPort)
+        public final Builder setModelPort(final int newModelPort)
         {
-            this.modelPort = modelPort;
+            this.modelPort = newModelPort;
             return this;
         }
 
         /**
-         * @param error set error
+         * @param newError set error
          * @return the original object for chaining
          */
-        public final Builder setError(final String error)
+        public final Builder setError(final String newError)
         {
-            this.error = error;
+            this.error = newError;
             return this;
         }
 

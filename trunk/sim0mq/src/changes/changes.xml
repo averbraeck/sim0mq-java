@@ -2,6 +2,40 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="0.03.00" date="2018-08-07" description="Multithreading. New version of jeromq; ZContext instead of ZMQ.Context">
+      <action dev="averbraeck" type="fix">
+        Message loss in case of multi-threading repaired.
+      </action>
+      <action dev="averbraeck" type="add">
+        Several examples added in demo package to test multi-threading.
+      </action>
+      <action dev="averbraeck" type="update">
+        Used ZContext wrapper instead of ZMQ.Context.
+      </action>
+      <action dev="averbraeck" type="fix">
+        Included all types in the TypedMessage.
+      </action>
+      <action dev="averbraeck" type="add">
+        Allowed for UTF8 or UTF16 encoding of messages.
+      </action>
+      <action dev="averbraeck" type="update">
+        Update for DJUNITS version 3.00.04.
+      </action>
+      <action dev="averbraeck" type="update">
+        Update for jeromq version 0.4.3.
+      </action>
+    </release>
+
+    <release version="0.02.00" date="2017-05-01" description="DJUNITS and Money type updates">
+      <action dev="averbraeck" type="update">
+        Units and DisplayUnits adapted to the changes in DJUNITS version 3.00.01.
+      </action>
+      <action dev="averbraeck" type="update">
+        Two bytes used for the Money type as 255 is too low, and cannot store the
+        standard currency id codes.
+      </action>
+    </release>
+
     <release version="0.01.00" date="2017-04-22" description="First version of the Sim0MQ Simulation Message Bus">
       <action dev="averbraeck" type="add">
         First version of type structure and message structure.

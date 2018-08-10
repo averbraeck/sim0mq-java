@@ -51,6 +51,27 @@ public class Sim0MQDisplayType implements Serializable
     /** */
     private static final long serialVersionUID = 20170314L;
 
+    /** the unit types from number to type. */
+    private static Map<Sim0MQUnitType, Map<Integer, Sim0MQDisplayType>> codeDisplayTypeMap = new HashMap<>();
+
+    /** the unit types from class to type. */
+    private static Map<Unit<?>, Sim0MQDisplayType> djunitsDisplayTypeMap = new HashMap<>();
+
+    /** the code of the unit as a byte. */
+    private final int code;
+
+    /** the corresponding unit data type. */
+    private final Sim0MQUnitType unitType;
+
+    /** the djunits data type. */
+    private final Unit<?> djunitsType;
+
+    /** the unit name. */
+    private final String name;
+
+    /** the unit description. */
+    private final String abbreviation;
+
     /* ================================================== DIMENSIONLESS ================================================== */
 
     /** Dimensionless.SI unit type with code 0. */
@@ -2352,108 +2373,96 @@ public class Sim0MQDisplayType implements Serializable
 
     /* =================================================== END TYPES ===================================================== */
 
-    /** the unit types from number to type. */
-    private static Map<Sim0MQUnitType, Map<Byte, Sim0MQDisplayType>> byteDisplayTypeMap = new HashMap<>();
-
-    /** the unit types from class to type. */
-    private static Map<Unit<?>, Sim0MQDisplayType> djunitsDisplayTypeMap = new HashMap<>();
-
-    /** the code of the unit as a byte. */
-    private final byte code;
-
-    /** the corresponding unit data type. */
-    private final Sim0MQUnitType unitType;
-
-    /** the djunits data type. */
-    private final Unit<?> djunitsType;
-
-    /** the unit name. */
-    private final String name;
-
-    /** the unit description. */
-    private final String abbreviation;
-
     /**
      * @param unitType the corresponding 0MQ unit type
-     * @param code the byte code of the unit provided as an int
+     * @param code the code of the unit provided as an int
      * @param djunitsType the djunits data type
      * @param name the unit name
      * @param abbreviation the unit abbreviation
+     * @param <U> the unit
      */
     public <U extends Unit<U>> Sim0MQDisplayType(final Sim0MQUnitType unitType, final int code, final U djunitsType,
             final String name, final String abbreviation)
     {
         super();
         this.unitType = unitType;
-        this.code = (byte) code;
+        this.code = code;
         this.djunitsType = djunitsType;
         this.name = name;
         this.abbreviation = abbreviation;
-
-        Map<Byte, Sim0MQDisplayType> byteMap = byteDisplayTypeMap.get(this.unitType);
-        if (byteMap == null)
+        Map<Integer, Sim0MQDisplayType> codeMap = codeDisplayTypeMap.get(this.unitType);
+        if (codeMap == null)
         {
-            byteMap = new HashMap<>();
-            byteDisplayTypeMap.put(this.unitType, byteMap);
+            codeMap = new HashMap<>();
+            codeDisplayTypeMap.put(this.unitType, codeMap);
         }
-        byteMap.put(this.code, this);
+        codeMap.put(this.code, this);
         djunitsDisplayTypeMap.put(this.djunitsType, this);
     }
 
     /**
-     * Return the display type belonging to the byte code.
+     * Return the display type belonging to the display code.
      * @param unitType the unit type to search for
      * @param code the code to search for.
      * @return the unit type, or null if not found.
      */
-    public static Sim0MQDisplayType getDisplayType(final Sim0MQUnitType unitType, final byte code)
+    public static Sim0MQDisplayType getDisplayType(final Sim0MQUnitType unitType, final int code)
     {
-        Map<Byte, Sim0MQDisplayType> byteMap = byteDisplayTypeMap.get(unitType);
+        Map<Integer, Sim0MQDisplayType> byteMap = codeDisplayTypeMap.get(unitType);
         return byteMap == null ? null : byteMap.get(code);
     }
 
     /**
-     * Return the display type belonging to the byte code.
+     * Return the display type belonging to the display code.
      * @param unitTypeCode the unit type to search for
      * @param code the code to search for.
      * @return the unit type, or null if not found.
      */
-    public static Sim0MQDisplayType getDisplayType(final byte unitTypeCode, final byte code)
+    public static Sim0MQDisplayType getDisplayType(final byte unitTypeCode, final int code)
     {
         Sim0MQUnitType unitType = Sim0MQUnitType.getUnitType(unitTypeCode);
-        Map<Byte, Sim0MQDisplayType> byteMap = byteDisplayTypeMap.get(unitType);
-        return byteMap == null ? null : byteMap.get(code);
+        Map<Integer, Sim0MQDisplayType> codeMap = codeDisplayTypeMap.get(unitType);
+        return codeMap == null ? null : codeMap.get(code);
     }
 
     /**
-     * Return the unit belonging to the byte code.
+     * Return the unit belonging to the display code.
      * @param unitTypeCode the unit type to search for
      * @param code the code to search for.
      * @return the unit type, or null if not found.
      */
-    public static Unit<?> getUnit(final byte unitTypeCode, final byte code)
+    public static Unit<?> getUnit(final byte unitTypeCode, final int code)
     {
         Sim0MQUnitType unitType = Sim0MQUnitType.getUnitType(unitTypeCode);
-        Map<Byte, Sim0MQDisplayType> byteMap = byteDisplayTypeMap.get(unitType);
-        return byteMap == null ? null : byteMap.get(code) == null ? null : byteMap.get(code).djunitsType;
+        Map<Integer, Sim0MQDisplayType> codeMap = codeDisplayTypeMap.get(unitType);
+        return codeMap == null ? null : codeMap.get(code) == null ? null : codeMap.get(code).djunitsType;
     }
 
     /**
-     * Return the unit belonging to the byte code.
+     * Return the unit belonging to the display code.
      * @param unitType the unit type to search for
      * @param code the code to search for.
      * @return the unit type, or null if not found.
      */
-    public static Unit<?> getUnit(final Sim0MQUnitType unitType, final byte code)
+    public static Unit<?> getUnit(final Sim0MQUnitType unitType, final int code)
     {
-        Map<Byte, Sim0MQDisplayType> byteMap = byteDisplayTypeMap.get(unitType);
-        return byteMap == null ? null : byteMap.get(code) == null ? null : byteMap.get(code).djunitsType;
+        Map<Integer, Sim0MQDisplayType> codeMap = codeDisplayTypeMap.get(unitType);
+        return codeMap == null ? null : codeMap.get(code) == null ? null : codeMap.get(code).djunitsType;
+    }
+
+    /**
+     * @return unitType
+     */
+    public Sim0MQUnitType getUnitType()
+    {
+        return this.unitType;
     }
 
     /**
      * Return the unit type belonging to the unit class.
      * @param unit the unit to search for.
      * @return the unit type, or null if not found.
+     * @param <U> the unit
      */
     public static <U extends Unit<U>> Sim0MQDisplayType getDisplayType(final U unit)
     {
@@ -2461,23 +2470,45 @@ public class Sim0MQDisplayType implements Serializable
     }
 
     /**
-     * Return the byte code belonging to the unit class.
+     * Return the display code belonging to the unit class.
      * @param unit the unit to search for.
      * @return the unit type, or null if not found.
+     * @param <U> the unit
      */
-    public static <U extends Unit<U>> byte getUnitCode(final U unit)
+    public static <U extends Unit<U>> int getIntCode(final U unit)
     {
         Sim0MQUnitType type = Sim0MQUnitType.getUnitType(unit);
         Sim0MQDisplayType displayType = type == null ? null : getDisplayType(unit);
-        return displayType == null ? null : displayType.code;
+        return displayType == null ? null : displayType.getIntCode();
+    }
+
+    /**
+     * Return the display code belonging to the unit class.
+     * @param unit the unit to search for.
+     * @return the unit type, or null if not found.
+     * @param <U> the unit
+     */
+    public static <U extends Unit<U>> byte getByteCode(final U unit)
+    {
+        Sim0MQUnitType type = Sim0MQUnitType.getUnitType(unit);
+        Sim0MQDisplayType displayType = type == null ? null : getDisplayType(unit);
+        return displayType == null ? null : displayType.getByteCode();
     }
 
     /**
      * @return code
      */
-    public final byte getCode()
+    public final int getIntCode()
     {
         return this.code;
+    }
+
+    /**
+     * @return code
+     */
+    public final byte getByteCode()
+    {
+        return (byte) (this.code & 0xFF);
     }
 
     /**

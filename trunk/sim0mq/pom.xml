@@ -4,11 +4,11 @@
 
   <groupId>org.sim0mq</groupId>
   <artifactId>sim0mq</artifactId>
-  <version>0.02.00</version>
+  <version>0.03.00</version>
   
   <name>Federated simulaton over 0MQ bus</name>
   <description>Federated simulaton over 0MQ bus</description>
-  <url>http://www.sim0mq.org</url>
+  <url>https://www.sim0mq.org</url>
 
   <organization>
     <name>Delft University of Technology</name>
@@ -24,32 +24,32 @@
     <sonar.scm.disabled>true</sonar.scm.disabled>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>3.00.01</djunits.version>
-    <dsol.version>3.01.05</dsol.version>
-    <jeromq.version>0.3.6</jeromq.version>
-    <junit.version>4.11</junit.version>
+    <djunits.version>3.00.06</djunits.version>
+    <dsol.version>3.01.06</dsol.version>
+    <jeromq.version>0.4.3</jeromq.version>
+    <junit.version>4.12</junit.version>
 
-    <maven.compiler.version>3.3</maven.compiler.version>
-    <maven.site.version>3.4</maven.site.version>
+    <maven.compiler.version>3.8.0</maven.compiler.version>
+    <maven.site.version>3.7.1</maven.site.version>
     <maven.deploy.version>2.8.2</maven.deploy.version>
     <maven.install.version>2.5.2</maven.install.version>
-    <maven.source.version>2.4</maven.source.version>
-    <maven.javadoc.version>2.10.3</maven.javadoc.version>
-    <maven.checkstyle.version>2.16</maven.checkstyle.version>
+    <maven.source.version>3.0.1</maven.source.version>
+    <maven.javadoc.version>3.0.1</maven.javadoc.version>
+    <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
     <maven.surefire.version>2.18.1</maven.surefire.version>
-    <maven.surefire-report.version>2.18.1</maven.surefire-report.version>
-    <maven.failsafe.version>2.18.1</maven.failsafe.version>
+    <maven.surefire-report.version>2.22.0</maven.surefire-report.version>
+    <maven.failsafe.version>2.22.0</maven.failsafe.version>
     <maven.cobertura.version>2.7</maven.cobertura.version>
-    <maven.jacoco.version>0.7.5.201505241946</maven.jacoco.version>
-    <maven.findbugs.version>3.0.1</maven.findbugs.version>
-    <maven.project-info-reports.version>2.8.1</maven.project-info-reports.version>
+    <maven.jacoco.version>0.8.1</maven.jacoco.version>
+    <maven.findbugs.version>3.0.5</maven.findbugs.version>
+    <maven.project-info-reports.version>3.0.0</maven.project-info-reports.version>
     <maven.jxr.version>2.5</maven.jxr.version>
     <maven.taglist.version>2.4</maven.taglist.version>
-    <maven.pmd.version>3.6</maven.pmd.version>
-    <maven.changes.version>2.11</maven.changes.version>
-    <wagon.maven.version>1.0</wagon.maven.version>
-    <wagon.ssh.version>2.10</wagon.ssh.version>
-    <wagon.ftp.version>2.10</wagon.ftp.version>
+    <maven.pmd.version>3.10.0</maven.pmd.version>
+    <maven.changes.version>2.12.1</maven.changes.version>
+    <wagon.maven.version>2.0.0</wagon.maven.version>
+    <wagon.ssh.version>3.1.0</wagon.ssh.version>
+    <wagon.ftp.version>3.1.0</wagon.ftp.version>
     <codehaus.javancss.version>2.1</codehaus.javancss.version>
     <codehaus.jdepend.version>2.0</codehaus.jdepend.version>
   </properties>
@@ -219,7 +219,7 @@
         <version>${maven.javadoc.version}</version>
         <configuration>
           <links>
-            <link>http://download.oracle.com/javase/7/docs/api/</link>
+            <link>https://docs.oracle.com/javase/8/docs/api/</link>
           </links>
           <additionalJOption>-J-Xmx1024m</additionalJOption>
           <detectJavaApiLink>true</detectJavaApiLink>
@@ -409,9 +409,9 @@
               <report>index</report>
               <report>summary</report>
               <report>dependencies</report>
-              <report>project-team</report>
-              <report>mailing-list</report>
-              <report>license</report>
+              <report>team</report>
+              <report>mailing-lists</report>
+              <report>licenses</report>
               <report>scm</report>
             </reports>
           </reportSet>
@@ -641,19 +641,19 @@
     <repository>
       <name>sim0mq repository</name>
       <id>sim0mq</id>
-      <url>http://sim0mq.org/maven</url>
+      <url>https://sim0mq.org/maven</url>
     </repository>
 
     <repository>
       <name>DSOL Public Repository</name>
       <id>dsol</id>
-      <url>http://simulation.tudelft.nl/maven</url>
+      <url>https://simulation.tudelft.nl/maven</url>
     </repository>
 
     <repository>
       <name>djunits Public Repository</name>
       <id>djunits</id>
-      <url>http://djunits.org/maven</url>
+      <url>https://djunits.org/maven</url>
     </repository>
 
     <repository>
@@ -662,7 +662,7 @@
       </snapshots>
       <id>central</id>
       <name>Maven Repository Switchboard</name>
-      <url>http://repo1.maven.org/maven2</url>
+      <url>https://repo1.maven.org/maven2</url>
     </repository>
 
     <repository>
@@ -671,15 +671,23 @@
       </snapshots>
       <id>apache</id>
       <name>apache</name>
-      <url>http://repo.maven.apache.org/maven2</url>
+      <url>https://repo.maven.apache.org/maven2</url>
     </repository>
 
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>mvnrepository</id>
+      <name>MVN Repository</name>
+      <url>https://mvnrepository.com/artifact</url>
+    </repository>
   </repositories>
 
   <licenses>
     <license>
       <name>BSD-style license</name>
-      <url>http://www.sim0mq.org/docs/license.html</url>
+      <url>https://www.sim0mq.org/docs/license.html</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -689,9 +697,9 @@
       <id>averbraeck</id>
       <name>Alexander Verbraeck</name>
       <email>a.verbraeck@tudelft.nl</email>
-      <url>http://www.tbm.tudelft.nl/averbraeck</url>
+      <url>https://www.tbm.tudelft.nl/averbraeck</url>
       <organization>Delft University of Technology, the Netherlands</organization>
-      <organizationUrl>http://www.simulation.tudelft.nl</organizationUrl>
+      <organizationUrl>https://www.simulation.tudelft.nl</organizationUrl>
       <timezone>1</timezone>
       <roles>
         <role>architect</role>
@@ -710,7 +718,7 @@
   <!-- Environment Settings -->
 
   <distributionManagement>
-    <downloadUrl>http://sim0mq.org/maven</downloadUrl>
+    <downloadUrl>https://sim0mq.org/maven</downloadUrl>
     <repository>
       <uniqueVersion>false</uniqueVersion>
       <id>sim0mq-deployment</id>
