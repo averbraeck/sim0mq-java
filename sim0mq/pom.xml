@@ -4,7 +4,7 @@
 
   <groupId>org.sim0mq</groupId>
   <artifactId>sim0mq</artifactId>
-  <version>0.03.00</version>
+  <version>0.04.00</version>
   
   <name>Federated simulaton over 0MQ bus</name>
   <description>Federated simulaton over 0MQ bus</description>
