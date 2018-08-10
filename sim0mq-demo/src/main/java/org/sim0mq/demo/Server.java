@@ -1,4 +1,4 @@
-package org.sim0mq.test;
+package org.sim0mq.demo;
 
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
@@ -36,7 +36,7 @@ public class Server
 
             // send a reply
             Object[] reply = new Object[] { true, -28.2, 77000, "Bangladesh" };
-            responder.send(SimulationMessage.encode("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, reply), 0);
+            responder.send(SimulationMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, reply), 0);
         }
         responder.close();
         context.term();

@@ -1,4 +1,4 @@
-package org.sim0mq.test;
+package org.sim0mq.demo;
 
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
@@ -27,13 +27,13 @@ public class Client
         System.out.println("Connecting to server...");
 
         ZMQ.Socket requester = context.socket(ZMQ.REQ);
-        // requester.connect("tcp://localhost:5556");
+        requester.connect("tcp://localhost:5556");
         // requester.connect("tcp://131.180.98.169:5556");
-        requester.connect("tcp://130.161.3.179:5556");
+        // requester.connect("tcp://130.161.3.179:5556");
 
         // send a reply
         Object[] request = new Object[] { "test message", new Double(14.2), new Float(-28.4), new Short((short) 10) };
-        requester.send(SimulationMessage.encode("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, request), 0);
+        requester.send(SimulationMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, request), 0);
 
         byte[] reply = requester.recv(0);
         Object[] replyMessage = SimulationMessage.decode(reply);
