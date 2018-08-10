@@ -809,15 +809,17 @@ public final class TypedMessage
      * @param message the byte array
      * @param pointer the start pointer in the byte array
      * @return the new pointer in the byte array
-     * @param <U> the unit
      */
-    private static <U extends Unit<U>> int encodeUnit(final U unit, final byte[] message, final int pointer)
+    @SuppressWarnings("rawtypes")
+    private static int encodeUnit(final Unit unit, final byte[] message, final int pointer)
     {
         int p = pointer;
+        @SuppressWarnings("unchecked") // TODO see how this can be solved with type <U extends Unit<U>>
         Sim0MQUnitType unitType = Sim0MQUnitType.getUnitType(unit);
         message[p++] = unitType.getCode();
         if (unit instanceof MoneyUnit)
         {
+            @SuppressWarnings("unchecked")
             Sim0MQDisplayType displayType = Sim0MQDisplayType.getDisplayType(unit);
             p = EndianUtil.encodeShort((short) displayType.getIntCode(), message, p);
         }
