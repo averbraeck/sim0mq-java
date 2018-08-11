@@ -2,6 +2,21 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="0.05.00" date="2018-08-11" description="Coding / decoding finished">
+      <action dev="averbraeck" type="fix">
+        Finalized coding / decoding for all types in the TypedMessage.
+      </action>
+      <action dev="averbraeck" type="update">
+        Update for DJUNITS version 3.00.07 to use instantiation helper classes.
+      </action>
+    </release>
+    
+    <release version="0.04.00" date="2018-08-09" description="Coding / decoding improved">
+      <action dev="averbraeck" type="fix">
+        Increased coding / decoding for more types in the TypedMessage.
+      </action>
+    </release>
+    
     <release version="0.03.00" date="2018-08-07" description="Multithreading. New version of jeromq; ZContext instead of ZMQ.Context">
       <action dev="averbraeck" type="fix">
         Message loss in case of multi-threading repaired.
@@ -13,13 +28,13 @@
         Used ZContext wrapper instead of ZMQ.Context.
       </action>
       <action dev="averbraeck" type="fix">
-        Included all types in the TypedMessage for coding and decoding.
+        Included most types in the TypedMessage for coding and decoding.
       </action>
       <action dev="averbraeck" type="add">
         Allowed for UTF8 or UTF16 encoding of messages.
       </action>
       <action dev="averbraeck" type="update">
-        Update for DJUNITS version 3.00.07.
+        Update for DJUNITS version 3.00.05.
       </action>
       <action dev="averbraeck" type="update">
         Update for jeromq version 0.4.3.
