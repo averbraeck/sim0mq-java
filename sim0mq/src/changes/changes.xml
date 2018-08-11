@@ -13,13 +13,13 @@
         Used ZContext wrapper instead of ZMQ.Context.
       </action>
       <action dev="averbraeck" type="fix">
-        Included all types in the TypedMessage.
+        Included all types in the TypedMessage for coding and decoding.
       </action>
       <action dev="averbraeck" type="add">
         Allowed for UTF8 or UTF16 encoding of messages.
       </action>
       <action dev="averbraeck" type="update">
-        Update for DJUNITS version 3.00.04.
+        Update for DJUNITS version 3.00.07.
       </action>
       <action dev="averbraeck" type="update">
         Update for jeromq version 0.4.3.

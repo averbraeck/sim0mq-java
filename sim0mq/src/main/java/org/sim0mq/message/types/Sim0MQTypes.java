@@ -288,7 +288,7 @@ public final class Sim0MQTypes
      * |0x40|0x80|0x00|0x00|  |0x42|0x70|0x00|0x00|
      * </pre>
      */
-    public static final byte FLOAT_32_UNIT2_ARRAY = 31;
+    public static final byte FLOAT_32_UNIT_COLUMN_ARRAY = 31;
 
     /**
      * Number-preceded dense double array, stored internally in the SI unit, with a unique unit type and display type per row.
@@ -326,7 +326,7 @@ public final class Sim0MQTypes
      * |0x40|0x7A|0x91|0x99|0x99|0x99|0x99|0x9A|
      * </pre>
      */
-    public static final byte DOUBLE_64_UNIT2_ARRAY = 32;
+    public static final byte DOUBLE_64_UNIT_COLUMN_ARRAY = 32;
 
     /**
      * Utility class, cannot be instantiated.

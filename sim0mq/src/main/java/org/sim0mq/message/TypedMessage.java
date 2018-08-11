@@ -12,9 +12,12 @@ import org.djunits.unit.MoneyPerMassUnit;
 import org.djunits.unit.MoneyPerVolumeUnit;
 import org.djunits.unit.MoneyUnit;
 import org.djunits.unit.Unit;
+import org.djunits.value.StorageType;
 import org.djunits.value.ValueException;
 import org.djunits.value.vdouble.matrix.AbstractDoubleMatrix;
+import org.djunits.value.vdouble.matrix.DoubleMatrixUtil;
 import org.djunits.value.vdouble.scalar.AbstractDoubleScalar;
+import org.djunits.value.vdouble.scalar.DoubleScalarUtil;
 import org.djunits.value.vdouble.scalar.Money;
 import org.djunits.value.vdouble.scalar.MoneyPerArea;
 import org.djunits.value.vdouble.scalar.MoneyPerDuration;
@@ -23,7 +26,9 @@ import org.djunits.value.vdouble.scalar.MoneyPerLength;
 import org.djunits.value.vdouble.scalar.MoneyPerMass;
 import org.djunits.value.vdouble.scalar.MoneyPerVolume;
 import org.djunits.value.vdouble.vector.AbstractDoubleVector;
+import org.djunits.value.vdouble.vector.DoubleVectorUtil;
 import org.djunits.value.vfloat.matrix.AbstractFloatMatrix;
+import org.djunits.value.vfloat.matrix.FloatMatrixUtil;
 import org.djunits.value.vfloat.scalar.AbstractFloatScalar;
 import org.djunits.value.vfloat.scalar.FloatMoney;
 import org.djunits.value.vfloat.scalar.FloatMoneyPerArea;
@@ -32,12 +37,13 @@ import org.djunits.value.vfloat.scalar.FloatMoneyPerEnergy;
 import org.djunits.value.vfloat.scalar.FloatMoneyPerLength;
 import org.djunits.value.vfloat.scalar.FloatMoneyPerMass;
 import org.djunits.value.vfloat.scalar.FloatMoneyPerVolume;
+import org.djunits.value.vfloat.scalar.FloatScalarUtil;
 import org.djunits.value.vfloat.vector.AbstractFloatVector;
+import org.djunits.value.vfloat.vector.FloatVectorUtil;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.types.Sim0MQDisplayType;
 import org.sim0mq.message.types.Sim0MQTypes;
 import org.sim0mq.message.types.Sim0MQUnitType;
-import org.sim0mq.message.types.TypesUtil;
 import org.sim0mq.message.util.EndianUtil;
 
 import nl.tudelft.simulation.language.Throw;
@@ -745,7 +751,7 @@ public final class TypedMessage
 
             else if (content[i] instanceof AbstractFloatVector[])
             {
-                message[pointer++] = Sim0MQTypes.FLOAT_32_UNIT2_ARRAY;
+                message[pointer++] = Sim0MQTypes.FLOAT_32_UNIT_COLUMN_ARRAY;
                 AbstractFloatVector<?, ?>[] afvArray = (AbstractFloatVector<?, ?>[]) content[i];
                 pointer = EndianUtil.encodeInt(afvArray[0].size(), message, pointer); // rows
                 pointer = EndianUtil.encodeInt(afvArray.length, message, pointer); // cols
@@ -771,7 +777,7 @@ public final class TypedMessage
 
             else if (content[i] instanceof AbstractDoubleVector[])
             {
-                message[pointer++] = Sim0MQTypes.DOUBLE_64_UNIT2_ARRAY;
+                message[pointer++] = Sim0MQTypes.DOUBLE_64_UNIT_COLUMN_ARRAY;
                 AbstractDoubleVector<?, ?>[] advArray = (AbstractDoubleVector<?, ?>[]) content[i];
                 pointer = EndianUtil.encodeInt(advArray[0].size(), message, pointer); // rows
                 pointer = EndianUtil.encodeInt(advArray.length, message, pointer); // cols
@@ -867,6 +873,7 @@ public final class TypedMessage
         }
         else
         {
+            @SuppressWarnings("unchecked")
             Sim0MQDisplayType displayType = Sim0MQDisplayType.getDisplayType(unit);
             message[p++] = displayType.getByteCode();
         }
@@ -908,162 +915,137 @@ public final class TypedMessage
      * @return an array of objects of the right type
      * @throws Sim0MQException on unknown data type
      */
-    @SuppressWarnings({ "checkstyle:methodlength", "checkstyle:needbraces", "unchecked" })
+    @SuppressWarnings({ "checkstyle:methodlength", "checkstyle:needbraces" })
     public static Object[] decode(final byte[] message) throws Sim0MQException
     {
         List<Object> list = new ArrayList<>();
-        int pointer = 0;
-        while (pointer < message.length)
+        MessageBuffer mb = new MessageBuffer(message);
+        while (mb.hasMore())
         {
-            byte type = message[pointer++];
+            byte type = mb.getByte();
 
             if (type == Sim0MQTypes.BYTE_8)
             {
-                list.add(message[pointer]);
-                pointer += 1;
+                list.add(mb.getByte());
             }
+
             else if (type == Sim0MQTypes.SHORT_16)
             {
-                list.add(EndianUtil.decodeShort(message, pointer));
-                pointer += 2;
+                list.add(mb.getShort());
             }
+
             else if (type == Sim0MQTypes.INT_32)
             {
-                list.add(EndianUtil.decodeInt(message, pointer));
-                pointer += 4;
+                list.add(mb.getInt());
             }
+
             else if (type == Sim0MQTypes.LONG_64)
             {
-                list.add(EndianUtil.decodeLong(message, pointer));
-                pointer += 8;
+                list.add(mb.getLong());
             }
+
             else if (type == Sim0MQTypes.FLOAT_32)
             {
-                list.add(EndianUtil.decodeFloat(message, pointer));
-                pointer += 4;
+                list.add(mb.getFloat());
             }
+
             else if (type == Sim0MQTypes.DOUBLE_64)
             {
-                list.add(EndianUtil.decodeDouble(message, pointer));
-                pointer += 8;
+                list.add(mb.getDouble());
             }
+
             else if (type == Sim0MQTypes.BOOLEAN_8)
             {
-                byte b = message[pointer];
-                list.add(b == 0 ? false : true);
-                pointer += 1;
+                list.add(mb.getBoolean());
             }
+
             else if (type == Sim0MQTypes.CHAR_8)
             {
-                list.add((char) message[pointer]);
-                pointer += 1;
+                list.add(mb.getCharUTF8());
             }
+
             else if (type == Sim0MQTypes.CHAR_16)
             {
-                list.add(EndianUtil.decodeChar(message, pointer));
-                pointer += 2;
+                list.add(mb.getCharUTF16());
             }
+
             else if (type == Sim0MQTypes.STRING_8)
             {
-                String s = EndianUtil.decodeUTF8String(message, pointer);
-                list.add(s);
-                pointer += 4 + s.length();
+                list.add(mb.getStringUTF8());
             }
+
             else if (type == Sim0MQTypes.STRING_16)
             {
-                String s = EndianUtil.decodeUTF16String(message, pointer);
-                list.add(s);
-                pointer += 4 + 2 * s.length();
+                list.add(mb.getStringUTF16());
             }
+
             else if (type == Sim0MQTypes.BYTE_8_ARRAY)
             {
-                int size = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int size = mb.getInt();
                 byte[] value = new byte[size];
                 for (int i = 0; i < size; i++)
-                {
-                    value[i] = message[pointer++];
-                }
+                    value[i] = mb.getByte();
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.SHORT_16_ARRAY)
             {
-                int size = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int size = mb.getInt();
                 short[] value = new short[size];
                 for (int i = 0; i < size; i++)
-                {
-                    value[i] = EndianUtil.decodeShort(message, pointer);
-                    pointer += 2;
-                }
+                    value[i] = mb.getShort();
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.INT_32_ARRAY)
             {
-                int size = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int size = mb.getInt();
                 int[] value = new int[size];
                 for (int i = 0; i < size; i++)
-                {
-                    value[i] = EndianUtil.decodeInt(message, pointer);
-                    pointer += 4;
-                }
+                    value[i] = mb.getInt();
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.LONG_64_ARRAY)
             {
-                int size = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int size = mb.getInt();
                 long[] value = new long[size];
                 for (int i = 0; i < size; i++)
-                {
-                    value[i] = EndianUtil.decodeLong(message, pointer);
-                    pointer += 8;
-                }
+                    value[i] = mb.getLong();
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.FLOAT_32_ARRAY)
             {
-                int size = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int size = mb.getInt();
                 float[] value = new float[size];
                 for (int i = 0; i < size; i++)
-                {
-                    value[i] = EndianUtil.decodeFloat(message, pointer);
-                    pointer += 4;
-                }
+                    value[i] = mb.getFloat();
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.DOUBLE_64_ARRAY)
             {
-                int size = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int size = mb.getInt();
                 double[] value = new double[size];
                 for (int i = 0; i < size; i++)
-                {
-                    value[i] = EndianUtil.decodeDouble(message, pointer);
-                    pointer += 8;
-                }
+                    value[i] = mb.getDouble();
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.BOOLEAN_8_ARRAY)
             {
-                int size = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int size = mb.getInt();
                 boolean[] value = new boolean[size];
                 for (int i = 0; i < size; i++)
-                {
-                    value[i] = message[pointer] == 0 ? false : true;
-                    pointer += 1;
-                }
+                    value[i] = mb.getBoolean();
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.BYTE_8_MATRIX)
             {
-                int rows = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
-                int cols = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int rows = mb.getInt();
+                int cols = mb.getInt();
                 byte[][] value = new byte[rows][];
                 for (int row = 0; row < rows; row++)
                 {
@@ -1071,18 +1053,16 @@ public final class TypedMessage
                     {
                         if (col == 0)
                             value[row] = new byte[cols];
-                        value[row][col] = message[pointer];
-                        pointer += 1;
+                        value[row][col] = mb.getByte();
                     }
                 }
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.SHORT_16_MATRIX)
             {
-                int rows = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
-                int cols = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int rows = mb.getInt();
+                int cols = mb.getInt();
                 short[][] value = new short[rows][];
                 for (int row = 0; row < rows; row++)
                 {
@@ -1090,18 +1070,16 @@ public final class TypedMessage
                     {
                         if (col == 0)
                             value[row] = new short[cols];
-                        value[row][col] = EndianUtil.decodeShort(message, pointer);
-                        pointer += 2;
+                        value[row][col] = mb.getShort();
                     }
                 }
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.INT_32_MATRIX)
             {
-                int rows = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
-                int cols = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int rows = mb.getInt();
+                int cols = mb.getInt();
                 int[][] value = new int[rows][];
                 for (int row = 0; row < rows; row++)
                 {
@@ -1109,18 +1087,16 @@ public final class TypedMessage
                     {
                         if (col == 0)
                             value[row] = new int[cols];
-                        value[row][col] = EndianUtil.decodeInt(message, pointer);
-                        pointer += 4;
+                        value[row][col] = mb.getInt();
                     }
                 }
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.LONG_64_MATRIX)
             {
-                int rows = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
-                int cols = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int rows = mb.getInt();
+                int cols = mb.getInt();
                 long[][] value = new long[rows][];
                 for (int row = 0; row < rows; row++)
                 {
@@ -1128,18 +1104,16 @@ public final class TypedMessage
                     {
                         if (col == 0)
                             value[row] = new long[cols];
-                        value[row][col] = EndianUtil.decodeLong(message, pointer);
-                        pointer += 8;
+                        value[row][col] = mb.getLong();
                     }
                 }
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.FLOAT_32_MATRIX)
             {
-                int rows = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
-                int cols = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int rows = mb.getInt();
+                int cols = mb.getInt();
                 float[][] value = new float[rows][];
                 for (int row = 0; row < rows; row++)
                 {
@@ -1147,18 +1121,16 @@ public final class TypedMessage
                     {
                         if (col == 0)
                             value[row] = new float[cols];
-                        value[row][col] = EndianUtil.decodeFloat(message, pointer);
-                        pointer += 4;
+                        value[row][col] = mb.getFloat();
                     }
                 }
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.DOUBLE_64_MATRIX)
             {
-                int rows = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
-                int cols = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int rows = mb.getInt();
+                int cols = mb.getInt();
                 double[][] value = new double[rows][];
                 for (int row = 0; row < rows; row++)
                 {
@@ -1166,18 +1138,16 @@ public final class TypedMessage
                     {
                         if (col == 0)
                             value[row] = new double[cols];
-                        value[row][col] = EndianUtil.decodeDouble(message, pointer);
-                        pointer += 8;
+                        value[row][col] = mb.getDouble();
                     }
                 }
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.BOOLEAN_8_MATRIX)
             {
-                int rows = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
-                int cols = EndianUtil.decodeInt(message, pointer);
-                pointer += 4;
+                int rows = mb.getInt();
+                int cols = mb.getInt();
                 boolean[][] value = new boolean[rows][];
                 for (int row = 0; row < rows; row++)
                 {
@@ -1185,90 +1155,180 @@ public final class TypedMessage
                     {
                         if (col == 0)
                             value[row] = new boolean[cols];
-                        value[row][col] = message[pointer] == 0 ? false : true;
-                        pointer += 1;
+                        value[row][col] = mb.getBoolean();
                     }
                 }
                 list.add(value);
             }
+
             else if (type == Sim0MQTypes.FLOAT_32_UNIT)
             {
-                @SuppressWarnings("rawtypes")
-                Unit unit;
-                Sim0MQUnitType unitType = Sim0MQUnitType.getUnitType(message[pointer]);
-                pointer++;
-                if (unitType.getCode() == 100) // money
-                {
-                    unit = decodeMoneyUnit(message, pointer);
-                    pointer += 2;
-                }
-                else if (unitType.getCode() >= 101 && unitType.getCode() <= 106)
-                {
-                    unit = decodeMoneyPerUnit(unitType, message, pointer);
-                    pointer += 3;
-                }
-                else
-                {
-                    Sim0MQDisplayType displayType = Sim0MQDisplayType.getDisplayType(unitType, message[pointer]);
-                    pointer++;
-                    unit = displayType.getDjunitsType();
-                }
-                float si = EndianUtil.decodeFloat(message, pointer);
-                pointer += 4;
-                list.add(TypesUtil.instantiateFloatScalar(unit, si));
+                Unit<? extends Unit<?>> unit = mb.getUnit();
+                float si = mb.getFloat();
+                list.add(FloatScalarUtil.instantiateAnonymousSI(si, unit));
             }
+
             else if (type == Sim0MQTypes.DOUBLE_64_UNIT)
             {
-                @SuppressWarnings("rawtypes")
-                Unit unit;
-                Sim0MQUnitType unitType = Sim0MQUnitType.getUnitType(message[pointer]);
-                pointer++;
-                if (unitType.getCode() == 100) // money
-                {
-                    unit = decodeMoneyUnit(message, pointer);
-                    pointer += 2;
-                }
-                else if (unitType.getCode() >= 101 && unitType.getCode() <= 106)
-                {
-                    unit = decodeMoneyPerUnit(unitType, message, pointer);
-                    pointer += 3;
-                }
-                else
-                {
-                    Sim0MQDisplayType displayType = Sim0MQDisplayType.getDisplayType(unitType, message[pointer]);
-                    pointer++;
-                    unit = displayType.getDjunitsType();
-                }
-                double si = EndianUtil.decodeDouble(message, pointer);
-                pointer += 8;
-                list.add(TypesUtil.instantiateDoubleScalar(unit, si));
+                Unit<? extends Unit<?>> unit = mb.getUnit();
+                double si = mb.getDouble();
+                list.add(DoubleScalarUtil.instantiateAnonymousSI(si, unit));
             }
-            /*-
+
             else if (type == Sim0MQTypes.FLOAT_32_UNIT_ARRAY)
             {
-            
+                int size = mb.getInt();
+                Unit<? extends Unit<?>> unit = mb.getUnit();
+                float[] array = new float[size];
+                for (int i = 0; i < size; i++)
+                    array[i] = mb.getFloat();
+                try
+                {
+                    list.add(FloatVectorUtil.instantiateAnonymousSI(array, unit, StorageType.DENSE));
+                }
+                catch (ValueException exception)
+                {
+                    throw new Sim0MQException(exception);
+                }
             }
+
             else if (type == Sim0MQTypes.DOUBLE_64_UNIT_ARRAY)
             {
-            
+                int size = mb.getInt();
+                Unit<? extends Unit<?>> unit = mb.getUnit();
+                double[] array = new double[size];
+                for (int i = 0; i < size; i++)
+                    array[i] = mb.getDouble();
+                try
+                {
+                    list.add(DoubleVectorUtil.instantiateAnonymousSI(array, unit, StorageType.DENSE));
+                }
+                catch (ValueException exception)
+                {
+                    throw new Sim0MQException(exception);
+                }
             }
+
             else if (type == Sim0MQTypes.FLOAT_32_UNIT_MATRIX)
             {
-            
+                int rows = mb.getInt();
+                int cols = mb.getInt();
+                Unit<? extends Unit<?>> unit = mb.getUnit();
+                float[][] matrix = new float[rows][cols];
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        if (col == 0)
+                            matrix[row] = new float[cols];
+                        matrix[row][col] = mb.getFloat();
+                    }
+                }
+                try
+                {
+                    list.add(FloatMatrixUtil.instantiateAnonymousSI(matrix, unit, StorageType.DENSE));
+                }
+                catch (ValueException exception)
+                {
+                    throw new Sim0MQException(exception);
+                }
             }
+
             else if (type == Sim0MQTypes.DOUBLE_64_UNIT_MATRIX)
             {
-            
+                int rows = mb.getInt();
+                int cols = mb.getInt();
+                Unit<? extends Unit<?>> unit = mb.getUnit();
+                double[][] matrix = new double[rows][cols];
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        if (col == 0)
+                            matrix[row] = new double[cols];
+                        matrix[row][col] = mb.getDouble();
+                    }
+                }
+                try
+                {
+                    list.add(DoubleMatrixUtil.instantiateAnonymousSI(matrix, unit, StorageType.DENSE));
+                }
+                catch (ValueException exception)
+                {
+                    throw new Sim0MQException(exception);
+                }
             }
-            else if (type == Sim0MQTypes.FLOAT_32_UNIT2_ARRAY)
+
+            else if (type == Sim0MQTypes.FLOAT_32_UNIT_COLUMN_ARRAY)
             {
-            
+                int rows = mb.getInt();
+                int cols = mb.getInt();
+                Unit<? extends Unit<?>>[] units = new Unit<?>[cols];
+                AbstractFloatVector<?, ?>[] vArray = new AbstractFloatVector[cols];
+                for (int col = 0; col < cols; col++)
+                {
+                    units[col] = mb.getUnit();
+                }
+                // here we use a column-first matrix (!) for storage
+                float[][] matrix = new float[cols][rows];
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        if (col == 0)
+                            matrix[row] = new float[cols];
+                        matrix[col][row] = mb.getFloat();
+                    }
+                }
+                try
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        vArray[col] = FloatVectorUtil.instantiateAnonymousSI(matrix[col], units[col], StorageType.DENSE);
+                    }
+                    list.add(vArray);
+                }
+                catch (ValueException exception)
+                {
+                    throw new Sim0MQException(exception);
+                }
             }
-            else if (type == Sim0MQTypes.DOUBLE_64_UNIT2_ARRAY)
+
+            else if (type == Sim0MQTypes.DOUBLE_64_UNIT_COLUMN_ARRAY)
             {
-            
+                int rows = mb.getInt();
+                int cols = mb.getInt();
+                Unit<? extends Unit<?>>[] units = new Unit<?>[cols];
+                AbstractDoubleVector<?, ?>[] vArray = new AbstractDoubleVector[cols];
+                for (int col = 0; col < cols; col++)
+                {
+                    units[col] = mb.getUnit();
+                }
+                // here we use a column-first matrix (!) for storage
+                double[][] matrix = new double[cols][rows];
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        if (col == 0)
+                            matrix[row] = new double[cols];
+                        matrix[col][row] = mb.getDouble();
+                    }
+                }
+                try
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        vArray[col] = DoubleVectorUtil.instantiateAnonymousSI(matrix[col], units[col], StorageType.DENSE);
+                    }
+                    list.add(vArray);
+                }
+                catch (ValueException exception)
+                {
+                    throw new Sim0MQException(exception);
+                }
             }
-            */
+
             else
             {
                 throw new Sim0MQException("Unknown data type " + type + " in the ZeroMQ message while decoding");
@@ -1277,50 +1337,6 @@ public final class TypedMessage
 
         Object[] array = list.toArray();
         return array;
-    }
-
-    /**
-     * Decode the 2-byte Money unit in the message (code 100).
-     * @param message the message
-     * @param pointer the message pointer
-     * @return decoded money unit
-     */
-    private static Unit<?> decodeMoneyUnit(final byte[] message, final int pointer)
-    {
-        short moneyCode = EndianUtil.decodeShort(message, pointer);
-        Sim0MQDisplayType displayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.MONEY, moneyCode);
-        return displayType.getDjunitsType();
-    }
-
-    /**
-     * Decode the 2-byte MoneyPerUnit unit in the message (code 101 - 106).
-     * @param unitType the unit type (e.g., MoneyPerArea)
-     * @param message the message
-     * @param pointer the message pointer
-     * @return decoded MoneyPerUnit unit
-     */
-    @SuppressWarnings("checkstyle:needbraces")
-    private static Unit<?> decodeMoneyPerUnit(final Sim0MQUnitType unitType, final byte[] message, final int pointer)
-    {
-        short moneyCode = EndianUtil.decodeShort(message, pointer);
-        Sim0MQDisplayType moneyDisplayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.MONEY, moneyCode);
-        byte perCode = message[pointer + 2];
-        Sim0MQDisplayType perDisplayType;
-        if (unitType.getCode() == 101)
-            perDisplayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.AREA, perCode);
-        else if (unitType.getCode() == 102)
-            perDisplayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.ENERGY, perCode);
-        else if (unitType.getCode() == 103)
-            perDisplayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.LENGTH, perCode);
-        else if (unitType.getCode() == 104)
-            perDisplayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.MASS, perCode);
-        else if (unitType.getCode() == 105)
-            perDisplayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.DURATION, perCode);
-        else if (unitType.getCode() == 106)
-            perDisplayType = Sim0MQDisplayType.getDisplayType(Sim0MQUnitType.VOLUME, perCode);
-        else
-            throw new RuntimeException(new Sim0MQException("Unknown MoneyPerUnit type with code " + unitType.getCode()));
-        return TypesUtil.moneyPerUnitType(moneyDisplayType, perDisplayType);
     }
 
     /**
@@ -1377,4 +1393,5 @@ public final class TypedMessage
         }
         return s.toString();
     }
+
 }

@@ -1,22 +1,34 @@
 package org.sim0mq.test.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.djunits.unit.AreaUnit;
+import org.djunits.unit.DurationUnit;
 import org.djunits.unit.LengthUnit;
 import org.djunits.unit.MoneyPerAreaUnit;
 import org.djunits.unit.MoneyPerLengthUnit;
 import org.djunits.unit.MoneyUnit;
+import org.djunits.value.StorageType;
+import org.djunits.value.ValueException;
+import org.djunits.value.vdouble.matrix.DurationMatrix;
 import org.djunits.value.vdouble.scalar.AbstractDoubleScalar;
 import org.djunits.value.vdouble.scalar.Length;
-import org.djunits.value.vdouble.scalar.MoneyPerArea;
 import org.djunits.value.vdouble.scalar.MoneyPerLength;
+import org.djunits.value.vdouble.vector.AbstractDoubleVector;
+import org.djunits.value.vdouble.vector.DurationVector;
+import org.djunits.value.vdouble.vector.MoneyPerAreaVector;
+import org.djunits.value.vfloat.matrix.FloatDurationMatrix;
 import org.djunits.value.vfloat.scalar.AbstractFloatScalar;
 import org.djunits.value.vfloat.scalar.FloatLength;
 import org.djunits.value.vfloat.scalar.FloatMoneyPerArea;
+import org.djunits.value.vfloat.vector.AbstractFloatVector;
+import org.djunits.value.vfloat.vector.FloatDurationVector;
+import org.djunits.value.vfloat.vector.FloatMoneyPerAreaVector;
 import org.junit.Test;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.TypedMessage;
@@ -342,11 +354,68 @@ public class TestTypedMessage
         testTypes.add(new TestType(new Length(60.0, LengthUnit.KILOMETER), 26,
                 new int[] { 16, 11, 0x40, 0xED, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00 }));
         // note that the below calculation could have ended in 0x3A instead of 0x39, depending on the calculation order.
-        // the actual value is 0.12427423844746679392348683687266, which codes as 3FBFD06FBDDDFF3A
+        // the actual value is 0.12427423844746679392348683687266, which is coded as 3FBFD06FBDDDFF3A
         testTypes.add(
                 new TestType(new MoneyPerLength(200.0, new MoneyPerLengthUnit(MoneyUnit.USD, LengthUnit.MILE, "$/mi", "$/mi")),
                         26, new int[] { 103, 0x03, 0x48, 16, 0x3F, 0xBF, 0xD0, 0x6F, 0xBD, 0xDD, 0xFF, 0x39 }));
 
+        try
+        {
+            testTypes.add(
+                    new TestType(new FloatDurationVector(new float[] { 2.0f, 2.5f }, DurationUnit.MINUTE, StorageType.DENSE),
+                            27, new int[] { 0, 0, 0, 2, 25, 7, 0x42, 0xF0, 0x00, 0x00, 0x43, 0x16, 0x00, 0x00 }));
+            testTypes.add(new TestType(
+                    new FloatMoneyPerAreaVector(new float[] { 200.0f, 200.0f },
+                            new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE),
+                    27, new int[] { 0, 0, 0, 2, 101, 0x03, 0xD2, 21, 0x3C, 0xA3, 0xD7, 0x0A, 0x3C, 0xA3, 0xD7, 0x0A }));
+
+            testTypes.add(new TestType(new DurationVector(new double[] { 20.0, 25.0 }, DurationUnit.MINUTE, StorageType.DENSE),
+                    28, new int[] { 0, 0, 0, 2, 25, 7, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70, 0x00,
+                            0x00, 0x00, 0x00, 0x00 }));
+            // 20000 Euro/ha = 2 Euro/m2
+            testTypes.add(new TestType(
+                    new MoneyPerAreaVector(new double[] { 20000.0, 20000.0 },
+                            new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE),
+                    28, new int[] { 0, 0, 0, 2, 101, 0x03, 0xD2, 21, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00,
+                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
+
+            testTypes.add(new TestType(
+                    new FloatDurationMatrix(new float[][] { { 2.0f, 2.5f }, { 2.0f, 2.5f } }, DurationUnit.MINUTE,
+                            StorageType.DENSE),
+                    29, new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 0x42, 0xF0, 0x00, 0x00, 0x43, 0x16, 0x00, 0x00, 0x42, 0xF0,
+                            0x00, 0x00, 0x43, 0x16, 0x00, 0x00 }));
+
+            testTypes.add(new TestType(
+                    new DurationMatrix(new double[][] { { 20.0, 25.0 }, { 20.0, 25.0 } }, DurationUnit.MINUTE,
+                            StorageType.DENSE),
+                    30,
+                    new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70,
+                            0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70,
+                            0x00, 0x00, 0x00, 0x00, 0x00 }));
+
+            FloatDurationVector fdv =
+                    new FloatDurationVector(new float[] { 2.0f, 2.5f }, DurationUnit.MINUTE, StorageType.DENSE);
+            FloatMoneyPerAreaVector fmv = new FloatMoneyPerAreaVector(new float[] { 200.0f, 200.0f },
+                    new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE);
+            AbstractFloatVector<?, ?>[] afv = new AbstractFloatVector[] { fdv, fmv };
+            testTypes.add(new TestType(afv, 31, new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x42, 0xF0,
+                    0x00, 0x00, 0x3C, 0xA3, 0xD7, 0x0A, 0x43, 0x16, 0x00, 0x00, 0x3C, 0xA3, 0xD7, 0x0A }));
+
+            DurationVector ddv = new DurationVector(new double[] { 20.0, 25.0 }, DurationUnit.MINUTE, StorageType.DENSE);
+            MoneyPerAreaVector dmv = new MoneyPerAreaVector(new double[] { 20000.0, 20000.0 },
+                    new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE);
+            AbstractDoubleVector<?, ?>[] adv = new AbstractDoubleVector[] { ddv, dmv };
+            testTypes.add(new TestType(adv, 32,
+                    new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00,
+                            0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70, 0x00, 0x00, 0x00, 0x00,
+                            0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
+
+        }
+        catch (ValueException ve)
+        {
+            ve.printStackTrace();
+            fail(ve.getMessage());
+        }
     }
 
     /**
@@ -425,13 +494,10 @@ public class TestTypedMessage
                                 + ", original class = " + test.content[j].getClass() + ", decoded class = "
                                 + decoded[j].getClass());
 
-                    if (test.type < 11) // simple types
-                    {
-                        if (!test.content[j].equals(decoded[j]))
-                            fail("testEncodeDecodePrimitiveBigEndian failed for " + test.content[0].getClass()
-                                    + ", original value = " + test.content[j].toString() + ", decoded value = "
-                                    + decoded[j].toString());
-                    }
+                    if (!test.content[j].equals(decoded[j]))
+                        fail("testEncodeDecodePrimitiveBigEndian failed for " + test.content[0].getClass()
+                                + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                + decoded[j].toString());
                 }
             }
         }
@@ -696,15 +762,16 @@ public class TestTypedMessage
      * {@link org.sim0mq.message.TypedMessage#encodeUTF16(java.lang.Object[])}. We test whether
      * {@link org.sim0mq.message.TypedMessage#decode(byte[])} gives the same results after encode - decode.
      * @throws Sim0MQException on encoding error
+     * @throws ValueException on encoding error
      */
     @SuppressWarnings("checkstyle:needbraces")
     @Test
-    public void testEncodeDecodeScalarBigEndian() throws Sim0MQException
+    public void testEncodeDecodeUnitsBigEndian() throws Sim0MQException, ValueException
     {
         for (int i = 0; i < testTypes.size(); i++)
         {
             TestType test = testTypes.get(i);
-            if (test.type >= 25 && test.type <= 26)
+            if (test.type >= 25 && test.type <= 32)
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
@@ -773,6 +840,70 @@ public class TestTypedMessage
                                     + ((AbstractDoubleScalar<?, ?>) test.content[j]).getUnit() + ", decoded unit = "
                                     + ((AbstractDoubleScalar<?, ?>) decoded[j]).getUnit());
                     }
+
+                    else if (test.type == 27) // FloatVector types
+                    {
+                        AbstractFloatVector<?, ?> fv1 = (AbstractFloatVector<?, ?>) test.content[j];
+                        AbstractFloatVector<?, ?> fv2 = (AbstractFloatVector<?, ?>) decoded[j];
+                        assertEquals("testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
+                                + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                + decoded[j].toString(), fv1.size(), fv2.size());
+                        assertTrue("testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
+                                + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                + decoded[j].toString(), fv1.getUnit().equalsIgnoreNaming(fv2.getUnit()));
+                        assertEquals("testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
+                                + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                + decoded[j].toString(), fv1.getClass(), fv2.getClass());
+                        for (int index = 0; index < fv1.size(); index++)
+                        {
+                            assertEquals(
+                                    "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
+                                            + test.content[0].getClass() + ", original value = " + test.content[j].toString()
+                                            + ", decoded value = " + decoded[j].toString(),
+                                    fv1.getSI(index), fv2.getSI(index), 0.001);
+                        }
+                    }
+
+                    else if (test.type == 28) // DoubleVector types
+                    {
+
+                        AbstractDoubleVector<?, ?> dv1 = (AbstractDoubleVector<?, ?>) test.content[j];
+                        AbstractDoubleVector<?, ?> dv2 = (AbstractDoubleVector<?, ?>) decoded[j];
+                        assertEquals("testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
+                                + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                + decoded[j].toString(), dv1.size(), dv2.size());
+                        assertTrue("testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
+                                + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                + decoded[j].toString(), dv1.getUnit().equalsIgnoreNaming(dv2.getUnit()));
+                        assertEquals("testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
+                                + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                + decoded[j].toString(), dv1.getClass(), dv2.getClass());
+                        for (int index = 0; index < dv1.size(); index++)
+                        {
+                            assertEquals(
+                                    "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
+                                            + test.content[0].getClass() + ", original value = " + test.content[j].toString()
+                                            + ", decoded value = " + decoded[j].toString(),
+                                    dv1.getSI(index), dv2.getSI(index), 0.001);
+                        }
+                    }
+
+                    else if (test.type == 29) // FloatMatrix types
+                    {
+                        if (!test.content[j].equals(decoded[j]))
+                            fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
+                                    + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                    + decoded[j].toString());
+                    }
+
+                    else if (test.type == 30) // DoubleMattrix types
+                    {
+                        if (!test.content[j].equals(decoded[j]))
+                            fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
+                                    + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                    + decoded[j].toString());
+                    }
+
                 }
             }
         }
