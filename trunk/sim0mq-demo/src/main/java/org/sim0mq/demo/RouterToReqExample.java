@@ -3,6 +3,7 @@ package org.sim0mq.demo;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 /**
@@ -16,25 +17,36 @@ import org.zeromq.ZMQ;
  * initial version Apr 20, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class RouterToReqExample
+public final class RouterToReqExample
 {
     /** random stream. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     static Random rand = new Random();
 
     /** static counter for worker. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     static AtomicInteger staticWorkerRecv = new AtomicInteger();
 
     /** static counter for broker identity. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     static AtomicInteger staticBrokerIdRecv = new AtomicInteger();
 
     /** static counter for broker Message. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     static AtomicInteger staticBrokerMsgRecv = new AtomicInteger();
 
     /** completed. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     static AtomicInteger completed = new AtomicInteger();
 
     /** how many worker threads? */
     private static final int NBR_WORKERS = 100;
+
+    /** */
+    private RouterToReqExample()
+    {
+        // Utility clss
+    }
 
     /** a worker thread... */
     private static class Worker extends Thread
@@ -51,18 +63,22 @@ public class RouterToReqExample
             this.workerId = workerId;
         }
 
+        /** */
+        private static final long TIMEOUT = 100; // ms
+        
+        /** */
+        private static final int RETRIES = 3;
+
         @Override
         public void run()
         {
-            long TIMEOUT = 100; // ms
-            int RETRIES = 3;
-            String ENDPOINT = "tcp://localhost:5671";
+            String endpoint = "tcp://localhost:5671";
 
-            ZMQ.Context context = ZMQ.context(1);
-            ZMQ.Socket worker = context.socket(ZMQ.REQ);
+            ZContext context = new ZContext(1);
+            ZMQ.Socket worker = context.createSocket(ZMQ.REQ);
             worker.setIdentity(this.workerId.getBytes());
 
-            worker.connect(ENDPOINT);
+            worker.connect(endpoint);
 
             int total = 0;
             while (true)
@@ -81,7 +97,7 @@ public class RouterToReqExample
                     }
                     while (workloadResponse == null || workloadResponse.isEmpty())
                     {
-                        ZMQ.Poller poller = context.poller(1);
+                        ZMQ.Poller poller = context.createPoller(1);
                         poller.register(worker, ZMQ.Poller.POLLIN);
                         int signalled = poller.poll(TIMEOUT);
                         poller.unregister(worker);
@@ -105,14 +121,18 @@ public class RouterToReqExample
                             // {
                             // workloadResponse = worker.recvStr();
                             if (workloadResponse == null)
+                            {
                                 break; // Interrupted
+                            }
                             if (workloadResponse.equals("Work harder") || workloadResponse.equals("Fired!"))
                             {
                                 retriesLeft = RETRIES;
                                 ok = true;
                             }
                             else
+                            {
                                 System.err.printf("E: malformed reply from server: %s\n", workloadResponse);
+                            }
 
                         }
                         else if (--retriesLeft == 0)
@@ -126,9 +146,9 @@ public class RouterToReqExample
                             // Old socket is confused; close it and open a new one
                             worker.close();
                             System.err.println("I: reconnecting to server\n");
-                            worker = context.socket(ZMQ.REQ);
+                            worker = context.createSocket(ZMQ.REQ);
                             worker.setIdentity(this.workerId.getBytes());
-                            worker.connect(ENDPOINT);
+                            worker.connect(endpoint);
                             // Send message again, on new socket
                             worker.send(message);
                         }
@@ -156,7 +176,8 @@ public class RouterToReqExample
             }
 
             worker.close();
-            context.term();
+            context.destroy();
+            context.close();
         }
     }
 
@@ -166,10 +187,10 @@ public class RouterToReqExample
      * @param args args, can be empty
      * @throws Exception on error
      */
-    public static void main(String[] args) throws Exception
+    public static void main(final String[] args) throws Exception
     {
-        ZMQ.Context context = ZMQ.context(1);
-        ZMQ.Socket broker = context.socket(ZMQ.ROUTER);
+        ZContext context = new ZContext(1);
+        ZMQ.Socket broker = context.createSocket(ZMQ.ROUTER);
         broker.bind("tcp://*:5671");
 
         System.out.println("Recv buf size = " + broker.getReceiveBufferSize());
@@ -266,7 +287,8 @@ public class RouterToReqExample
         System.err.println("staticBrokerMsgRecv = " + staticBrokerMsgRecv);
 
         broker.close();
-        context.term();
+        context.destroy();
+        context.close();
         System.exit(0);
     }
 
@@ -277,12 +299,12 @@ public class RouterToReqExample
      * @param resend string to resend if it fails
      * @return the read string after potential resending of the request or even reconnecting
      */
-    static String recvStringWithTimeout(final ZMQ.Context context, final ZMQ.Socket socket, final long timeoutMs,
+    static String recvStringWithTimeout(final ZContext context, final ZMQ.Socket socket, final long timeoutMs,
             final String resend)
     {
         for (int i = 0; i < 5; i++)
         {
-            ZMQ.Poller poller = context.poller(1);
+            ZMQ.Poller poller = context.createPoller(1);
             poller.register(socket, ZMQ.Poller.POLLIN);
             int signalled = poller.poll(timeoutMs);
             poller.unregister(socket);

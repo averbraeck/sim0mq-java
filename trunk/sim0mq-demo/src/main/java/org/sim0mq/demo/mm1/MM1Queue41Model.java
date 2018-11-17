@@ -2,7 +2,6 @@ package org.sim0mq.demo.mm1;
 
 import java.rmi.RemoteException;
 
-import nl.tudelft.simulation.dsol.DSOLModel;
 import nl.tudelft.simulation.dsol.SimRuntimeException;
 import nl.tudelft.simulation.dsol.formalisms.Resource;
 import nl.tudelft.simulation.dsol.formalisms.flow.Delay;
@@ -11,11 +10,11 @@ import nl.tudelft.simulation.dsol.formalisms.flow.Release;
 import nl.tudelft.simulation.dsol.formalisms.flow.Seize;
 import nl.tudelft.simulation.dsol.formalisms.flow.StationInterface;
 import nl.tudelft.simulation.dsol.formalisms.flow.statistics.Utilization;
+import nl.tudelft.simulation.dsol.model.AbstractDSOLModel;
 import nl.tudelft.simulation.dsol.simtime.SimTimeDouble;
 import nl.tudelft.simulation.dsol.simtime.dist.DistContinuousSimTime;
-import nl.tudelft.simulation.dsol.simtime.dist.DistContinuousTime;
+import nl.tudelft.simulation.dsol.simtime.dist.DistContinuousSimulationTime;
 import nl.tudelft.simulation.dsol.simulators.DEVSSimulatorInterface;
-import nl.tudelft.simulation.dsol.simulators.SimulatorInterface;
 import nl.tudelft.simulation.dsol.statistics.Tally;
 import nl.tudelft.simulation.jstats.distributions.DistConstant;
 import nl.tudelft.simulation.jstats.distributions.DistDiscreteConstant;
@@ -32,13 +31,10 @@ import nl.tudelft.simulation.jstats.streams.StreamInterface;
  * @version 2.0 21.09.2003 <br>
  * @author <a href="https://www.linkedin.com/in/peterhmjacobs">Peter Jacobs </a>
  */
-public class MM1Queue41Model implements DSOLModel.TimeDouble
+public class MM1Queue41Model extends AbstractDSOLModel.TimeDouble<DEVSSimulatorInterface.TimeDouble>
 {
     /** The default serial version UID for serializable classes. */
     private static final long serialVersionUID = 1L;
-
-    /** the simulator. */
-    private DEVSSimulatorInterface.TimeDouble devsSimulator;
 
     /** tally dN. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -53,19 +49,29 @@ public class MM1Queue41Model implements DSOLModel.TimeDouble
     Utilization uN;
 
     /** PARAMETER iat. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     public double iat = Double.NaN;
 
     /** PARAMETER serviceTime. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     public double serviceTime = Double.NaN;
-    
+
     /** PARAMETER seed. */
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     public long seed = 1;
-    
+
+    /**
+     * Construct the model.
+     * @param simulator the simulator
+     */
+    public MM1Queue41Model(final DEVSSimulatorInterface.TimeDouble simulator)
+    {
+        super(simulator);
+    }
 
     /** {@inheritDoc} */
     @Override
-    public final void constructModel(final SimulatorInterface<Double, Double, SimTimeDouble> simulator)
-            throws SimRuntimeException, RemoteException
+    public final void constructModel() throws SimRuntimeException
     {
         if (Double.isNaN(this.iat))
         {
@@ -76,27 +82,26 @@ public class MM1Queue41Model implements DSOLModel.TimeDouble
             throw new SimRuntimeException("Parameter servicetime not defined for model");
         }
 
-        this.devsSimulator = (DEVSSimulatorInterface.TimeDouble) simulator;
         StreamInterface defaultStream = new MersenneTwister(this.seed);
 
         // The Generator
-        Generator.TimeDouble generator = new Generator.TimeDouble(this.devsSimulator, Object.class, null);
-        generator.setInterval(new DistContinuousTime.TimeDouble(new DistExponential(defaultStream, this.iat)));
+        Generator.TimeDouble generator = new Generator.TimeDouble(getSimulator(), Object.class, null);
+        generator.setInterval(new DistContinuousSimulationTime.TimeDouble(new DistExponential(defaultStream, this.iat)));
         generator.setStartTime(new DistContinuousSimTime.TimeDouble(new DistConstant(defaultStream, 0.0)));
         generator.setBatchSize(new DistDiscreteConstant(defaultStream, 1));
         generator.setMaxNumber(1000);
 
         // The queue, the resource and the release
-        Resource<Double, Double, SimTimeDouble> resource = new Resource<>(this.devsSimulator, 1.0);
+        Resource<Double, Double, SimTimeDouble> resource = new Resource<>(getSimulator(), 1.0);
 
         // created a resource
-        StationInterface queue = new Seize.TimeDouble(this.devsSimulator, resource);
-        StationInterface release = new Release.TimeDouble(this.devsSimulator, resource, 1.0);
+        StationInterface queue = new Seize.TimeDouble(getSimulator(), resource);
+        StationInterface release = new Release.TimeDouble(getSimulator(), resource, 1.0);
 
         // The server
-        DistContinuousTime.TimeDouble serviceTimeDistribution =
-                new DistContinuousTime.TimeDouble(new DistExponential(defaultStream, this.serviceTime));
-        StationInterface server = new Delay.TimeDouble(this.devsSimulator, serviceTimeDistribution);
+        DistContinuousSimulationTime.TimeDouble serviceTimeDistribution =
+                new DistContinuousSimulationTime.TimeDouble(new DistExponential(defaultStream, this.serviceTime));
+        StationInterface server = new Delay.TimeDouble(getSimulator(), serviceTimeDistribution);
 
         // The flow
         generator.setDestination(queue);
@@ -104,15 +109,16 @@ public class MM1Queue41Model implements DSOLModel.TimeDouble
         server.setDestination(release);
 
         // Statistics
-        this.dN = new Tally<>("d(n)", this.devsSimulator, queue, Seize.DELAY_TIME);
-        this.qN = new Tally<>("q(n)", this.devsSimulator, queue, Seize.QUEUE_LENGTH_EVENT);
-        this.uN = new Utilization("u(n)", this.devsSimulator, server);
+        try
+        {
+            this.dN = new Tally<>("d(n)", getSimulator(), queue, Seize.DELAY_TIME);
+            this.qN = new Tally<>("q(n)", getSimulator(), queue, Seize.QUEUE_LENGTH_EVENT);
+            this.uN = new Utilization("u(n)", getSimulator(), server);
+        }
+        catch (RemoteException exception)
+        {
+            exception.printStackTrace();
+        }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public final SimulatorInterface.TimeDouble getSimulator()
-    {
-        return this.devsSimulator;
-    }
 }

@@ -13,6 +13,7 @@ import org.sim0mq.Sim0MQException;
 import org.sim0mq.federationmanager.ModelState;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 /**
@@ -25,13 +26,13 @@ import org.zeromq.ZMQ;
  * initial version April 10, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class MM1FederationManager20
+public final class MM1FederationManager20
 {
     /**
      * @param args parameters for main
      * @throws Sim0MQException on error
      */
-    public static void main(String[] args) throws Sim0MQException
+    public static void main(final String[] args) throws Sim0MQException
     {
         if (args.length < 4)
         {
@@ -93,7 +94,7 @@ public class MM1FederationManager20
      * @param localSk3 local/sk-3 to indicate where the federate starter and model can be found
      * @throws Sim0MQException on error
      */
-    public MM1FederationManager20(final String federationName, final int fmPort, final int fsPort, final String localSk3)
+    private MM1FederationManager20(final String federationName, final int fmPort, final int fsPort, final String localSk3)
             throws Sim0MQException
     {
         AtomicLong messageCount = new AtomicLong(0L);
@@ -110,7 +111,7 @@ public class MM1FederationManager20
                 {
                     final int nr = nrRunning.getAndIncrement();
                     StateMachine stateMachine = null;
-                    System.out.println("inc modelNr to " + nrRunning.get());
+                    System.out.println("inc modelNr to " + nr);
                     try
                     {
                         stateMachine = new StateMachine(messageCount, federationName, fsPort, localSk3, nr);
@@ -119,9 +120,12 @@ public class MM1FederationManager20
                     {
                         exception.printStackTrace();
                     }
-                    nrRunning.decrementAndGet();
-                    System.out.println("dec modelNr to " + nrRunning.get());
-                    statMap.put(nr, stateMachine.getStatistics());
+                    int decNr = nrRunning.decrementAndGet();
+                    System.out.println("dec modelNr to " + decNr);
+                    synchronized (statMap)
+                    {
+                        statMap.put(nr, stateMachine.getStatistics());
+                    }
                 }
             }.start();
         }
@@ -131,16 +135,19 @@ public class MM1FederationManager20
             Thread.yield();
         }
 
-        for (int nr : statMap.keySet())
+        synchronized (statMap)
         {
-            Map<String, Number> stats = statMap.get(nr);
-            StringBuilder s = new StringBuilder();
-            s.append(String.format("%2d  ", nr));
-            for (String code : stats.keySet())
+            for (int nr : statMap.keySet())
             {
-                s.append(String.format("%10s=%10.4f   ", code, stats.get(code).doubleValue()));
+                Map<String, Number> stats = statMap.get(nr);
+                StringBuilder s = new StringBuilder();
+                s.append(String.format("%2d  ", nr));
+                for (String code : stats.keySet())
+                {
+                    s.append(String.format("%10s=%10.4f   ", code, stats.get(code).doubleValue()));
+                }
+                System.out.println(s.toString());
             }
-            System.out.println(s.toString());
         }
     }
 
@@ -167,10 +174,10 @@ public class MM1FederationManager20
         private String modelName;
 
         /** the federate starter socket. */
-        protected ZMQ.Socket fsSocket;
+        private ZMQ.Socket fsSocket;
 
         /** the context. */
-        private ZMQ.Context fmContext;
+        private ZContext fmContext;
 
         /** the message counter. */
         private AtomicLong messageCount;
@@ -186,18 +193,18 @@ public class MM1FederationManager20
          * @param modelNr sequence number of the model to run
          * @throws Sim0MQException on error
          */
-        StateMachine(final AtomicLong messageCount, final String federationName, final int fsPort,
-                final String localSk3, final int modelNr) throws Sim0MQException
+        StateMachine(final AtomicLong messageCount, final String federationName, final int fsPort, final String localSk3,
+                final int modelNr) throws Sim0MQException
         {
-            this.fmContext = ZMQ.context(1);
+            this.fmContext = new ZContext(1);
 
-            this.fsSocket = this.fmContext.socket(ZMQ.REQ);
+            this.fsSocket = this.fmContext.createSocket(ZMQ.REQ);
             this.fsSocket.setIdentity(UUID.randomUUID().toString().getBytes());
 
             this.modelName = "MM1." + modelNr;
             this.messageCount = messageCount;
 
-            this.modelSocket = this.fmContext.socket(ZMQ.REQ);
+            this.modelSocket = this.fmContext.createSocket(ZMQ.REQ);
             this.modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
 
             this.state = ModelState.NOT_STARTED;
@@ -249,7 +256,8 @@ public class MM1FederationManager20
 
             this.fsSocket.close();
             this.modelSocket.close();
-            this.fmContext.term();
+            this.fmContext.destroy();
+            this.fmContext.close();
         }
 
         /**
@@ -265,19 +273,19 @@ public class MM1FederationManager20
             byte[] fm1Message;
             if (localSk3.equals("sk-3"))
             {
-                fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", this.messageCount.getAndIncrement(),
-                        MessageStatus.NEW, this.modelName, "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar",
-                        this.modelName + " %PORT%", "/home/alexandv/sim0mq/MM1", "",
+                fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1",
+                        this.messageCount.getAndIncrement(), MessageStatus.NEW, this.modelName, "java8+", "-jar",
+                        "/home/alexandv/sim0mq/MM1/mm1.jar", this.modelName + " %PORT%", "/home/alexandv/sim0mq/MM1", "",
                         "/home/alexandv/sim0mq/MM1/out_" + this.modelName + ".txt",
                         "/home/alexandv/sim0mq/MM1/err_" + this.modelName + ".txt", false, true, true);
                 this.fsSocket.connect("tcp://130.161.3.179:" + fsPort);
             }
             else
             {
-                fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", this.messageCount.getAndIncrement(),
-                        MessageStatus.NEW, this.modelName, "java8+", "-jar", "e:/MM1/mm1.jar", this.modelName + " %PORT%",
-                        "e:/MM1", "", "e:/MM1/out_" + this.modelName + ".txt", "e:/MM1/err_" + this.modelName + ".txt", false,
-                        true, true);
+                fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1",
+                        this.messageCount.getAndIncrement(), MessageStatus.NEW, this.modelName, "java8+", "-jar",
+                        "e:/MM1/mm1.jar", this.modelName + " %PORT%", "e:/MM1", "", "e:/MM1/out_" + this.modelName + ".txt",
+                        "e:/MM1/err_" + this.modelName + ".txt", false, true, true);
                 this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
             }
             this.fsSocket.send(fm1Message);

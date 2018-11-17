@@ -2,9 +2,8 @@ package org.sim0mq.message;
 
 import java.io.Serializable;
 
+import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
-
-import nl.tudelft.simulation.language.Throw;
 
 /**
  * The abstract body of the message with the first fields of every Sim0MQ message.

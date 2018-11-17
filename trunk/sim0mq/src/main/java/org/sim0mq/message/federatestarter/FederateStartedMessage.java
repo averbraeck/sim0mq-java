@@ -1,11 +1,10 @@
 package org.sim0mq.message.federatestarter;
 
+import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
-
-import nl.tudelft.simulation.language.Throw;
 
 /**
  * FederateStarted, FS.2. Message sent by the Federate Starter to the Federation Manager in response to message FM.1.

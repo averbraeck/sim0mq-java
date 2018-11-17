@@ -7,14 +7,13 @@ import org.djunits.value.vdouble.scalar.Duration;
 import org.djunits.value.vdouble.scalar.Time;
 import org.djunits.value.vfloat.scalar.FloatDuration;
 import org.djunits.value.vfloat.scalar.FloatTime;
+import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
 import org.sim0mq.message.types.NumberDuration;
 import org.sim0mq.message.types.NumberTime;
-
-import nl.tudelft.simulation.language.Throw;
 
 /**
  * SimRunControlMessage, FM.2. Message sent by the Federation Manager to the Model to initialize a simulation.

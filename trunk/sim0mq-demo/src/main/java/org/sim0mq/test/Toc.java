@@ -12,8 +12,14 @@ import org.zeromq.ZMQ;
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  * @version Oct 21, 2016
  */
-public class Toc
+public final class Toc
 {
+    /** */
+    private Toc()
+    {
+        // Utility Class.
+    }
+    
     /**
      * @param args command line arguments
      * @throws Sim0MQException on error

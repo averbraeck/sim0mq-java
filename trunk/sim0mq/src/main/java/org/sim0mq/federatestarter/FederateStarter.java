@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.djutils.io.URLResource;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
@@ -22,8 +23,6 @@ import org.sim0mq.message.federatestarter.FederateStartedMessage;
 import org.sim0mq.message.federationmanager.StartFederateMessage;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-
-import nl.tudelft.simulation.language.io.URLResource;
 
 /**
  * The FederateStarter start listening on the given port for messages to start components. Report back via the call-back port on

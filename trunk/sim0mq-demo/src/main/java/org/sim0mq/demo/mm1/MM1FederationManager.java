@@ -10,6 +10,7 @@ import org.sim0mq.Sim0MQException;
 import org.sim0mq.federationmanager.ModelState;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 /**
@@ -34,7 +35,7 @@ public class MM1FederationManager
     private ZMQ.Socket fsSocket;
 
     /** the context. */
-    private ZMQ.Context fmContext;
+    private ZContext fmContext;
 
     /** message count. */
     private long messageCount = 0;
@@ -50,10 +51,10 @@ public class MM1FederationManager
     public MM1FederationManager(final String federationName, final int fmPort, final int fsPort, final String localSk3)
             throws Sim0MQException
     {
-        this.fmContext = ZMQ.context(1);
-        this.modelSocket = this.fmContext.socket(ZMQ.REQ);
+        this.fmContext = new ZContext(1);
+        this.modelSocket = this.fmContext.createSocket(ZMQ.REQ);
         this.modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
-        this.fsSocket = this.fmContext.socket(ZMQ.REQ);
+        this.fsSocket = this.fmContext.createSocket(ZMQ.REQ);
         this.fsSocket.setIdentity(UUID.randomUUID().toString().getBytes());
 
         this.state = ModelState.NOT_STARTED;
@@ -105,7 +106,8 @@ public class MM1FederationManager
 
         this.modelSocket.close();
         this.fsSocket.close();
-        this.fmContext.term();
+        this.fmContext.destroy();
+        this.fmContext.close();
     }
 
     /**
@@ -121,16 +123,17 @@ public class MM1FederationManager
         byte[] fm1Message;
         if (localSk3.equals("sk-3"))
         {
-            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
-                    "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 %PORT%", "/home/alexandv/sim0mq/MM1",
-                    "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt", false, false, false);
+            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount,
+                    MessageStatus.NEW, "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 %PORT%",
+                    "/home/alexandv/sim0mq/MM1", "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt",
+                    false, false, false);
             this.fsSocket.connect("tcp://130.161.3.179:" + fsPort);
         }
         else
         {
-            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
-                    "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 %PORT%", "e:/MM1", "", "e:/MM1/out.txt", "e:/MM1/err.txt",
-                    false, false, false);
+            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount,
+                    MessageStatus.NEW, "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 %PORT%", "e:/MM1", "",
+                    "e:/MM1/out.txt", "e:/MM1/err.txt", false, false, false);
             this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
         }
         this.fsSocket.send(fm1Message);
@@ -235,7 +238,8 @@ public class MM1FederationManager
     private void sendSimStart(final String federationName) throws Sim0MQException
     {
         byte[] fm4Message;
-        fm4Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.4", ++this.messageCount, MessageStatus.NEW);
+        fm4Message =
+                SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.4", ++this.messageCount, MessageStatus.NEW);
         this.modelSocket.send(fm4Message);
 
         byte[] reply = this.modelSocket.recv(0);
@@ -368,8 +372,8 @@ public class MM1FederationManager
     private void killFederate(final String federationName) throws Sim0MQException
     {
         byte[] fm8Message;
-        fm8Message =
-                SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, MessageStatus.NEW, "MM1.1");
+        fm8Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, MessageStatus.NEW,
+                "MM1.1");
         this.fsSocket.send(fm8Message);
 
         byte[] reply = this.fsSocket.recv(0);
@@ -395,7 +399,7 @@ public class MM1FederationManager
      * @param args parameters for main
      * @throws Sim0MQException on error
      */
-    public static void main(String[] args) throws Sim0MQException
+    public static void main(final String[] args) throws Sim0MQException
     {
         if (args.length < 4)
         {
