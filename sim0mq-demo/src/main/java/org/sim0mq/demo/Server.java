@@ -3,6 +3,7 @@ package org.sim0mq.demo;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 /**
@@ -13,18 +14,24 @@ import org.zeromq.ZMQ;
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  * @version Oct 21, 2016
  */
-public class Server
+public final class Server
 {
+    /** */
+    private Server()
+    {
+        // Utility class
+    }
+    
     /**
      * @param args command line arguments
      * @throws Sim0MQException on error
      */
-    public static void main(String[] args) throws Sim0MQException
+    public static void main(final String[] args) throws Sim0MQException
     {
-        ZMQ.Context context = ZMQ.context(1);
+        ZContext context = new ZContext(1);
 
         // Socket to talk to clients
-        ZMQ.Socket responder = context.socket(ZMQ.REP);
+        ZMQ.Socket responder = context.createSocket(ZMQ.REP);
         responder.bind("tcp://*:5556");
 
         while (!Thread.currentThread().isInterrupted())
@@ -36,9 +43,11 @@ public class Server
 
             // send a reply
             Object[] reply = new Object[] { true, -28.2, 77000, "Bangladesh" };
-            responder.send(SimulationMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, reply), 0);
+            responder.send(SimulationMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, reply),
+                    0);
         }
         responder.close();
-        context.term();
+        context.destroy();
+        context.close();
     }
 }

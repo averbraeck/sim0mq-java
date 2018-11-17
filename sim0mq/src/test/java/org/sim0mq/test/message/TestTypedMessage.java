@@ -51,15 +51,19 @@ public class TestTypedMessage
     protected static class TestType
     {
         /** the content, 1 field. */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         final Object[] content;
 
         /** the value for comparison. */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         final Object value;
 
         /** type field we expect. */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         final int type;
 
         /** the byte pattern we expect, as ints to allow 0..255. */
+        @SuppressWarnings("checkstyle:visibilitymodifier")
         final int[] bytes;
 
         /**

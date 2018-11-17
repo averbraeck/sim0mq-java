@@ -10,13 +10,14 @@ import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
 import org.sim0mq.message.TypedMessage;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 import nl.tudelft.simulation.dsol.SimRuntimeException;
 import nl.tudelft.simulation.dsol.experiment.Replication;
 import nl.tudelft.simulation.dsol.experiment.ReplicationMode;
-import nl.tudelft.simulation.dsol.simtime.SimTimeDouble;
 import nl.tudelft.simulation.dsol.simulators.DEVSSimulator;
+import nl.tudelft.simulation.dsol.simulators.DEVSSimulatorInterface;
 
 /**
  * <p>
@@ -40,7 +41,7 @@ public class MM1Queue41Application
     private ZMQ.Socket fsSocket;
 
     /** the context. */
-    private ZMQ.Context fsContext;
+    private ZContext fsContext;
 
     /** federation run id. */
     private Object federationRunId;
@@ -69,9 +70,9 @@ public class MM1Queue41Application
     protected MM1Queue41Application(final String modelId, final int port)
             throws SimRuntimeException, RemoteException, NamingException, Sim0MQException
     {
-        this.modelId = modelId.trim();
-        this.model = new MM1Queue41Model();
         this.simulator = new DEVSSimulator.TimeDouble();
+        this.modelId = modelId.trim();
+        this.model = new MM1Queue41Model(this.simulator);
         startListener(port);
     }
 
@@ -82,9 +83,9 @@ public class MM1Queue41Application
      */
     protected void startListener(final int port) throws Sim0MQException
     {
-        this.fsContext = ZMQ.context(1);
+        this.fsContext = new ZContext(1);
 
-        this.fsSocket = this.fsContext.socket(ZMQ.ROUTER);
+        this.fsSocket = this.fsContext.createSocket(ZMQ.ROUTER);
         this.fsSocket.bind("tcp://*:" + port);
 
         System.out.println("Model started. Listening at port: " + port);
@@ -152,7 +153,7 @@ public class MM1Queue41Application
             }
         }
     }
-    
+
     /**
      * Process FS.1 message and send MC.1 message back.
      * @param identity reply id for REQ-ROUTER pattern
@@ -171,7 +172,7 @@ public class MM1Queue41Application
         else if (this.simulator.getSimulatorTime() != null && this.simulator.getReplication() != null
                 && this.simulator.getReplication().getTreatment() != null)
         {
-            if (this.simulator.getSimulatorTime().ge(this.simulator.getReplication().getTreatment().getEndTime()))
+            if (this.simulator.getSimulatorTime() >= this.simulator.getReplication().getTreatment().getEndTime())
             {
                 status = "ended";
             }
@@ -185,7 +186,7 @@ public class MM1Queue41Application
         byte[] mc1Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.1",
                 ++this.messageCount, MessageStatus.NEW, replyToMessageId, status, "");
         this.fsSocket.send(mc1Message, 0);
-        
+
         System.out.println("Sent MC.1");
         System.out.flush();
     }
@@ -262,8 +263,8 @@ public class MM1Queue41Application
         String error = "";
         try
         {
-            Replication<Double, Double, SimTimeDouble> replication =
-                    new Replication<>("rep1", new SimTimeDouble(0.0), this.warmupTime.si, this.runTime.si, this.model);
+            Replication.TimeDouble<DEVSSimulatorInterface.TimeDouble> replication =
+                    Replication.TimeDouble.create("rep1", 0.0, this.warmupTime.si, this.runTime.si, this.model);
             this.simulator.initialize(replication, ReplicationMode.TERMINATING);
             this.simulator.scheduleEventAbs(100.0, this, this, "terminate", null);
 
@@ -280,7 +281,7 @@ public class MM1Queue41Application
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
         this.fsSocket.send(mc2Message, 0);
-        
+
         System.out.println("Sent MC.2");
         System.out.flush();
     }
@@ -306,7 +307,7 @@ public class MM1Queue41Application
             switch (parameterName)
             {
                 case "seed":
-                    this.model.seed= ((Number) parameterValueField).longValue();
+                    this.model.seed = ((Number) parameterValueField).longValue();
                     break;
 
                 case "iat":
@@ -334,7 +335,7 @@ public class MM1Queue41Application
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
         this.fsSocket.send(mc2Message, 0);
-        
+
         System.out.println("Sent MC.2");
         System.out.flush();
     }
@@ -398,7 +399,7 @@ public class MM1Queue41Application
 
             System.out.println("Sent MC.3");
             System.out.flush();
-}
+        }
         else
         {
             byte[] mc4Message = SimulationMessage.encodeUTF8(this.federationRunId, this.modelId, receiverId, "MC.4",
@@ -406,7 +407,7 @@ public class MM1Queue41Application
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
             this.fsSocket.send(mc4Message, 0);
-            
+
             System.out.println("Sent MC.4");
             System.out.flush();
         }
@@ -418,7 +419,8 @@ public class MM1Queue41Application
     private void processKillFederate()
     {
         this.fsSocket.close();
-        this.fsContext.term();
+        this.fsContext.destroy();
+        this.fsContext.close();
         System.exit(0);
     }
 

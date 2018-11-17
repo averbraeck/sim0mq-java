@@ -3,8 +3,8 @@ package org.sim0mq.message;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.tudelft.simulation.immutablecollections.Immutable;
-import nl.tudelft.simulation.immutablecollections.ImmutableHashMap;
+import org.djutils.immutablecollections.Immutable;
+import org.djutils.immutablecollections.ImmutableHashMap;
 
 /**
  * Message status names and corresponding values when serialized.

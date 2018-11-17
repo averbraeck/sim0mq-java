@@ -40,13 +40,12 @@ import org.djunits.value.vfloat.scalar.FloatMoneyPerVolume;
 import org.djunits.value.vfloat.scalar.FloatScalarUtil;
 import org.djunits.value.vfloat.vector.AbstractFloatVector;
 import org.djunits.value.vfloat.vector.FloatVectorUtil;
+import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.types.Sim0MQDisplayType;
 import org.sim0mq.message.types.Sim0MQTypes;
 import org.sim0mq.message.types.Sim0MQUnitType;
 import org.sim0mq.message.util.EndianUtil;
-
-import nl.tudelft.simulation.language.Throw;
 
 /**
  * Message conversions. These take into account the endianness for coding the different values. Java is by default big-endian.

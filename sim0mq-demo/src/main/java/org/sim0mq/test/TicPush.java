@@ -14,8 +14,14 @@ import org.zeromq.ZMQ;
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  * @version Oct 21, 2016
  */
-public class TicPush
+public final class TicPush
 {
+    /** */
+    private TicPush()
+    {
+        // Utility Class.
+    }
+    
     /**
      * @param args command line arguments
      * @throws Sim0MQException on error

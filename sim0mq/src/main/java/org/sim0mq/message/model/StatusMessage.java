@@ -1,12 +1,11 @@
 package org.sim0mq.message.model;
 
+import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.Sim0MQReply;
 import org.sim0mq.message.SimulationMessage;
-
-import nl.tudelft.simulation.language.Throw;
 
 /**
  * StatusMessage, MC.1. The Model sends this message as a response to RequestStatus messages sent by the Federate Starter or the
