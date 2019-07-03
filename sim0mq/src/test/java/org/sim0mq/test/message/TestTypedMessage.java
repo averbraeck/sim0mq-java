@@ -29,9 +29,11 @@ import org.djunits.value.vfloat.scalar.FloatMoneyPerArea;
 import org.djunits.value.vfloat.vector.AbstractFloatVector;
 import org.djunits.value.vfloat.vector.FloatDurationVector;
 import org.djunits.value.vfloat.vector.FloatMoneyPerAreaVector;
+import org.djutils.serialization.EndianUtil;
+import org.djutils.serialization.SerializationException;
+import org.djutils.serialization.TypedMessage;
 import org.junit.Test;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.TypedMessage;
 
 /**
  * <p>
@@ -73,7 +75,7 @@ public class TestTypedMessage
          */
         public TestType(final Object value, final int type, final int[] bytes)
         {
-            this.content = new Object[] { value };
+            this.content = new Object[] {value};
             this.value = value;
             this.type = type;
             this.bytes = bytes;
@@ -82,84 +84,84 @@ public class TestTypedMessage
 
     static
     {
-        testTypes.add(new TestType((byte) 0, 0, new int[] { 0 }));
-        testTypes.add(new TestType((byte) 1, 0, new int[] { 1 }));
-        testTypes.add(new TestType((byte) -1, 0, new int[] { 0xFF }));
-        testTypes.add(new TestType((byte) 127, 0, new int[] { 0x7F }));
-        testTypes.add(new TestType((byte) -127, 0, new int[] { 0x81 }));
-        testTypes.add(new TestType((byte) -128, 0, new int[] { 0x80 }));
+        testTypes.add(new TestType((byte) 0, 0, new int[] {0}));
+        testTypes.add(new TestType((byte) 1, 0, new int[] {1}));
+        testTypes.add(new TestType((byte) -1, 0, new int[] {0xFF}));
+        testTypes.add(new TestType((byte) 127, 0, new int[] {0x7F}));
+        testTypes.add(new TestType((byte) -127, 0, new int[] {0x81}));
+        testTypes.add(new TestType((byte) -128, 0, new int[] {0x80}));
 
-        testTypes.add(new TestType((short) 0, 1, new int[] { 0, 0 }));
-        testTypes.add(new TestType((short) 1, 1, new int[] { 0, 1 }));
-        testTypes.add(new TestType((short) -1, 1, new int[] { 0xFF, 0xFF }));
-        testTypes.add(new TestType((short) 127, 1, new int[] { 0, 0x7F }));
-        testTypes.add(new TestType((short) -127, 1, new int[] { 0xFF, 0x81 }));
-        testTypes.add(new TestType((short) 32767, 1, new int[] { 0x7F, 0xFF }));
-        testTypes.add(new TestType((short) -32767, 1, new int[] { 0x80, 0x01 }));
-        testTypes.add(new TestType((short) -32768, 1, new int[] { 0x80, 0x00 }));
+        testTypes.add(new TestType((short) 0, 1, new int[] {0, 0}));
+        testTypes.add(new TestType((short) 1, 1, new int[] {0, 1}));
+        testTypes.add(new TestType((short) -1, 1, new int[] {0xFF, 0xFF}));
+        testTypes.add(new TestType((short) 127, 1, new int[] {0, 0x7F}));
+        testTypes.add(new TestType((short) -127, 1, new int[] {0xFF, 0x81}));
+        testTypes.add(new TestType((short) 32767, 1, new int[] {0x7F, 0xFF}));
+        testTypes.add(new TestType((short) -32767, 1, new int[] {0x80, 0x01}));
+        testTypes.add(new TestType((short) -32768, 1, new int[] {0x80, 0x00}));
 
-        testTypes.add(new TestType(0, 2, new int[] { 0, 0, 0, 0 }));
-        testTypes.add(new TestType(1, 2, new int[] { 0, 0, 0, 1 }));
-        testTypes.add(new TestType(-1, 2, new int[] { 0xFF, 0xFF, 0xFF, 0xFF }));
-        testTypes.add(new TestType(32767, 2, new int[] { 0, 0, 0x7F, 0xFF }));
-        testTypes.add(new TestType(-32767, 2, new int[] { 0xFF, 0xFF, 0x80, 0x01 }));
-        testTypes.add(new TestType(-32768, 2, new int[] { 0xFF, 0xFF, 0x80, 0x00 }));
-        testTypes.add(new TestType(2147483647, 2, new int[] { 0x7F, 0xFF, 0xFF, 0xFF }));
-        testTypes.add(new TestType(-2147483648, 2, new int[] { 0x80, 0x00, 0x00, 0x00 }));
+        testTypes.add(new TestType(0, 2, new int[] {0, 0, 0, 0}));
+        testTypes.add(new TestType(1, 2, new int[] {0, 0, 0, 1}));
+        testTypes.add(new TestType(-1, 2, new int[] {0xFF, 0xFF, 0xFF, 0xFF}));
+        testTypes.add(new TestType(32767, 2, new int[] {0, 0, 0x7F, 0xFF}));
+        testTypes.add(new TestType(-32767, 2, new int[] {0xFF, 0xFF, 0x80, 0x01}));
+        testTypes.add(new TestType(-32768, 2, new int[] {0xFF, 0xFF, 0x80, 0x00}));
+        testTypes.add(new TestType(2147483647, 2, new int[] {0x7F, 0xFF, 0xFF, 0xFF}));
+        testTypes.add(new TestType(-2147483648, 2, new int[] {0x80, 0x00, 0x00, 0x00}));
 
-        testTypes.add(new TestType(0L, 3, new int[] { 0, 0, 0, 0, 0, 0, 0, 0 }));
-        testTypes.add(new TestType(1L, 3, new int[] { 0, 0, 0, 0, 0, 0, 0, 1 }));
-        testTypes.add(new TestType(-1L, 3, new int[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }));
-        testTypes.add(new TestType(9223372036854775807L, 3, new int[] { 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }));
-        testTypes.add(new TestType(-9223372036854775808L, 3, new int[] { 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
+        testTypes.add(new TestType(0L, 3, new int[] {0, 0, 0, 0, 0, 0, 0, 0}));
+        testTypes.add(new TestType(1L, 3, new int[] {0, 0, 0, 0, 0, 0, 0, 1}));
+        testTypes.add(new TestType(-1L, 3, new int[] {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}));
+        testTypes.add(new TestType(9223372036854775807L, 3, new int[] {0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}));
+        testTypes.add(new TestType(-9223372036854775808L, 3, new int[] {0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
 
-        testTypes.add(new TestType(0.0f, 4, new int[] { 0, 0, 0, 0 }));
-        testTypes.add(new TestType(1.0f, 4, new int[] { 0x3F, 0x80, 0x00, 0x00 }));
-        testTypes.add(new TestType(-1.0f, 4, new int[] { 0xBF, 0x80, 0x00, 0x00 }));
-        testTypes.add(new TestType(1.23E10f, 4, new int[] { 0x50, 0x37, 0x48, 0xC7 }));
-        testTypes.add(new TestType(-1.23E10f, 4, new int[] { 0xD0, 0x37, 0x48, 0xC7 }));
-        testTypes.add(new TestType(1.23E-10f, 4, new int[] { 0x2F, 0x07, 0x3D, 0x6C }));
-        testTypes.add(new TestType(-1.23E-10f, 4, new int[] { 0xAF, 0x07, 0x3D, 0x6C }));
-        testTypes.add(new TestType(Float.NaN, 4, new int[] { 0x7F, 0xC0, 0x00, 0x00 }));
-        testTypes.add(new TestType(Float.POSITIVE_INFINITY, 4, new int[] { 0x7F, 0x80, 0x00, 0x00 }));
-        testTypes.add(new TestType(Float.NEGATIVE_INFINITY, 4, new int[] { 0xFF, 0x80, 0x00, 0x00 }));
-        testTypes.add(new TestType(Float.MAX_VALUE, 4, new int[] { 0x7F, 0x7F, 0xFF, 0xFF }));
-        testTypes.add(new TestType(Float.MIN_VALUE, 4, new int[] { 0x00, 0x00, 0x00, 0x01 }));
-        testTypes.add(new TestType(Float.MIN_NORMAL, 4, new int[] { 0x00, 0x80, 0x00, 0x00 }));
+        testTypes.add(new TestType(0.0f, 4, new int[] {0, 0, 0, 0}));
+        testTypes.add(new TestType(1.0f, 4, new int[] {0x3F, 0x80, 0x00, 0x00}));
+        testTypes.add(new TestType(-1.0f, 4, new int[] {0xBF, 0x80, 0x00, 0x00}));
+        testTypes.add(new TestType(1.23E10f, 4, new int[] {0x50, 0x37, 0x48, 0xC7}));
+        testTypes.add(new TestType(-1.23E10f, 4, new int[] {0xD0, 0x37, 0x48, 0xC7}));
+        testTypes.add(new TestType(1.23E-10f, 4, new int[] {0x2F, 0x07, 0x3D, 0x6C}));
+        testTypes.add(new TestType(-1.23E-10f, 4, new int[] {0xAF, 0x07, 0x3D, 0x6C}));
+        testTypes.add(new TestType(Float.NaN, 4, new int[] {0x7F, 0xC0, 0x00, 0x00}));
+        testTypes.add(new TestType(Float.POSITIVE_INFINITY, 4, new int[] {0x7F, 0x80, 0x00, 0x00}));
+        testTypes.add(new TestType(Float.NEGATIVE_INFINITY, 4, new int[] {0xFF, 0x80, 0x00, 0x00}));
+        testTypes.add(new TestType(Float.MAX_VALUE, 4, new int[] {0x7F, 0x7F, 0xFF, 0xFF}));
+        testTypes.add(new TestType(Float.MIN_VALUE, 4, new int[] {0x00, 0x00, 0x00, 0x01}));
+        testTypes.add(new TestType(Float.MIN_NORMAL, 4, new int[] {0x00, 0x80, 0x00, 0x00}));
 
-        testTypes.add(new TestType(0.0, 5, new int[] { 0, 0, 0, 0, 0, 0, 0, 0 }));
-        testTypes.add(new TestType(1.0, 5, new int[] { 0x3F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
-        testTypes.add(new TestType(-1.0, 5, new int[] { 0xBF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
-        testTypes.add(new TestType(1.23E10, 5, new int[] { 0x42, 0x06, 0xE9, 0x18, 0xD8, 0x00, 0x00, 0x00 }));
-        testTypes.add(new TestType(-1.23E10, 5, new int[] { 0xC2, 0x06, 0xE9, 0x18, 0xD8, 0x00, 0x00, 0x00 }));
-        testTypes.add(new TestType(1.23E-10, 5, new int[] { 0x3D, 0xE0, 0xE7, 0xAD, 0x82, 0x22, 0x1E, 0xEC }));
-        testTypes.add(new TestType(-1.23E-10, 5, new int[] { 0xBD, 0xE0, 0xE7, 0xAD, 0x82, 0x22, 0x1E, 0xEC }));
-        testTypes.add(new TestType(Double.NaN, 5, new int[] { 0x7F, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
-        testTypes.add(new TestType(Double.POSITIVE_INFINITY, 5, new int[] { 0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
-        testTypes.add(new TestType(Double.NEGATIVE_INFINITY, 5, new int[] { 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
-        testTypes.add(new TestType(Double.MAX_VALUE, 5, new int[] { 0x7F, 0xEF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }));
-        testTypes.add(new TestType(Double.MIN_VALUE, 5, new int[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 }));
-        testTypes.add(new TestType(Double.MIN_NORMAL, 5, new int[] { 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
+        testTypes.add(new TestType(0.0, 5, new int[] {0, 0, 0, 0, 0, 0, 0, 0}));
+        testTypes.add(new TestType(1.0, 5, new int[] {0x3F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+        testTypes.add(new TestType(-1.0, 5, new int[] {0xBF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+        testTypes.add(new TestType(1.23E10, 5, new int[] {0x42, 0x06, 0xE9, 0x18, 0xD8, 0x00, 0x00, 0x00}));
+        testTypes.add(new TestType(-1.23E10, 5, new int[] {0xC2, 0x06, 0xE9, 0x18, 0xD8, 0x00, 0x00, 0x00}));
+        testTypes.add(new TestType(1.23E-10, 5, new int[] {0x3D, 0xE0, 0xE7, 0xAD, 0x82, 0x22, 0x1E, 0xEC}));
+        testTypes.add(new TestType(-1.23E-10, 5, new int[] {0xBD, 0xE0, 0xE7, 0xAD, 0x82, 0x22, 0x1E, 0xEC}));
+        testTypes.add(new TestType(Double.NaN, 5, new int[] {0x7F, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+        testTypes.add(new TestType(Double.POSITIVE_INFINITY, 5, new int[] {0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+        testTypes.add(new TestType(Double.NEGATIVE_INFINITY, 5, new int[] {0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+        testTypes.add(new TestType(Double.MAX_VALUE, 5, new int[] {0x7F, 0xEF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}));
+        testTypes.add(new TestType(Double.MIN_VALUE, 5, new int[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}));
+        testTypes.add(new TestType(Double.MIN_NORMAL, 5, new int[] {0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
 
-        testTypes.add(new TestType(true, 6, new int[] { 1 }));
-        testTypes.add(new TestType(false, 6, new int[] { 0 }));
+        testTypes.add(new TestType(true, 6, new int[] {1}));
+        testTypes.add(new TestType(false, 6, new int[] {0}));
 
-        testTypes.add(new TestType((char) (byte) 65, 7, new int[] { 65 }));
-        testTypes.add(new TestType((char) (byte) 124, 7, new int[] { 124 }));
+        testTypes.add(new TestType((char) (byte) 65, 7, new int[] {65}));
+        testTypes.add(new TestType((char) (byte) 124, 7, new int[] {124}));
 
-        testTypes.add(new TestType('B', 8, new int[] { 0, 66 }));
-        testTypes.add(new TestType('~', 8, new int[] { 0, 126 }));
+        testTypes.add(new TestType('B', 8, new int[] {0, 66}));
+        testTypes.add(new TestType('~', 8, new int[] {0, 126}));
 
-        testTypes.add(new TestType("Hello", 9, new int[] { 0, 0, 0, 5, 72, 101, 108, 108, 111 }));
+        testTypes.add(new TestType("Hello", 9, new int[] {0, 0, 0, 5, 72, 101, 108, 108, 111}));
 
-        testTypes.add(new TestType("UTF16", 10, new int[] { 0, 0, 0, 5, 0, 85, 0, 84, 0, 70, 0, 49, 0, 54 }));
+        testTypes.add(new TestType("UTF16", 10, new int[] {0, 0, 0, 5, 0, 85, 0, 84, 0, 70, 0, 49, 0, 54}));
 
         byte[] byteArray = new byte[8];
         for (int i = 0; i < 8; i++)
         {
             byteArray[i] = (byte) (10 + i);
         }
-        testTypes.add(new TestType(byteArray, 11, new int[] { 0, 0, 0, 8, 10, 11, 12, 13, 14, 15, 16, 17 }));
+        testTypes.add(new TestType(byteArray, 11, new int[] {0, 0, 0, 8, 10, 11, 12, 13, 14, 15, 16, 17}));
 
         short[] shortArray = new short[8];
         for (int i = 0; i < 8; i++)
@@ -167,15 +169,15 @@ public class TestTypedMessage
             shortArray[i] = (short) (100 + i);
         }
         testTypes.add(new TestType(shortArray, 12,
-                new int[] { 0, 0, 0, 8, 0, 100, 0, 101, 0, 102, 0, 103, 0, 104, 0, 105, 0, 106, 0, 107 }));
+                new int[] {0, 0, 0, 8, 0, 100, 0, 101, 0, 102, 0, 103, 0, 104, 0, 105, 0, 106, 0, 107}));
 
         int[] intArray = new int[8];
         for (int i = 0; i < 8; i++)
         {
             intArray[i] = 100 + i;
         }
-        testTypes.add(new TestType(intArray, 13, new int[] { 0, 0, 0, 8, 0, 0, 0, 100, 0, 0, 0, 101, 0, 0, 0, 102, 0, 0, 0, 103,
-                0, 0, 0, 104, 0, 0, 0, 105, 0, 0, 0, 106, 0, 0, 0, 107 }));
+        testTypes.add(new TestType(intArray, 13, new int[] {0, 0, 0, 8, 0, 0, 0, 100, 0, 0, 0, 101, 0, 0, 0, 102, 0, 0, 0, 103,
+                0, 0, 0, 104, 0, 0, 0, 105, 0, 0, 0, 106, 0, 0, 0, 107}));
 
         long[] longArray = new long[8];
         for (int i = 0; i < 8; i++)
@@ -200,8 +202,8 @@ public class TestTypedMessage
         {
             floatArray[i] = (float) ((i + 1) / 10.0);
         }
-        testTypes.add(new TestType(floatArray, 15, new int[] { 0, 0, 0, 4, 0x3D, 0xCC, 0xCC, 0xCD, 0x3E, 0x4C, 0xCC, 0xCD, 0x3E,
-                0x99, 0x99, 0x9A, 0x3E, 0xCC, 0xCC, 0xCD }));
+        testTypes.add(new TestType(floatArray, 15, new int[] {0, 0, 0, 4, 0x3D, 0xCC, 0xCC, 0xCD, 0x3E, 0x4C, 0xCC, 0xCD, 0x3E,
+                0x99, 0x99, 0x9A, 0x3E, 0xCC, 0xCC, 0xCD}));
 
         double[] doubleArray = new double[4];
         for (int i = 0; i < 4; i++)
@@ -221,7 +223,7 @@ public class TestTypedMessage
         {
             booleaneArray[i] = Integer.lowestOneBit(i) == 1;
         }
-        testTypes.add(new TestType(booleaneArray, 17, new int[] { 0, 0, 0, 4, 0, 1, 0, 1 }));
+        testTypes.add(new TestType(booleaneArray, 17, new int[] {0, 0, 0, 4, 0, 1, 0, 1}));
 
         byte[][] byteMatrix = new byte[2][3];
         for (int row = 0; row < 2; row++)
@@ -235,7 +237,7 @@ public class TestTypedMessage
                 byteMatrix[row][col] = (byte) (10 * (row + 1) + col);
             }
         }
-        testTypes.add(new TestType(byteMatrix, 18, new int[] { 0, 0, 0, 2, 0, 0, 0, 3, 10, 11, 12, 20, 21, 22 }));
+        testTypes.add(new TestType(byteMatrix, 18, new int[] {0, 0, 0, 2, 0, 0, 0, 3, 10, 11, 12, 20, 21, 22}));
 
         short[][] shortMatrix = new short[2][3];
         for (int row = 0; row < 2; row++)
@@ -250,7 +252,7 @@ public class TestTypedMessage
             }
         }
         testTypes.add(
-                new TestType(shortMatrix, 19, new int[] { 0, 0, 0, 2, 0, 0, 0, 3, 0, 10, 0, 11, 0, 12, 0, 20, 0, 21, 0, 22 }));
+                new TestType(shortMatrix, 19, new int[] {0, 0, 0, 2, 0, 0, 0, 3, 0, 10, 0, 11, 0, 12, 0, 20, 0, 21, 0, 22}));
 
         int[][] intMatrix = new int[2][3];
         for (int row = 0; row < 2; row++)
@@ -264,8 +266,8 @@ public class TestTypedMessage
                 intMatrix[row][col] = 10 * (row + 1) + col;
             }
         }
-        testTypes.add(new TestType(intMatrix, 20, new int[] { 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 10, 0, 0, 0, 11, 0, 0, 0, 12, 0,
-                0, 0, 20, 0, 0, 0, 21, 0, 0, 0, 22 }));
+        testTypes.add(new TestType(intMatrix, 20, new int[] {0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 10, 0, 0, 0, 11, 0, 0, 0, 12, 0,
+                0, 0, 20, 0, 0, 0, 21, 0, 0, 0, 22}));
 
         long[][] longMatrix = new long[2][3];
         for (int row = 0; row < 2; row++)
@@ -347,72 +349,70 @@ public class TestTypedMessage
                 booleanMatrix[row][col] = row != 0 && col != 0; // 0 0 0 - 0 1 1
             }
         }
-        testTypes.add(new TestType(booleanMatrix, 24, new int[] { 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 1, 1 }));
+        testTypes.add(new TestType(booleanMatrix, 24, new int[] {0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 1, 1}));
 
-        testTypes.add(
-                new TestType(new FloatLength(60.0, LengthUnit.KILOMETER), 25, new int[] { 16, 11, 0x47, 0x6A, 0x60, 0x00 }));
+        testTypes
+                .add(new TestType(new FloatLength(60.0, LengthUnit.KILOMETER), 25, new int[] {16, 11, 0x47, 0x6A, 0x60, 0x00}));
         testTypes.add(new TestType(
                 new FloatMoneyPerArea(200.0, new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha")), 25,
-                new int[] { 101, 0x03, 0xD2, 21, 0x3C, 0xA3, 0xD7, 0x0A }));
+                new int[] {101, 0x03, 0xD2, 21, 0x3C, 0xA3, 0xD7, 0x0A}));
 
         testTypes.add(new TestType(new Length(60.0, LengthUnit.KILOMETER), 26,
-                new int[] { 16, 11, 0x40, 0xED, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00 }));
+                new int[] {16, 11, 0x40, 0xED, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00}));
         // note that the below calculation could have ended in 0x3A instead of 0x39, depending on the calculation order.
         // the actual value is 0.12427423844746679392348683687266, which is coded as 3FBFD06FBDDDFF3A
         testTypes.add(
                 new TestType(new MoneyPerLength(200.0, new MoneyPerLengthUnit(MoneyUnit.USD, LengthUnit.MILE, "$/mi", "$/mi")),
-                        26, new int[] { 103, 0x03, 0x48, 16, 0x3F, 0xBF, 0xD0, 0x6F, 0xBD, 0xDD, 0xFF, 0x39 }));
+                        26, new int[] {103, 0x03, 0x48, 16, 0x3F, 0xBF, 0xD0, 0x6F, 0xBD, 0xDD, 0xFF, 0x39}));
 
         try
         {
-            testTypes.add(
-                    new TestType(new FloatDurationVector(new float[] { 2.0f, 2.5f }, DurationUnit.MINUTE, StorageType.DENSE),
-                            27, new int[] { 0, 0, 0, 2, 25, 7, 0x42, 0xF0, 0x00, 0x00, 0x43, 0x16, 0x00, 0x00 }));
+            testTypes
+                    .add(new TestType(new FloatDurationVector(new float[] {2.0f, 2.5f}, DurationUnit.MINUTE, StorageType.DENSE),
+                            27, new int[] {0, 0, 0, 2, 25, 7, 0x42, 0xF0, 0x00, 0x00, 0x43, 0x16, 0x00, 0x00}));
             testTypes.add(new TestType(
-                    new FloatMoneyPerAreaVector(new float[] { 200.0f, 200.0f },
+                    new FloatMoneyPerAreaVector(new float[] {200.0f, 200.0f},
                             new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE),
-                    27, new int[] { 0, 0, 0, 2, 101, 0x03, 0xD2, 21, 0x3C, 0xA3, 0xD7, 0x0A, 0x3C, 0xA3, 0xD7, 0x0A }));
+                    27, new int[] {0, 0, 0, 2, 101, 0x03, 0xD2, 21, 0x3C, 0xA3, 0xD7, 0x0A, 0x3C, 0xA3, 0xD7, 0x0A}));
 
-            testTypes.add(new TestType(new DurationVector(new double[] { 20.0, 25.0 }, DurationUnit.MINUTE, StorageType.DENSE),
-                    28, new int[] { 0, 0, 0, 2, 25, 7, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70, 0x00,
-                            0x00, 0x00, 0x00, 0x00 }));
+            testTypes.add(new TestType(new DurationVector(new double[] {20.0, 25.0}, DurationUnit.MINUTE, StorageType.DENSE),
+                    28, new int[] {0, 0, 0, 2, 25, 7, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70, 0x00,
+                            0x00, 0x00, 0x00, 0x00}));
             // 20000 Euro/ha = 2 Euro/m2
             testTypes.add(new TestType(
-                    new MoneyPerAreaVector(new double[] { 20000.0, 20000.0 },
+                    new MoneyPerAreaVector(new double[] {20000.0, 20000.0},
                             new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE),
-                    28, new int[] { 0, 0, 0, 2, 101, 0x03, 0xD2, 21, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
+                    28, new int[] {0, 0, 0, 2, 101, 0x03, 0xD2, 21, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00,
+                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
 
             testTypes.add(new TestType(
-                    new FloatDurationMatrix(new float[][] { { 2.0f, 2.5f }, { 2.0f, 2.5f } }, DurationUnit.MINUTE,
-                            StorageType.DENSE),
-                    29, new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 0x42, 0xF0, 0x00, 0x00, 0x43, 0x16, 0x00, 0x00, 0x42, 0xF0,
-                            0x00, 0x00, 0x43, 0x16, 0x00, 0x00 }));
+                    new FloatDurationMatrix(new float[][] {{2.0f, 2.5f}, {2.0f, 2.5f}}, DurationUnit.MINUTE, StorageType.DENSE),
+                    29, new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 0x42, 0xF0, 0x00, 0x00, 0x43, 0x16, 0x00, 0x00, 0x42, 0xF0,
+                            0x00, 0x00, 0x43, 0x16, 0x00, 0x00}));
 
             testTypes.add(new TestType(
-                    new DurationMatrix(new double[][] { { 20.0, 25.0 }, { 20.0, 25.0 } }, DurationUnit.MINUTE,
-                            StorageType.DENSE),
-                    30,
-                    new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70,
+                    new DurationMatrix(new double[][] {{20.0, 25.0}, {20.0, 25.0}}, DurationUnit.MINUTE, StorageType.DENSE), 30,
+                    new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70,
                             0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70,
-                            0x00, 0x00, 0x00, 0x00, 0x00 }));
+                            0x00, 0x00, 0x00, 0x00, 0x00}));
 
-            FloatDurationVector fdv =
-                    new FloatDurationVector(new float[] { 2.0f, 2.5f }, DurationUnit.MINUTE, StorageType.DENSE);
-            FloatMoneyPerAreaVector fmv = new FloatMoneyPerAreaVector(new float[] { 200.0f, 200.0f },
+            /*-
+            FloatDurationVector fdv = new FloatDurationVector(new float[] {2.0f, 2.5f}, DurationUnit.MINUTE, StorageType.DENSE);
+            FloatMoneyPerAreaVector fmv = new FloatMoneyPerAreaVector(new float[] {200.0f, 200.0f},
                     new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE);
-            AbstractFloatVector<?, ?>[] afv = new AbstractFloatVector[] { fdv, fmv };
-            testTypes.add(new TestType(afv, 31, new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x42, 0xF0,
-                    0x00, 0x00, 0x3C, 0xA3, 0xD7, 0x0A, 0x43, 0x16, 0x00, 0x00, 0x3C, 0xA3, 0xD7, 0x0A }));
-
-            DurationVector ddv = new DurationVector(new double[] { 20.0, 25.0 }, DurationUnit.MINUTE, StorageType.DENSE);
-            MoneyPerAreaVector dmv = new MoneyPerAreaVector(new double[] { 20000.0, 20000.0 },
+            AbstractFloatVector<?, ?>[] afv = new AbstractFloatVector[] {fdv, fmv};
+            testTypes.add(new TestType(afv, 31, new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x42, 0xF0, 0x00,
+                    0x00, 0x3C, 0xA3, 0xD7, 0x0A, 0x43, 0x16, 0x00, 0x00, 0x3C, 0xA3, 0xD7, 0x0A}));
+             */
+            
+            DurationVector ddv = new DurationVector(new double[] {20.0, 25.0}, DurationUnit.MINUTE, StorageType.DENSE);
+            MoneyPerAreaVector dmv = new MoneyPerAreaVector(new double[] {20000.0, 20000.0},
                     new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE);
-            AbstractDoubleVector<?, ?>[] adv = new AbstractDoubleVector[] { ddv, dmv };
+            AbstractDoubleVector<?, ?>[] adv = new AbstractDoubleVector[] {ddv, dmv};
             testTypes.add(new TestType(adv, 32,
-                    new int[] { 0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00,
+                    new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x40, 0x92, 0xC0, 0x00, 0x00, 0x00, 0x00,
                             0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x97, 0x70, 0x00, 0x00, 0x00, 0x00,
-                            0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
+                            0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
 
         }
         catch (ValueException ve)
@@ -423,22 +423,22 @@ public class TestTypedMessage
     }
 
     /**
-     * Test method for {@link org.sim0mq.message.TypedMessage#encodeUTF8(java.lang.Object[])} and
-     * {@link org.sim0mq.message.TypedMessage#encodeUTF16(java.lang.Object[])}. We test Big Endian here.
+     * Test method for encodeUTF8 and encodeUTF16. We test Big Endian here.
      * @throws Sim0MQException on encoding error
+     * @throws SerializationException on serialization error
      */
     @SuppressWarnings("checkstyle:needbraces")
     @Test
-    public void testEncodeBigEndian() throws Sim0MQException
+    public void testEncodeBigEndian() throws Sim0MQException, SerializationException
     {
         for (int i = 0; i < testTypes.size(); i++)
         {
             TestType test = testTypes.get(i);
             byte[] message;
             if (test.type == 8 || test.type == 10 | test.type == 12)
-                message = TypedMessage.encodeUTF16(test.content);
+                message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
             else
-                message = TypedMessage.encodeUTF8(test.content);
+                message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
             if (message.length != test.bytes.length + 1)
             {
                 fail("testEncodeBigEndian failed for " + test.content[0].getClass() + ", value " + test.content[0].toString()
@@ -464,14 +464,13 @@ public class TestTypedMessage
     }
 
     /**
-     * Test method for {@link org.sim0mq.message.TypedMessage#encodeUTF8(java.lang.Object[])} and
-     * {@link org.sim0mq.message.TypedMessage#encodeUTF16(java.lang.Object[])}. We test whether
-     * {@link org.sim0mq.message.TypedMessage#decode(byte[])} gives the same results after encode - decode.
+     * Test method for encodeUTF8 and encodeUTF16. We test whether decode gives the same results after encode - decode.
      * @throws Sim0MQException on encoding error
+     * @throws SerializationException on serialization error
      */
     @SuppressWarnings("checkstyle:needbraces")
     @Test
-    public void testEncodeDecodePrimitiveBigEndian() throws Sim0MQException
+    public void testEncodeDecodePrimitiveBigEndian() throws Sim0MQException, SerializationException
     {
         for (int i = 0; i < testTypes.size(); i++)
         {
@@ -480,11 +479,11 @@ public class TestTypedMessage
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(test.content);
+                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(test.content);
+                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decode(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodePrimitiveBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -508,14 +507,13 @@ public class TestTypedMessage
     }
 
     /**
-     * Test method for {@link org.sim0mq.message.TypedMessage#encodeUTF8(java.lang.Object[])} and
-     * {@link org.sim0mq.message.TypedMessage#encodeUTF16(java.lang.Object[])}. We test whether
-     * {@link org.sim0mq.message.TypedMessage#decode(byte[])} gives the same results after encode - decode.
+     * Test method for encodeUTF8 and encodeUTF16. We test whether decode gives the same results after encode - decode.
      * @throws Sim0MQException on encoding error
+     * @throws SerializationException on serialization error
      */
     @SuppressWarnings("checkstyle:needbraces")
     @Test
-    public void testEncodeDecodeArrayBigEndian() throws Sim0MQException
+    public void testEncodeDecodeArrayBigEndian() throws Sim0MQException, SerializationException
     {
         for (int i = 0; i < testTypes.size(); i++)
         {
@@ -524,11 +522,11 @@ public class TestTypedMessage
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(test.content);
+                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(test.content);
+                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decode(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeArrayBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -618,14 +616,13 @@ public class TestTypedMessage
     }
 
     /**
-     * Test method for {@link org.sim0mq.message.TypedMessage#encodeUTF8(java.lang.Object[])} and
-     * {@link org.sim0mq.message.TypedMessage#encodeUTF16(java.lang.Object[])}. We test whether
-     * {@link org.sim0mq.message.TypedMessage#decode(byte[])} gives the same results after encode - decode.
+     * Test method for encodeUTF8 and encodeUTF16. We test whether decode gives the same results after encode - decode.
      * @throws Sim0MQException on encoding error
+     * @throws SerializationException on serialization error
      */
     @SuppressWarnings("checkstyle:needbraces")
     @Test
-    public void testEncodeDecodeMatrixBigEndian() throws Sim0MQException
+    public void testEncodeDecodeMatrixBigEndian() throws Sim0MQException, SerializationException
     {
         for (int i = 0; i < testTypes.size(); i++)
         {
@@ -634,11 +631,11 @@ public class TestTypedMessage
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(test.content);
+                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(test.content);
+                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decode(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeMatrixBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -762,15 +759,14 @@ public class TestTypedMessage
     }
 
     /**
-     * Test method for {@link org.sim0mq.message.TypedMessage#encodeUTF8(java.lang.Object[])} and
-     * {@link org.sim0mq.message.TypedMessage#encodeUTF16(java.lang.Object[])}. We test whether
-     * {@link org.sim0mq.message.TypedMessage#decode(byte[])} gives the same results after encode - decode.
+     * Test method for encodeUTF8 and encodeUTF16. We test whether decode gives the same results after encode - decode.
      * @throws Sim0MQException on encoding error
      * @throws ValueException on encoding error
+     * @throws SerializationException on serialization error
      */
     @SuppressWarnings("checkstyle:needbraces")
     @Test
-    public void testEncodeDecodeUnitsBigEndian() throws Sim0MQException, ValueException
+    public void testEncodeDecodeUnitsBigEndian() throws Sim0MQException, ValueException, SerializationException
     {
         for (int i = 0; i < testTypes.size(); i++)
         {
@@ -779,11 +775,11 @@ public class TestTypedMessage
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(test.content);
+                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(test.content);
+                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decode(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass() + ", value "

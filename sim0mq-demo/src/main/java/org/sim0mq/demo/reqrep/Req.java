@@ -2,6 +2,7 @@ package org.sim0mq.demo.reqrep;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
@@ -121,7 +122,7 @@ public class Req
             for (int i = 0; i < this.numcalls; i++)
             {
                 // send a request
-                Object[] request = new Object[] { this.port, i };
+                Object[] request = new Object[] {this.port, i};
                 try
                 {
                     byte[] message =
@@ -158,7 +159,7 @@ public class Req
                     }
                     Req.this.counter.incrementAndGet();
                 }
-                catch (Sim0MQException exception)
+                catch (Sim0MQException | SerializationException exception)
                 {
                     exception.printStackTrace();
                 }
@@ -167,8 +168,8 @@ public class Req
             // send stop message to REP client
             try
             {
-                byte[] message =
-                        SimulationMessage.encodeUTF8(runId, senderId, receiverId, "STOP", -1, MessageStatus.NEW, new Object[] {});
+                byte[] message = SimulationMessage.encodeUTF8(runId, senderId, receiverId, "STOP", -1, MessageStatus.NEW,
+                        new Object[] {});
                 boolean ok = socket.send(message, 0);
                 if (!ok)
                 {
@@ -182,7 +183,7 @@ public class Req
                     System.err.println("receive message STOP for port " + this.port + " returned NULL");
                 }
             }
-            catch (Sim0MQException exception)
+            catch (Sim0MQException | SerializationException exception)
             {
                 exception.printStackTrace();
             }

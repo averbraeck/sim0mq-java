@@ -1,5 +1,6 @@
 package org.sim0mq.message.federatestarter;
 
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
@@ -61,7 +62,7 @@ public class RequestStatusMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
-    public byte[] createByteArray() throws Sim0MQException
+    public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
         return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
                 getMessageId(), getMessageStatus());

@@ -16,11 +16,13 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.djutils.io.URLResource;
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
 import org.sim0mq.message.federatestarter.FederateStartedMessage;
 import org.sim0mq.message.federationmanager.StartFederateMessage;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -75,9 +77,10 @@ public class FederateStarter
      * @param startPort first port to be used for the models, inclusive
      * @param endPort last port to be used for the models, inclusive
      * @throws Sim0MQException on error
+     * @throws SerializationException on error
      */
     public FederateStarter(final int fsPort, final Properties softwareProperties, final int startPort, final int endPort)
-            throws Sim0MQException
+            throws Sim0MQException, SerializationException
     {
         super();
         this.softwareProperties = softwareProperties;
@@ -87,7 +90,7 @@ public class FederateStarter
 
         this.fsContext = new ZContext(1);
 
-        this.fsSocket = this.fsContext.createSocket(ZMQ.ROUTER);
+        this.fsSocket = this.fsContext.createSocket(SocketType.ROUTER);
         this.fsSocket.bind("tcp://*:" + this.fsPort);
 
         while (!Thread.currentThread().isInterrupted())
@@ -139,8 +142,10 @@ public class FederateStarter
      * @param identity reply id for REQ-ROUTER pattern
      * @param fields the message
      * @throws Sim0MQException on error
+     * @throws SerializationException on error
      */
-    private void processStartFederate(final String identity, final Object[] fields) throws Sim0MQException
+    private void processStartFederate(final String identity, final Object[] fields)
+            throws Sim0MQException, SerializationException
     {
         StartFederateMessage startFederateMessage = StartFederateMessage.createMessage(fields, "FS");
         String error = "";
@@ -276,7 +281,7 @@ public class FederateStarter
                 ZMQ.Socket testSocket = null;
                 try
                 {
-                    testSocket = this.fsContext.createSocket(ZMQ.REP);
+                    testSocket = this.fsContext.createSocket(SocketType.REP);
                     testSocket.bind("tcp://127.0.0.1:" + port);
                     testSocket.unbind("tcp://127.0.0.1:" + port);
                     testSocket.close();
@@ -309,16 +314,17 @@ public class FederateStarter
      * @param modelPort port on which the model is listening
      * @return empty String for no error, filled String for error
      * @throws Sim0MQException on error
+     * @throws SerializationException on error
      */
     private String waitForModelStarted(final Object federationRunId, final String modelId, final int modelPort)
-            throws Sim0MQException
+            throws Sim0MQException, SerializationException
     {
         boolean ok = true;
         String error = "";
         ZMQ.Socket modelSocket = null;
         try
         {
-            modelSocket = this.fsContext.createSocket(ZMQ.REQ);
+            modelSocket = this.fsContext.createSocket(SocketType.REQ);
             modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
             modelSocket.connect("tcp://127.0.0.1:" + modelPort);
         }
@@ -382,8 +388,10 @@ public class FederateStarter
      * @param identity reply id for REQ-ROUTER pattern
      * @param fields the message
      * @throws Sim0MQException on error
+     * @throws SerializationException on error
      */
-    private void processKillFederate(final String identity, final Object[] fields) throws Sim0MQException
+    private void processKillFederate(final String identity, final Object[] fields)
+            throws Sim0MQException, SerializationException
     {
         boolean status = true;
         String error = "";
@@ -406,7 +414,7 @@ public class FederateStarter
             {
                 try
                 {
-                    ZMQ.Socket modelSocket = this.fsContext.createSocket(ZMQ.REQ);
+                    ZMQ.Socket modelSocket = this.fsContext.createSocket(SocketType.REQ);
                     modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
                     modelSocket.connect("tcp://127.0.0.1:" + modelPort);
 
@@ -482,8 +490,9 @@ public class FederateStarter
      * the started components. If necessary, the FederateStarter can also forcefully stop a started (sub)process.
      * @param args the federation name and port on which the FederateStarter is listening
      * @throws Sim0MQException on error
+     * @throws SerializationException on error
      */
-    public static void main(final String[] args) throws Sim0MQException
+    public static void main(final String[] args) throws Sim0MQException, SerializationException
     {
         if (args.length < 4)
         {
@@ -515,9 +524,9 @@ public class FederateStarter
         {
             softwareProperties.load(propertiesStream);
         }
-        catch (IOException e)
+        catch (IOException | NullPointerException e)
         {
-            System.err.println("Could not find software properties file " + propertiesFile);
+            System.err.println("Could not find or read software properties file " + propertiesFile);
             System.exit(-1);
         }
 

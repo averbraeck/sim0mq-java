@@ -1,5 +1,6 @@
 package org.sim0mq.demo;
 
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
@@ -25,8 +26,9 @@ public final class Server
     /**
      * @param args command line arguments
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    public static void main(final String[] args) throws Sim0MQException
+    public static void main(final String[] args) throws Sim0MQException, SerializationException
     {
         ZContext context = new ZContext(1);
 
