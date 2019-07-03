@@ -3,6 +3,7 @@ package org.sim0mq.message;
 import java.io.Serializable;
 
 import org.djutils.exceptions.Throw;
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 
 /**
@@ -19,6 +20,9 @@ public abstract class Sim0MQMessage implements Serializable
 {
     /** */
     private static final long serialVersionUID = 20170422L;
+
+    /** version of the protocol, magic number. */
+    protected static final String VERSION = "SIM01";
 
     /**
      * the Simulation run ids can be provided in different types. Examples are two 64-bit longs indicating a UUID, or a String
@@ -146,8 +150,9 @@ public abstract class Sim0MQMessage implements Serializable
      * Create a byte array of the fields.
      * @return byte[] a Sim0MQ byte array of the content
      * @throws Sim0MQException on unknown data type as part of the content
+     * @throws SerializationException when the byte array cannot be created, e.g. because the number of bytes does not match
      */
-    public abstract byte[] createByteArray() throws Sim0MQException;
+    public abstract byte[] createByteArray() throws Sim0MQException, SerializationException;
 
     /**
      * Check the consistency of a message from an Object[] that was received.

@@ -2,6 +2,16 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="1.00.00" date="2019-06-22" description="Serializing / deserializing moved to djutils-serialization project">
+      <action dev="averbraeck" type="update">
+        Changes made to update deprecated methods in jeromq 0.5.
+      </action>
+      <action dev="averbraeck" type="update">
+        Since (de)serialization is more generic than just sim0mq, the classes to do (de)serialization have been moved to 
+        a separate project called djutils-serialization. See https://djutils.org for more information.
+      </action>
+    </release>
+    
     <release version="0.05.00" date="2018-08-11" description="Coding / decoding finished">
       <action dev="averbraeck" type="fix">
         Finalized coding / decoding for all types in the TypedMessage.

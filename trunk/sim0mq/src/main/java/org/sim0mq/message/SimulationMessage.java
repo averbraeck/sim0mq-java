@@ -1,6 +1,9 @@
 package org.sim0mq.message;
 
 import org.djutils.exceptions.Throw;
+import org.djutils.serialization.EndianUtil;
+import org.djutils.serialization.SerializationException;
+import org.djutils.serialization.TypedMessage;
 import org.sim0mq.Sim0MQException;
 
 /**
@@ -55,14 +58,15 @@ public final class SimulationMessage
      * @param content the objects to encode
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
+     * @throws SerializationException on serialization problem
      */
     @SuppressWarnings("checkstyle:parameternumber")
     private static byte[] encode(final Encoding utf8, final Object simulationRunId, final Object senderId,
             final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
-            final Object... content) throws Sim0MQException
+            final Object... content) throws Sim0MQException, SerializationException
     {
         Object[] simulationContent = new Object[content.length + 8];
-        simulationContent[0] = TypedMessage.VERSION;
+        simulationContent[0] = Sim0MQMessage.VERSION;
         simulationContent[1] = simulationRunId;
         simulationContent[2] = senderId;
         simulationContent[3] = receiverId;
@@ -74,7 +78,7 @@ public final class SimulationMessage
         {
             simulationContent[i + 8] = content[i];
         }
-        return TypedMessage.encode0MQMessageUTF8(simulationContent);
+        return TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, simulationContent);
     }
 
     /**
@@ -96,16 +100,17 @@ public final class SimulationMessage
      * @param content the objects to encode
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
+     * @throws SerializationException on serialization problem
      */
     @SuppressWarnings("checkstyle:parameternumber")
     private static byte[] encodeReply(final Encoding utf8, final String identity, final Object simulationRunId,
             final Object senderId, final Object receiverId, final Object messageTypeId, final long messageId,
-            final MessageStatus messageStatus, final Object... content) throws Sim0MQException
+            final MessageStatus messageStatus, final Object... content) throws Sim0MQException, SerializationException
     {
         Object[] simulationContent = new Object[content.length + 10];
         simulationContent[0] = identity;
         simulationContent[1] = new byte[] { 0 };
-        simulationContent[2] = TypedMessage.VERSION;
+        simulationContent[2] = Sim0MQMessage.VERSION;
         simulationContent[3] = simulationRunId;
         simulationContent[4] = senderId;
         simulationContent[5] = receiverId;
@@ -117,7 +122,7 @@ public final class SimulationMessage
         {
             simulationContent[i + 10] = content[i];
         }
-        return TypedMessage.encode0MQMessageUTF8(simulationContent);
+        return TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, simulationContent);
     }
 
     /**
@@ -137,10 +142,11 @@ public final class SimulationMessage
      * @param content the objects to encode
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
+     * @throws SerializationException on serialization problem
      */
     public static byte[] encodeUTF8(final Object simulationRunId, final Object senderId, final Object receiverId,
             final Object messageTypeId, final long messageId, final MessageStatus messageStatus, final Object... content)
-            throws Sim0MQException
+            throws Sim0MQException, SerializationException
     {
         return encode(Encoding.UTF8, simulationRunId, senderId, receiverId, messageTypeId, messageId, messageStatus, content);
     }
@@ -162,10 +168,11 @@ public final class SimulationMessage
      * @param content the objects to encode
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
+     * @throws SerializationException on serialization problem
      */
     public static byte[] encodeUTF16(final Object simulationRunId, final Object senderId, final Object receiverId,
             final Object messageTypeId, final long messageId, final MessageStatus messageStatus, final Object... content)
-            throws Sim0MQException
+            throws Sim0MQException, SerializationException
     {
         return encode(Encoding.UTF16, simulationRunId, senderId, receiverId, messageTypeId, messageId, messageStatus, content);
     }
@@ -188,11 +195,12 @@ public final class SimulationMessage
      * @param content the objects to encode
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
+     * @throws SerializationException on serialization problem
      */
     @SuppressWarnings("checkstyle:parameternumber")
     public static byte[] encodeReplyUTF8(final String identity, final Object simulationRunId, final Object senderId,
             final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
-            final Object... content) throws Sim0MQException
+            final Object... content) throws Sim0MQException, SerializationException
     {
         return encodeReply(Encoding.UTF8, identity, simulationRunId, senderId, receiverId, messageTypeId, messageId,
                 messageStatus, content);
@@ -216,11 +224,12 @@ public final class SimulationMessage
      * @param content the objects to encode
      * @return the zeroMQ message to send as a byte array
      * @throws Sim0MQException on unknown data type
+     * @throws SerializationException on serialization problem
      */
     @SuppressWarnings("checkstyle:parameternumber")
     public static byte[] encodeReplyUTF16(final String identity, final Object simulationRunId, final Object senderId,
             final Object receiverId, final Object messageTypeId, final long messageId, final MessageStatus messageStatus,
-            final Object... content) throws Sim0MQException
+            final Object... content) throws Sim0MQException, SerializationException
     {
         return encodeReply(Encoding.UTF16, identity, simulationRunId, senderId, receiverId, messageTypeId, messageId,
                 messageStatus, content);
@@ -240,10 +249,11 @@ public final class SimulationMessage
      * @param bytes the ZeroMQ byte array to decode
      * @return an array of objects of the right type
      * @throws Sim0MQException on unknown data type
+     * @throws SerializationException when deserialization fails
      */
-    public static Object[] decode(final byte[] bytes) throws Sim0MQException
+    public static Object[] decode(final byte[] bytes) throws Sim0MQException, SerializationException
     {
-        Object[] message = TypedMessage.decode(bytes);
+        Object[] message = TypedMessage.decodeToObjectDataTypes(bytes, EndianUtil.BIG_ENDIAN);
         Throw.when(!(message[7] instanceof Number), Sim0MQException.class, "message[7] is not a number");
         Throw.when(message.length != ((Number) message[7]).intValue() + 8, Sim0MQException.class,
                 "message[7] number of fields not matched by message structure");

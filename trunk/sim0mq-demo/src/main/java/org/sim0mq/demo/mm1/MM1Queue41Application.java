@@ -6,10 +6,12 @@ import javax.naming.NamingException;
 
 import org.djunits.unit.DurationUnit;
 import org.djunits.value.vdouble.scalar.Duration;
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
+import org.sim0mq.message.MessageUtil;
 import org.sim0mq.message.SimulationMessage;
-import org.sim0mq.message.TypedMessage;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -66,9 +68,10 @@ public class MM1Queue41Application
      * @throws RemoteException on error
      * @throws NamingException on error
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
     protected MM1Queue41Application(final String modelId, final int port)
-            throws SimRuntimeException, RemoteException, NamingException, Sim0MQException
+            throws SimRuntimeException, RemoteException, NamingException, Sim0MQException, SerializationException
     {
         this.simulator = new DEVSSimulator.TimeDouble();
         this.modelId = modelId.trim();
@@ -80,12 +83,13 @@ public class MM1Queue41Application
      * Start listening on a port.
      * @param port the sim0mq port number on which the model listens
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    protected void startListener(final int port) throws Sim0MQException
+    protected void startListener(final int port) throws Sim0MQException, SerializationException
     {
         this.fsContext = new ZContext(1);
 
-        this.fsSocket = this.fsContext.createSocket(ZMQ.ROUTER);
+        this.fsSocket = this.fsContext.createSocket(SocketType.ROUTER);
         this.fsSocket.bind("tcp://*:" + port);
 
         System.out.println("Model started. Listening at port: " + port);
@@ -98,7 +102,7 @@ public class MM1Queue41Application
             this.fsSocket.recvStr();
 
             byte[] request = this.fsSocket.recv(0);
-            System.out.println(TypedMessage.printBytes(request));
+            System.out.println(MessageUtil.printBytes(request));
             Object[] fields = SimulationMessage.decode(request);
 
             System.out.println("Received " + SimulationMessage.print(fields));
@@ -160,9 +164,10 @@ public class MM1Queue41Application
      * @param receiverId the receiver of the response
      * @param replyToMessageId the message to which this is the reply
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
     private void processRequestStatus(final String identity, final String receiverId, final long replyToMessageId)
-            throws Sim0MQException
+            throws Sim0MQException, SerializationException
     {
         String status = "started";
         if (this.simulator.isRunning())
@@ -198,9 +203,10 @@ public class MM1Queue41Application
      * @param replyToMessageId the message to which this is the reply
      * @param fields the message
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
     private void processSimRunControl(final String identity, final String receiverId, final long replyToMessageId,
-            final Object[] fields) throws Sim0MQException
+            final Object[] fields) throws Sim0MQException, SerializationException
     {
         boolean status = true;
         String error = "";
@@ -255,9 +261,10 @@ public class MM1Queue41Application
      * @param receiverId the receiver of the response
      * @param replyToMessageId the message to which this is the reply
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
     private void processSimStart(final String identity, final String receiverId, final long replyToMessageId)
-            throws Sim0MQException
+            throws Sim0MQException, SerializationException
     {
         boolean status = true;
         String error = "";
@@ -293,9 +300,10 @@ public class MM1Queue41Application
      * @param replyToMessageId the message to which this is the reply
      * @param fields the message
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
     private void processSetParameter(final String identity, final String receiverId, final long replyToMessageId,
-            final Object[] fields) throws Sim0MQException
+            final Object[] fields) throws Sim0MQException, SerializationException
     {
         boolean status = true;
         String error = "";
@@ -347,9 +355,10 @@ public class MM1Queue41Application
      * @param replyToMessageId the message to which this is the reply
      * @param fields the message
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
     private void processRequestStatistics(final String identity, final String receiverId, final long replyToMessageId,
-            final Object[] fields) throws Sim0MQException
+            final Object[] fields) throws Sim0MQException, SerializationException
     {
         boolean ok = true;
         String error = "";
@@ -438,8 +447,10 @@ public class MM1Queue41Application
      * @throws RemoteException on error
      * @throws NamingException on error
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    public static void main(final String[] args) throws SimRuntimeException, RemoteException, NamingException, Sim0MQException
+    public static void main(final String[] args)
+            throws SimRuntimeException, RemoteException, NamingException, Sim0MQException, SerializationException
     {
         if (args.length < 2)
         {

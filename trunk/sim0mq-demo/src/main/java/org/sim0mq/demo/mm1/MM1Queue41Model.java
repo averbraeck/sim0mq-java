@@ -15,7 +15,7 @@ import nl.tudelft.simulation.dsol.simtime.SimTimeDouble;
 import nl.tudelft.simulation.dsol.simtime.dist.DistContinuousSimTime;
 import nl.tudelft.simulation.dsol.simtime.dist.DistContinuousSimulationTime;
 import nl.tudelft.simulation.dsol.simulators.DEVSSimulatorInterface;
-import nl.tudelft.simulation.dsol.statistics.Tally;
+import nl.tudelft.simulation.dsol.statistics.SimTally;
 import nl.tudelft.simulation.jstats.distributions.DistConstant;
 import nl.tudelft.simulation.jstats.distributions.DistDiscreteConstant;
 import nl.tudelft.simulation.jstats.distributions.DistExponential;
@@ -38,15 +38,15 @@ public class MM1Queue41Model extends AbstractDSOLModel.TimeDouble<DEVSSimulatorI
 
     /** tally dN. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
-    Tally<Double, Double, SimTimeDouble> dN;
+    SimTally.TimeDouble dN;
 
     /** tally qN. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
-    Tally<Double, Double, SimTimeDouble> qN;
+    SimTally.TimeDouble qN;
 
     /** utilization uN. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
-    Utilization uN;
+    Utilization<Double, Double, SimTimeDouble> uN;
 
     /** PARAMETER iat. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -95,13 +95,13 @@ public class MM1Queue41Model extends AbstractDSOLModel.TimeDouble<DEVSSimulatorI
         Resource<Double, Double, SimTimeDouble> resource = new Resource<>(getSimulator(), 1.0);
 
         // created a resource
-        StationInterface queue = new Seize.TimeDouble(getSimulator(), resource);
-        StationInterface release = new Release.TimeDouble(getSimulator(), resource, 1.0);
+        StationInterface.TimeDouble queue = new Seize.TimeDouble(getSimulator(), resource);
+        StationInterface.TimeDouble release = new Release.TimeDouble(getSimulator(), resource, 1.0);
 
         // The server
         DistContinuousSimulationTime.TimeDouble serviceTimeDistribution =
                 new DistContinuousSimulationTime.TimeDouble(new DistExponential(defaultStream, this.serviceTime));
-        StationInterface server = new Delay.TimeDouble(getSimulator(), serviceTimeDistribution);
+        StationInterface.TimeDouble server = new Delay.TimeDouble(getSimulator(), serviceTimeDistribution);
 
         // The flow
         generator.setDestination(queue);
@@ -111,9 +111,9 @@ public class MM1Queue41Model extends AbstractDSOLModel.TimeDouble<DEVSSimulatorI
         // Statistics
         try
         {
-            this.dN = new Tally<>("d(n)", getSimulator(), queue, Seize.DELAY_TIME);
-            this.qN = new Tally<>("q(n)", getSimulator(), queue, Seize.QUEUE_LENGTH_EVENT);
-            this.uN = new Utilization("u(n)", getSimulator(), server);
+            this.dN = new SimTally.TimeDouble("d(n)", getSimulator(), queue, Seize.DELAY_TIME);
+            this.qN = new SimTally.TimeDouble("q(n)", getSimulator(), queue, Seize.QUEUE_LENGTH_EVENT);
+            this.uN = new Utilization<Double, Double, SimTimeDouble>("u(n)", getSimulator(), server);
         }
         catch (RemoteException exception)
         {

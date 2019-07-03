@@ -24,18 +24,19 @@
     <sonar.scm.disabled>true</sonar.scm.disabled>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>3.00.07</djunits.version>
-    <dsol.version>3.03.00</dsol.version>
-    <jeromq.version>0.4.3</jeromq.version>
+    <djunits.version>3.01.04</djunits.version>
+    <djutils.version>1.01.01</djutils.version>
+    <dsol.version>3.03.09</dsol.version>
+    <jeromq.version>0.5.1</jeromq.version>
     <junit.version>4.12</junit.version>
 
-    <maven.compiler.version>3.8.0</maven.compiler.version>
+    <maven.compiler.version>3.8.1</maven.compiler.version>
     <maven.site.version>3.7.1</maven.site.version>
-    <maven.deploy.version>2.8.2</maven.deploy.version>
-    <maven.install.version>2.5.2</maven.install.version>
-    <maven.source.version>3.0.1</maven.source.version>
-    <maven.javadoc.version>3.0.1</maven.javadoc.version>
-    <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
+    <maven.deploy.version>3.0.0-M1</maven.deploy.version>
+    <maven.install.version>3.0.0-M1</maven.install.version>
+    <maven.source.version>3.1.0</maven.source.version>
+    <maven.javadoc.version>3.1.0</maven.javadoc.version>
+    <maven.checkstyle.version>3.1.0</maven.checkstyle.version>
     <maven.surefire.version>2.18.1</maven.surefire.version>
     <maven.surefire-report.version>2.22.0</maven.surefire-report.version>
     <maven.failsafe.version>2.22.0</maven.failsafe.version>
@@ -43,13 +44,13 @@
     <maven.jacoco.version>0.8.1</maven.jacoco.version>
     <maven.findbugs.version>3.0.5</maven.findbugs.version>
     <maven.project-info-reports.version>3.0.0</maven.project-info-reports.version>
-    <maven.jxr.version>2.5</maven.jxr.version>
+    <maven.jxr.version>3.0.0</maven.jxr.version>
     <maven.taglist.version>2.4</maven.taglist.version>
-    <maven.pmd.version>3.10.0</maven.pmd.version>
+    <maven.pmd.version>3.12.0</maven.pmd.version>
     <maven.changes.version>2.12.1</maven.changes.version>
     <wagon.maven.version>2.0.0</wagon.maven.version>
-    <wagon.ssh.version>3.1.0</wagon.ssh.version>
-    <wagon.ftp.version>3.1.0</wagon.ftp.version>
+    <wagon.ssh.version>3.3.3</wagon.ssh.version>
+    <wagon.ftp.version>3.3.3</wagon.ftp.version>
     <codehaus.javancss.version>2.1</codehaus.javancss.version>
     <codehaus.jdepend.version>2.0</codehaus.jdepend.version>
   </properties>
@@ -628,6 +629,18 @@
     </dependency>
 
     <dependency>
+      <groupId>org.djutils</groupId>
+      <artifactId>djutils</artifactId>
+      <version>${djutils.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.djutils</groupId>
+      <artifactId>djutils-serialization</artifactId>
+      <version>${djutils.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.zeromq</groupId>
       <artifactId>jeromq</artifactId>
       <version>${jeromq.version}</version>
@@ -653,7 +666,7 @@
     <repository>
       <name>djunits Public Repository</name>
       <id>djunits</id>
-      <url>https://djunits.org/maven</url>
+      <url>https://djutils.org/maven/</url>
     </repository>
 
     <repository>

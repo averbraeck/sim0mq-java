@@ -1,5 +1,6 @@
 package org.sim0mq.demo.reqrep;
 
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
@@ -129,7 +130,7 @@ public class Rep
                     socket.send(SimulationMessage.encodeUTF8(message[1], senderId, receiverId, "REPLY", messagenr,
                             MessageStatus.NEW, reply), 0);
                 }
-                catch (Sim0MQException exception)
+                catch (Sim0MQException | SerializationException exception)
                 {
                     exception.printStackTrace();
                 }

@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.federationmanager.ModelState;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -47,14 +49,15 @@ public class MM1FederationManager
      * @param fsPort the port where the federate starter can be reached
      * @param localSk3 local/sk-3 to indicate where the federate starter and model can be found
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
     public MM1FederationManager(final String federationName, final int fmPort, final int fsPort, final String localSk3)
-            throws Sim0MQException
+            throws Sim0MQException, SerializationException
     {
         this.fmContext = new ZContext(1);
-        this.modelSocket = this.fmContext.createSocket(ZMQ.REQ);
+        this.modelSocket = this.fmContext.createSocket(SocketType.REQ);
         this.modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
-        this.fsSocket = this.fmContext.createSocket(ZMQ.REQ);
+        this.fsSocket = this.fmContext.createSocket(SocketType.REQ);
         this.fsSocket.setIdentity(UUID.randomUUID().toString().getBytes());
 
         this.state = ModelState.NOT_STARTED;
@@ -116,8 +119,10 @@ public class MM1FederationManager
      * @param fsPort the port where the federate starter can be reached
      * @param localSk3 local/sk-3 to indicate where the federate starter and model can be found
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    private void startModel(final String federationName, final int fsPort, final String localSk3) throws Sim0MQException
+    private void startModel(final String federationName, final int fsPort, final String localSk3)
+            throws Sim0MQException, SerializationException
     {
         // Start model mmm1.jar
         byte[] fm1Message;
@@ -132,8 +137,8 @@ public class MM1FederationManager
         else
         {
             fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount,
-                    MessageStatus.NEW, "MM1.1", "java8+", "-jar", "e:/MM1/mm1.jar", "MM1.1 %PORT%", "e:/MM1", "",
-                    "e:/MM1/out.txt", "e:/MM1/err.txt", false, false, false);
+                    MessageStatus.NEW, "MM1.1", "java8+", "-jar", "e:/sim0mq/MM1/mm1.jar", "MM1.1 %PORT%", "e:/sim0mq/MM1", "",
+                    "e:/sim0mq/MM1/out.txt", "e:/sim0mq/MM1/err.txt", false, false, false);
             this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
         }
         this.fsSocket.send(fm1Message);
@@ -162,8 +167,9 @@ public class MM1FederationManager
      * Send the SimRunControl message FM.2.
      * @param federationName the name of the federation
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    private void sendSimRunControl(final String federationName) throws Sim0MQException
+    private void sendSimRunControl(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm2Message;
         fm2Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.2", ++this.messageCount, MessageStatus.NEW,
@@ -191,8 +197,9 @@ public class MM1FederationManager
      * Send the Parameters messages FM.3.
      * @param federationName the name of the federation
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    private void setParameters(final String federationName) throws Sim0MQException
+    private void setParameters(final String federationName) throws Sim0MQException, SerializationException
     {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("iat", new Double(1.0));
@@ -234,8 +241,9 @@ public class MM1FederationManager
      * Send the SimStart message FM.4.
      * @param federationName the name of the federation
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    private void sendSimStart(final String federationName) throws Sim0MQException
+    private void sendSimStart(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm4Message;
         fm4Message =
@@ -263,8 +271,9 @@ public class MM1FederationManager
      * Wait for simulation to end using status polling with message FM.5.
      * @param federationName the name of the federation
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    private void waitForSimEnded(final String federationName) throws Sim0MQException
+    private void waitForSimEnded(final String federationName) throws Sim0MQException, SerializationException
     {
         while (!this.state.isSimulatorEnded() && !this.state.isError())
         {
@@ -311,8 +320,9 @@ public class MM1FederationManager
      * Request statistics with message FM.6.
      * @param federationName the name of the federation
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    private void requestStatistics(final String federationName) throws Sim0MQException
+    private void requestStatistics(final String federationName) throws Sim0MQException, SerializationException
     {
         List<String> stats = new ArrayList<>();
         stats.add("dN.average");
@@ -368,8 +378,9 @@ public class MM1FederationManager
      * Send the FM.8 message to the FederateStarter to kill the MM1 model.
      * @param federationName the name of the federation
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    private void killFederate(final String federationName) throws Sim0MQException
+    private void killFederate(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm8Message;
         fm8Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, MessageStatus.NEW,
@@ -398,8 +409,9 @@ public class MM1FederationManager
     /**
      * @param args parameters for main
      * @throws Sim0MQException on error
+     * @throws SerializationException on serialization problem
      */
-    public static void main(final String[] args) throws Sim0MQException
+    public static void main(final String[] args) throws Sim0MQException, SerializationException
     {
         if (args.length < 4)
         {
