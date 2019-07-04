@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.djunits.unit.AreaUnit;
@@ -403,7 +404,7 @@ public class TestTypedMessage
             AbstractFloatVector<?, ?>[] afv = new AbstractFloatVector[] {fdv, fmv};
             testTypes.add(new TestType(afv, 31, new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x42, 0xF0, 0x00,
                     0x00, 0x3C, 0xA3, 0xD7, 0x0A, 0x43, 0x16, 0x00, 0x00, 0x3C, 0xA3, 0xD7, 0x0A}));
-             */
+            */
             
             DurationVector ddv = new DurationVector(new double[] {20.0, 25.0}, DurationUnit.MINUTE, StorageType.DENSE);
             MoneyPerAreaVector dmv = new MoneyPerAreaVector(new double[] {20000.0, 20000.0},
@@ -456,7 +457,7 @@ public class TestTypedMessage
                 if (unsigned != test.bytes[j])
                 {
                     fail("testEncodeBigEndian failed for " + test.content[0].getClass() + ", value "
-                            + test.content[0].toString() + ", valye byte[" + j + "] = " + test.bytes[j] + ", but encoding = "
+                            + test.content[0].toString() + ", value byte[" + j + "] = " + test.bytes[j] + ", but encoding = "
                             + unsigned);
                 }
             }

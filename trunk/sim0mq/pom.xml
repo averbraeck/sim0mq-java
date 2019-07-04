@@ -25,7 +25,7 @@
 
     <sim0mq.version>${project.version}</sim0mq.version>
     <djunits.version>3.01.04</djunits.version>
-    <djutils.version>1.01.01</djutils.version>
+    <djutils.version>1.01.03</djutils.version>
     <dsol.version>3.03.09</dsol.version>
     <jeromq.version>0.5.1</jeromq.version>
     <junit.version>4.12</junit.version>
