@@ -4,7 +4,7 @@
   
   <groupId>org.sim0mq</groupId>
   <artifactId>sim0mq-demo</artifactId>
-  <version>0.05.00</version>
+  <version>1.00.00</version>
   
   <name>Sim0MQ demo classes</name>
   <description>Demo classes for the Sim0MQ project</description>
