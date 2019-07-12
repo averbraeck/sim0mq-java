@@ -19,7 +19,7 @@ import org.sim0mq.message.types.NumberTime;
 /**
  * SimRunControlMessage, FM.2. Message sent by the Federation Manager to the Model to initialize a simulation.
  * <p>
- * Copyright (c) 2016-2017 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
+ * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
@@ -268,7 +268,7 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
      * Builder for the SimRunControl Message. Can string setters together, and call build() at the end to build the actual
      * message.
      * <p>
-     * Copyright (c) 2016-2017 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
+     * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>

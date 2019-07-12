@@ -11,14 +11,12 @@ import org.sim0mq.message.SimulationMessage;
  * the Model. Since the message type id clarifies the function of this message and no information exchange is necessary, the
  * payload field can be empty (number of fields = 0).
  * <p>
- * Copyright (c) 2016-2017 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
+ * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
- * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
- * initial version Apr 22, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class RequestStatusMessage extends Sim0MQMessage
+public class FS1RequestStatusMessage extends Sim0MQMessage
 {
     /** */
     private static final long serialVersionUID = 20170422L;
@@ -38,7 +36,7 @@ public class RequestStatusMessage extends Sim0MQMessage
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public RequestStatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+    public FS1RequestStatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId) throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
@@ -75,23 +73,21 @@ public class RequestStatusMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static RequestStatusMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static FS1RequestStatusMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
         check(fields, 0, MESSAGETYPE, intendedReceiverId);
-        return new RequestStatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());
+        return new FS1RequestStatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());
     }
 
     /**
      * Builder for the StartFederate Message. Can string setters together, and call build() at the end to build the actual
      * message.
      * <p>
-     * Copyright (c) 2016-2017 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
+     * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>
-     * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
-     * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
     public static class Builder extends Sim0MQMessage.Builder<Builder>
@@ -108,7 +104,7 @@ public class RequestStatusMessage extends Sim0MQMessage
         @Override
         public Sim0MQMessage build() throws Sim0MQException, NullPointerException
         {
-            return new RequestStatusMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
+            return new FS1RequestStatusMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
         }
 
     }
