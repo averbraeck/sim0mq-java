@@ -18,6 +18,9 @@ import org.djutils.immutablecollections.ImmutableHashMap;
  */
 public enum MessageStatus
 {
+    /** message status NONE. */
+    NONE(0),
+
     /** message status NEW. */
     NEW(1),
 

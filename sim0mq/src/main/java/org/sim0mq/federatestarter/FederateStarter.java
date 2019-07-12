@@ -21,7 +21,7 @@ import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
 import org.sim0mq.message.federatestarter.FederateStartedMessage;
-import org.sim0mq.message.federationmanager.StartFederateMessage;
+import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -56,7 +56,7 @@ public class FederateStarter
     private Map<String, Integer> modelPortMap = Collections.synchronizedMap(new HashMap<>());
 
     /** the StartFederate messages. */
-    private Map<String, StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, FM1StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new HashMap<>());
 
     /** the software properties. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -147,7 +147,7 @@ public class FederateStarter
     private void processStartFederate(final String identity, final Object[] fields)
             throws Sim0MQException, SerializationException
     {
-        StartFederateMessage startFederateMessage = StartFederateMessage.createMessage(fields, "FS");
+        FM1StartFederateMessage startFederateMessage = FM1StartFederateMessage.createMessage(fields, "FS");
         String error = "";
 
         int modelPort = findFreePortNumber();
@@ -445,7 +445,7 @@ public class FederateStarter
                     process.destroyForcibly();
                 }
 
-                StartFederateMessage sfm = this.startFederateMessages.get(modelId);
+                FM1StartFederateMessage sfm = this.startFederateMessages.get(modelId);
                 if (sfm.isDeleteStdout())
                 {
                     if (sfm.getRedirectStdout().length() > 0)

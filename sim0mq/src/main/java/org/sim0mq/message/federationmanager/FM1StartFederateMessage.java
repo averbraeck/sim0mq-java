@@ -18,11 +18,9 @@ import org.sim0mq.message.SimulationMessage;
  * Copyright (c) 2016-2017 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
- * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
- * initial version Apr 22, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class StartFederateMessage extends Sim0MQMessage
+public class FM1StartFederateMessage extends Sim0MQMessage
 {
     /**
      * Id to identify the callback to know which model instance has been started, e.g. "IDVV.14". The model instance will use
@@ -147,7 +145,7 @@ public class StartFederateMessage extends Sim0MQMessage
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public StartFederateMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+    public FM1StartFederateMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final String instanceId, final String softwareCode, final String argsBefore,
             final String modelPath, final String argsAfter, final String workingDirectory, final String redirectStdin,
             final String redirectStdout, final String redirectStderr, final boolean deleteWorkingDirectory,
@@ -293,10 +291,10 @@ public class StartFederateMessage extends Sim0MQMessage
     @Override
     public Object[] createObjectArray()
     {
-        return new Object[] { getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
+        return new Object[] {getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
                 getMessageStatus(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath, this.argsAfter,
                 this.workingDirectory, this.redirectStdin, this.redirectStdout, this.redirectStderr,
-                this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr };
+                this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr};
     }
 
     /** {@inheritDoc} */
@@ -316,12 +314,12 @@ public class StartFederateMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static StartFederateMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static FM1StartFederateMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
         check(fields, 12, MESSAGETYPE, intendedReceiverId);
-        return new StartFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8].toString(),
-                fields[9].toString(), fields[10].toString(), fields[11].toString(), fields[12].toString(),
+        return new FM1StartFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
+                fields[8].toString(), fields[9].toString(), fields[10].toString(), fields[11].toString(), fields[12].toString(),
                 fields[13].toString(), fields[14].toString(), fields[15].toString(), fields[16].toString(),
                 (Boolean) fields[17], (Boolean) fields[18], (Boolean) fields[19]);
     }
@@ -334,11 +332,9 @@ public class StartFederateMessage extends Sim0MQMessage
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>
-     * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
-     * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<StartFederateMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<FM1StartFederateMessage.Builder>
     {
         /**
          * Id to identify the callback to know which model instance has been started, e.g. "IDVV.14". The model instance will
@@ -547,7 +543,7 @@ public class StartFederateMessage extends Sim0MQMessage
         @Override
         public Sim0MQMessage build() throws Sim0MQException, NullPointerException
         {
-            return new StartFederateMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+            return new FM1StartFederateMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
                     this.instanceId, this.softwareCode, this.argsBefore, this.modelPath, this.argsAfter, this.workingDirectory,
                     this.redirectStdin, this.redirectStdout, this.redirectStderr, this.deleteWorkingDirectory,
                     this.deleteStdout, this.deleteStderr);

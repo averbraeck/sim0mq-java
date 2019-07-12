@@ -22,11 +22,9 @@ import org.sim0mq.message.types.NumberTime;
  * Copyright (c) 2016-2017 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
- * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
- * initial version Apr 22, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class SimRunControlMessage extends Sim0MQMessage
+public class FM2SimRunControlMessage extends Sim0MQMessage
 {
     /**
      * Duration of the run of a single replication, including the warmup time, if present. The type is any numeric type (1-5) or
@@ -87,7 +85,7 @@ public class SimRunControlMessage extends Sim0MQMessage
      * @throws NullPointerException when one of the parameters is null
      */
     @SuppressWarnings("checkstyle:parameternumber")
-    public SimRunControlMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+    public FM2SimRunControlMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final Object runTime, final Object warmupTime, final Object offsetTime, final double speed,
             final int numberReplications, final int numberRandomStreams, final Map<Object, Long> streamMap)
             throws Sim0MQException, NullPointerException
@@ -250,7 +248,7 @@ public class SimRunControlMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static SimRunControlMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static FM2SimRunControlMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
         Map<Object, Long> streams = new HashMap<>();
@@ -262,7 +260,7 @@ public class SimRunControlMessage extends Sim0MQMessage
             Long seed = ((Long) fields[i + 1]).longValue();
             streams.put(streamId, seed);
         }
-        return new SimRunControlMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8], fields[9],
+        return new FM2SimRunControlMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8], fields[9],
                 fields[10], ((Double) fields[11]).doubleValue(), ((Integer) fields[12]).intValue(), numberStreams, streams);
     }
 
@@ -274,11 +272,9 @@ public class SimRunControlMessage extends Sim0MQMessage
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>
-     * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
-     * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<SimRunControlMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<FM2SimRunControlMessage.Builder>
     {
         /**
          * Duration of the run of a single replication, including the warmup time, if present. The type is any numeric type
@@ -439,7 +435,7 @@ public class SimRunControlMessage extends Sim0MQMessage
         @Override
         public Sim0MQMessage build() throws Sim0MQException, NullPointerException
         {
-            return new SimRunControlMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.runTime,
+            return new FM2SimRunControlMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.runTime,
                     this.warmupTime, this.offsetTime, this.speed, this.numberReplications, this.streamMap.size(),
                     this.streamMap);
         }
