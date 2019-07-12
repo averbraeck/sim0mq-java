@@ -1,4 +1,4 @@
-package org.sim0mq.message.model;
+package org.sim0mq.message.modelcontroller;
 
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
