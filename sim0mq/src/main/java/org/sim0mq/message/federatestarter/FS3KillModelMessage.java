@@ -1,6 +1,5 @@
-package org.sim0mq.message.federationmanager;
+package org.sim0mq.message.federatestarter;
 
-import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
@@ -8,24 +7,20 @@ import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
 
 /**
- * KillFederate, FM.8. Kill the given federate (including termination of the process on the computer / node / processor where
- * the federate is running). This message is sent to the FederateStarter.
+ * KillModel, FS.3. The message is sent by the federate starter to a Model Controller. The number of extra fields is zero.
  * <p>
- * Copyright (c) 2019-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
+ * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class FM8KillFederateMessage extends Sim0MQMessage
+public class FS3KillModelMessage extends Sim0MQMessage
 {
-    /** Id to identify the federate instance that has to be killed. */
-    private final String instanceId;
+    /** */
+    private static final long serialVersionUID = 20170422L;
 
     /** the unique message id. */
-    private static final String MESSAGETYPE = "FM.8";
-
-    /** */
-    private static final long serialVersionUID = 20190712L;
+    private static final String MESSAGETYPE = "FS.3";
 
     /**
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
@@ -36,25 +31,13 @@ public class FM8KillFederateMessage extends Sim0MQMessage
      *            error can be sent if we receive a message not meant for us).
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
-     * @param instanceId String; Id to identify the federate instance that has to be killed
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    @SuppressWarnings("checkstyle:parameternumber")
-    public FM8KillFederateMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final long messageId, final String instanceId) throws Sim0MQException, NullPointerException
+    public FS3KillModelMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+            final long messageId) throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
-        Throw.whenNull(instanceId, "instanceId cannot be null");
-        this.instanceId = instanceId;
-    }
-
-    /**
-     * @return instanceId
-     */
-    public String getInstanceId()
-    {
-        return this.instanceId;
     }
 
     /**
@@ -69,7 +52,7 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     @Override
     public short getNumberOfPayloadFields()
     {
-        return 1;
+        return 0;
     }
 
     /** {@inheritDoc} */
@@ -77,7 +60,7 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId};
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
     }
 
     /** {@inheritDoc} */
@@ -85,7 +68,7 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
         return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.instanceId);
+                getMessageId(), getMessageStatus());
     }
 
     /**
@@ -95,29 +78,25 @@ public class FM8KillFederateMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static FM8KillFederateMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static FS3KillModelMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
-        check(fields, 1, MESSAGETYPE, intendedReceiverId);
-        return new FM8KillFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[8].toString());
+        check(fields, 0, MESSAGETYPE, intendedReceiverId);
+        return new FS3KillModelMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());
     }
 
     /**
-     * Builder for the KillFederate Message. Can string setters together, and call build() at the end to build the actual
+     * Builder for the StartFederate Message. Can string setters together, and call build() at the end to build the actual
      * message.
      * <p>
-     * Copyright (c) 2019-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
+     * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<FM8KillFederateMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<Builder>
     {
-        /** Id to identify the federate instance that has to be killed. */
-        private String instanceId;
-
         /**
          * Empty constructor.
          */
@@ -126,22 +105,11 @@ public class FM8KillFederateMessage extends Sim0MQMessage
             // nothing to do.
         }
 
-        /**
-         * @param newInstanceId set id to identify the federate instance that has to be killed
-         * @return the original object for chaining
-         */
-        public final Builder setInstanceId(final String newInstanceId)
-        {
-            this.instanceId = newInstanceId;
-            return this;
-        }
-
         /** {@inheritDoc} */
         @Override
-        public FM8KillFederateMessage build() throws Sim0MQException, NullPointerException
+        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FM8KillFederateMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
-                    this.instanceId);
+            return new FS3KillModelMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
         }
 
     }

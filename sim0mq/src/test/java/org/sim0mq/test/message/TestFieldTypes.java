@@ -36,15 +36,14 @@ import org.junit.Test;
 import org.sim0mq.Sim0MQException;
 
 /**
+ * test the field types of the messages.
  * <p>
  * Copyright (c) 2013-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
- * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
- * initial version Aug 8, 2018 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class TestTypedMessage
+public class TestFieldTypes
 {
     /** the test objects. */
     private static List<TestType> testTypes = new ArrayList<>();
@@ -404,7 +403,7 @@ public class TestTypedMessage
             testTypes.add(new TestType(afv, 31, new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 101, 0x03, 0xD2, 21, 0x42, 0xF0, 0x00,
                     0x00, 0x3C, 0xA3, 0xD7, 0x0A, 0x43, 0x16, 0x00, 0x00, 0x3C, 0xA3, 0xD7, 0x0A}));
             */
-            
+
             DurationVector ddv = new DurationVector(new double[] {20.0, 25.0}, DurationUnit.MINUTE, StorageType.DENSE);
             MoneyPerAreaVector dmv = new MoneyPerAreaVector(new double[] {20000.0, 20000.0},
                     new MoneyPerAreaUnit(MoneyUnit.EUR, AreaUnit.HECTARE, "EUR/ha", "EUR/ha"), StorageType.DENSE);

@@ -1,7 +1,7 @@
 package org.sim0mq.demo.mm1;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -201,7 +201,7 @@ public class MM1FederationManager
      */
     private void setParameters(final String federationName) throws Sim0MQException, SerializationException
     {
-        Map<String, Object> parameters = new HashMap<>();
+        Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("iat", new Double(1.0));
         parameters.put("servicetime", new Double(0.85));
 

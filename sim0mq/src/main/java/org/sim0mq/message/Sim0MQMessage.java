@@ -93,6 +93,15 @@ public abstract class Sim0MQMessage implements Serializable
     }
 
     /**
+     * @return Magic number = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 01. Internally, the magic
+     *         number is always coded as a UTF-8 String, so it always starts with a byte equal to 9.
+     */
+    public final Object getMagicNumber()
+    {
+        return VERSION;
+    }
+
+    /**
      * @return simulationRunId
      */
     public final Object getSimulationRunId()
@@ -155,6 +164,12 @@ public abstract class Sim0MQMessage implements Serializable
     public abstract byte[] createByteArray() throws Sim0MQException, SerializationException;
 
     /**
+     * Get the number of payload fields in the message.
+     * @return short; the number of payload fields in the message.
+     */
+    public abstract short getNumberOfPayloadFields();
+
+    /**
      * Check the consistency of a message from an Object[] that was received.
      * @param fields Object[]; the fields in the message
      * @param expectedPayloadFields the expected number of payload fields
@@ -166,7 +181,8 @@ public abstract class Sim0MQMessage implements Serializable
             final Object intendedReceiverId) throws Sim0MQException
     {
         Throw.when(fields.length != expectedPayloadFields + 8, Sim0MQException.class,
-                "Message " + expectedMessageType + " does not contain the right number of fields");
+                "Message " + expectedMessageType + " does not contain the right number of fields. " + "Expected: "
+                        + (expectedPayloadFields + 8) + ", Actual: " + fields.length);
 
         for (int i = 0; i < fields.length; i++)
         {

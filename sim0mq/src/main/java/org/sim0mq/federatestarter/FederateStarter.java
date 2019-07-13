@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -20,7 +20,7 @@ import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.SimulationMessage;
-import org.sim0mq.message.federatestarter.FederateStartedMessage;
+import org.sim0mq.message.federatestarter.FS2FederateStartedMessage;
 import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -50,13 +50,13 @@ public class FederateStarter
 
     /** the running programs this FederateStarter started. The String identifies the process (e.g., a UUID or a model id). */
     @SuppressWarnings("checkstyle:visibilitymodifier")
-    protected Map<String, Process> runningProcessMap = Collections.synchronizedMap(new HashMap<>());
+    protected Map<String, Process> runningProcessMap = Collections.synchronizedMap(new LinkedHashMap<>());
 
     /** the ports where the models listen. The String identifies the process (e.g., a UUID or a model id). */
-    private Map<String, Integer> modelPortMap = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, Integer> modelPortMap = Collections.synchronizedMap(new LinkedHashMap<>());
 
     /** the StartFederate messages. */
-    private Map<String, FM1StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, FM1StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new LinkedHashMap<>());
 
     /** the software properties. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -252,7 +252,7 @@ public class FederateStarter
         this.fsSocket.sendMore(identity);
         this.fsSocket.sendMore("");
         //@formatter:off
-        byte[] fs2Message = new FederateStartedMessage.Builder()
+        byte[] fs2Message = new FS2FederateStartedMessage.Builder()
                 .setSimulationRunId(startFederateMessage.getSimulationRunId())
                 .setInstanceId(startFederateMessage.getInstanceId())
                 .setSenderId("FS")

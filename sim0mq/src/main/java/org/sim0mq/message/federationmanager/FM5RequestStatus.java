@@ -53,10 +53,17 @@ public class FM5RequestStatus extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] {getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus()};
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
     }
 
     /** {@inheritDoc} */
@@ -102,7 +109,7 @@ public class FM5RequestStatus extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FM5RequestStatus build() throws Sim0MQException, NullPointerException
         {
             return new FM5RequestStatus(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
         }

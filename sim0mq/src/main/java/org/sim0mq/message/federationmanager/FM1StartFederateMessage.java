@@ -289,12 +289,19 @@ public class FM1StartFederateMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 12;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] {getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath, this.argsAfter,
-                this.workingDirectory, this.redirectStdin, this.redirectStdout, this.redirectStderr,
-                this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr};
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId, this.softwareCode,
+                this.argsBefore, this.modelPath, this.argsAfter, this.workingDirectory, this.redirectStdin, this.redirectStdout,
+                this.redirectStderr, this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr};
     }
 
     /** {@inheritDoc} */
@@ -541,7 +548,7 @@ public class FM1StartFederateMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FM1StartFederateMessage build() throws Sim0MQException, NullPointerException
         {
             return new FM1StartFederateMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
                     this.instanceId, this.softwareCode, this.argsBefore, this.modelPath, this.argsAfter, this.workingDirectory,

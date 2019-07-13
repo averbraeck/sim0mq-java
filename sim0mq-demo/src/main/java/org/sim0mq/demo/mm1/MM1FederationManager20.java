@@ -2,7 +2,7 @@ package org.sim0mq.demo.mm1;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -102,7 +102,7 @@ public final class MM1FederationManager20
         AtomicLong messageCount = new AtomicLong(0L);
         AtomicInteger nrRunning = new AtomicInteger();
 
-        Map<Integer, Map<String, Number>> statMap = Collections.synchronizedMap(new HashMap<Integer, Map<String, Number>>());
+        Map<Integer, Map<String, Number>> statMap = Collections.synchronizedMap(new LinkedHashMap<Integer, Map<String, Number>>());
 
         for (int modelNr = 0; modelNr < 20; modelNr++)
         {
@@ -185,7 +185,7 @@ public final class MM1FederationManager20
         private AtomicLong messageCount;
 
         /** statistics. */
-        private Map<String, Number> statistics = new HashMap<>();
+        private Map<String, Number> statistics = new LinkedHashMap<>();
 
         /**
          * @param messageCount AtomicLong; message counter
@@ -355,7 +355,7 @@ public final class MM1FederationManager20
          */
         private void setParameters(final String federationName) throws Sim0MQException, SerializationException
         {
-            Map<String, Object> parameters = new HashMap<>();
+            Map<String, Object> parameters = new LinkedHashMap<>();
             parameters.put("iat", new Double(1.0));
             parameters.put("servicetime", new Double(0.85));
             parameters.put("seed", Math.abs(this.modelName.hashCode()));

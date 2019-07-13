@@ -1,6 +1,6 @@
 package org.sim0mq.message;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.djutils.immutablecollections.Immutable;
@@ -58,7 +58,7 @@ public enum MessageStatus
      */
     public static ImmutableHashMap<Integer, MessageStatus> getTypes()
     {
-        Map<Integer, MessageStatus> t = new HashMap<>();
+        Map<Integer, MessageStatus> t = new LinkedHashMap<>();
         if (types == null)
         {
             for (int i = 0; i < values().length; i++)
