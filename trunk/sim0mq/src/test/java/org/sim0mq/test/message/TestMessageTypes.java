@@ -23,6 +23,11 @@ import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.federatestarter.FS1RequestStatusMessage;
+import org.sim0mq.message.federatestarter.FS2FederateStartedMessage;
+import org.sim0mq.message.federatestarter.FS3KillModelMessage;
+import org.sim0mq.message.federatestarter.FS4FederateKilledMessage;
+import org.sim0mq.message.federatestarter.FS5FederatesKilledMessage;
 import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
 import org.sim0mq.message.federationmanager.FM2SimRunControlMessage;
 import org.sim0mq.message.federationmanager.FM3SetParameterMessage;
@@ -57,7 +62,7 @@ public class TestMessageTypes
     }
 
     /**
-     * Test message type classes one by one.
+     * Test Federation Manager (FM) message type classes one by one.
      * @throws Sim0MQException on encoding error
      * @throws SerializationException on serialization error
      */
@@ -128,6 +133,8 @@ public class TestMessageTypes
                 .setSenderId(fmmc.senderId).setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId)
                 .setParameterName("EnergyParam").setParameterValue(new Energy(1.67, EnergyUnit.GIGAWATT_HOUR)).build();
         testMessage(fm3, fm3o, fm3c, fm3d, fmmc, "FM.3");
+        assertEquals("EnergyParam", fm3.getParameterName());
+        assertEquals(new Energy(1.67, EnergyUnit.GIGAWATT_HOUR), fm3.getParameterValue());
 
         FM4SimStartMessage fm4 = new FM4SimStartMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
         Object[] fm4o = fm4.createObjectArray();
@@ -151,6 +158,7 @@ public class TestMessageTypes
                 new FM6RequestStatisticsMessage.Builder().setSimulationRunId(fmmc.simulationRunId).setSenderId(fmmc.senderId)
                         .setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).setVariableName("WaitingTimeAvg").build();
         testMessage(fm6, fm6o, fm6c, fm6d, fmmc, "FM.6");
+        assertEquals("WaitingTimeAvg", fm6.getVariableName());
 
         FM7SimResetMessage fm7 = new FM7SimResetMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
         Object[] fm7o = fm7.createObjectArray();
@@ -167,6 +175,7 @@ public class TestMessageTypes
                 new FM8KillFederateMessage.Builder().setSimulationRunId(fmfs.simulationRunId).setSenderId(fmfs.senderId)
                         .setReceiverId(fmfs.receiverId).setMessageId(fmfs.messageId).setInstanceId("IDVV.28").build();
         testMessage(fm8, fm8o, fm8c, fm8d, fmfs, "FM.8");
+        assertEquals("IDVV.28", fm8.getInstanceId());
 
         FM9KillAllMessage fm9 = new FM9KillAllMessage(fmfs.simulationRunId, fmfs.senderId, fmfs.receiverId, fmfs.messageId);
         Object[] fm9o = fm9.createObjectArray();
@@ -174,7 +183,74 @@ public class TestMessageTypes
         FM9KillAllMessage fm9d = new FM9KillAllMessage.Builder().setSimulationRunId(fmfs.simulationRunId)
                 .setSenderId(fmfs.senderId).setReceiverId(fmfs.receiverId).setMessageId(fmfs.messageId).build();
         testMessage(fm9, fm9o, fm9c, fm9d, fmfs, "FM.9");
+    }
 
+    /**
+     * Test Federation Starter (FS) message type classes one by one.
+     * @throws Sim0MQException on encoding error
+     * @throws SerializationException on serialization error
+     */
+    @SuppressWarnings("checkstyle:needbraces")
+    @Test
+    public void testMessageTypesFS() throws Sim0MQException, SerializationException
+    {
+        Header fsfm = new Header();
+        fsfm.senderId = "FS.2";
+        fsfm.receiverId = "FM.1";
+        Header fsmc = new Header();
+        fsmc.senderId = "FS.2";
+        fsmc.receiverId = "MODEL.12";
+
+        FS1RequestStatusMessage fs1 =
+                new FS1RequestStatusMessage(fsmc.simulationRunId, fsmc.senderId, fsmc.receiverId, fsmc.messageId);
+        Object[] fs1o = fs1.createObjectArray();
+        FS1RequestStatusMessage fs1c = FS1RequestStatusMessage.createMessage(fs1o, fsmc.receiverId);
+        FS1RequestStatusMessage fs1d = new FS1RequestStatusMessage.Builder().setSimulationRunId(fsmc.simulationRunId)
+                .setSenderId(fsmc.senderId).setReceiverId(fsmc.receiverId).setMessageId(fsmc.messageId).build();
+        testMessage(fs1, fs1o, fs1c, fs1d, fsmc, "FS.1");
+
+        FS2FederateStartedMessage fs2 = new FS2FederateStartedMessage(fsfm.simulationRunId, fsfm.senderId, fsfm.receiverId,
+                fsfm.messageId, "IDVV.12", "started", (short) 5012, "");
+        Object[] fs2o = fs2.createObjectArray();
+        FS2FederateStartedMessage fs2c = FS2FederateStartedMessage.createMessage(fs2o, fsfm.receiverId);
+        FS2FederateStartedMessage fs2d = new FS2FederateStartedMessage.Builder().setSimulationRunId(fsfm.simulationRunId)
+                .setSenderId(fsfm.senderId).setReceiverId(fsfm.receiverId).setMessageId(fsfm.messageId).setInstanceId("IDVV.12")
+                .setStatus("started").setModelPort(5012).setError("").build();
+        testMessage(fs2, fs2o, fs2c, fs2d, fsfm, "FS.2");
+        assertEquals("IDVV.12", fs2.getInstanceId());
+        assertEquals("started", fs2.getStatus());
+        assertEquals((short) 5012, fs2.getModelPort());
+        assertEquals("", fs2.getError());
+
+        FS3KillModelMessage fs3 = new FS3KillModelMessage(fsmc.simulationRunId, fsmc.senderId, fsmc.receiverId, fsmc.messageId);
+        Object[] fs3o = fs3.createObjectArray();
+        FS3KillModelMessage fs3c = FS3KillModelMessage.createMessage(fs3o, fsmc.receiverId);
+        FS3KillModelMessage fs3d = new FS3KillModelMessage.Builder().setSimulationRunId(fsmc.simulationRunId)
+                .setSenderId(fsmc.senderId).setReceiverId(fsmc.receiverId).setMessageId(fsmc.messageId).build();
+        testMessage(fs3, fs3o, fs3c, fs3d, fsmc, "FS.3");
+
+        FS4FederateKilledMessage fs4 = new FS4FederateKilledMessage(fsfm.simulationRunId, fsfm.senderId, fsfm.receiverId,
+                fsfm.messageId, "IDVV.12", true, "Model not found");
+        Object[] fs4o = fs4.createObjectArray();
+        FS4FederateKilledMessage fs4c = FS4FederateKilledMessage.createMessage(fs4o, fsfm.receiverId);
+        FS4FederateKilledMessage fs4d = new FS4FederateKilledMessage.Builder().setSimulationRunId(fsfm.simulationRunId)
+                .setSenderId(fsfm.senderId).setReceiverId(fsfm.receiverId).setMessageId(fsfm.messageId).setInstanceId("IDVV.12")
+                .setStatus(true).setError("Model not found").build();
+        testMessage(fs4, fs4o, fs4c, fs4d, fsfm, "FS.4");
+        assertEquals("IDVV.12", fs4.getInstanceId());
+        assertEquals(true, fs4.isStatus());
+        assertEquals("Model not found", fs4.getError());
+
+        FS5FederatesKilledMessage fs5 =
+                new FS5FederatesKilledMessage(fsfm.simulationRunId, fsfm.senderId, fsfm.receiverId, fsfm.messageId, false, "");
+        Object[] fs5o = fs5.createObjectArray();
+        FS5FederatesKilledMessage fs5c = FS5FederatesKilledMessage.createMessage(fs5o, fsfm.receiverId);
+        FS5FederatesKilledMessage fs5d =
+                new FS5FederatesKilledMessage.Builder().setSimulationRunId(fsfm.simulationRunId).setSenderId(fsfm.senderId)
+                        .setReceiverId(fsfm.receiverId).setMessageId(fsfm.messageId).setStatus(false).setError("").build();
+        testMessage(fs5, fs5o, fs5c, fs5d, fsfm, "FS.5");
+        assertEquals(false, fs5.isStatus());
+        assertEquals("", fs5.getError());
     }
 
     /**

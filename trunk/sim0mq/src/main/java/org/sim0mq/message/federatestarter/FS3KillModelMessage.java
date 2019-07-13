@@ -95,7 +95,7 @@ public class FS3KillModelMessage extends Sim0MQMessage
      * </p>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<Builder>
+    public static class Builder extends Sim0MQMessage.Builder<FS3KillModelMessage.Builder>
     {
         /**
          * Empty constructor.
@@ -107,7 +107,7 @@ public class FS3KillModelMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FS3KillModelMessage build() throws Sim0MQException, NullPointerException
         {
             return new FS3KillModelMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
         }

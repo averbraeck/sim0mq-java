@@ -8,35 +8,29 @@ import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
 
 /**
- * FederateStarted, FS.2. Message sent by the Federate Starter to the Federation Manager in response to message FM.1.
+ * FederateKilled, FS.4. Message sent by the Federate Starter to the Federation Manager in response to message FM.8.
  * <p>
  * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class FS2FederateStartedMessage extends Sim0MQMessage
+public class FS4FederateKilledMessage extends Sim0MQMessage
 {
     /** */
     private static final long serialVersionUID = 20170422L;
 
-    /**
-     * The sender id of the model that was started or had an error while starting. This is exactly the same as the instanceId
-     * sent by the Federation Manager in the StartFederate message.
-     */
+    /** The sender id of the model that was started and now has to be terminated. */
     private final String instanceId;
 
-    /** A string that refers to the model status. Four options: "started", "running", "ended", "error". */
-    private final String status;
+    /** Did the termination of the model succeed? */
+    private final boolean status;
 
-    /** The model port number. We use an int in Java due to the fact there is no unsigned short. */
-    private final int modelPort;
-
-    /** Optional. If there is an error, the error message is sent as well. Otherwise this field is an empty string. */
+    /** If there was an error, the error message is sent as well. Otherwise this field is an empty string. */
     private final String error;
 
     /** the unique message id. */
-    private static final String MESSAGETYPE = "FS.2";
+    private static final String MESSAGETYPE = "FS.4";
 
     /**
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
@@ -49,15 +43,15 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
      *            correctly. The number is unique for the sender, so not globally within the federation.
      * @param instanceId The sender id of the model that was started or had an error while starting. This is exactly the same as
      *            the instanceId sent by the Federation Manager in the StartFederate message.
-     * @param status A string that refers to the model status. Four options: "started", "running", "ended", "error".
-     * @param modelPort The model port number. We use an int in Java due to the fact there is no unsigned short.
-     * @param error Optional. If there is an error, the error message is sent as well. Otherwise this field is an empty string.
+     * @param status Did the termination of the model succeed?
+     * @param error If there was an error with the model termination, the error message is sent as well. Otherwise this field is
+     *            an empty string.
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
     @SuppressWarnings("checkstyle:parameternumber")
-    public FS2FederateStartedMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final long messageId, final String instanceId, final String status, final int modelPort, final String error)
+    public FS4FederateKilledMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+            final long messageId, final String instanceId, final boolean status, final String error)
             throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
@@ -66,14 +60,8 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
         Throw.whenNull(status, "status cannot be null");
         Throw.whenNull(error, "error cannot be null");
 
-        Throw.when(status.isEmpty(), Sim0MQException.class, "status cannot be empty");
-        Throw.when(!status.equals("started") && !status.equals("running") && !status.equals("ended") && !status.equals("error"),
-                Sim0MQException.class, "status should be one of 'started', 'running', 'ended', 'error'");
-        Throw.when(modelPort < 0 || modelPort > 65535, Sim0MQException.class, "modelPort should be between 0 and 65535");
-
         this.instanceId = instanceId;
         this.status = status;
-        this.modelPort = modelPort;
         this.error = error;
     }
 
@@ -88,17 +76,9 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
     /**
      * @return status
      */
-    public String getStatus()
+    public boolean isStatus()
     {
         return this.status;
-    }
-
-    /**
-     * @return modelPort
-     */
-    public int getModelPort()
-    {
-        return this.modelPort;
     }
 
     /**
@@ -121,7 +101,7 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
     @Override
     public short getNumberOfPayloadFields()
     {
-        return 4;
+        return 3;
     }
 
     /** {@inheritDoc} */
@@ -129,8 +109,7 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId, this.status, this.modelPort,
-                this.error};
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId, this.status, this.error};
     }
 
     /** {@inheritDoc} */
@@ -138,7 +117,7 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
         return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.instanceId, this.status, this.modelPort, this.error);
+                getMessageId(), getMessageStatus(), this.instanceId, this.status, this.error);
     }
 
     /**
@@ -148,12 +127,12 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static FS2FederateStartedMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static FS4FederateKilledMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
-        check(fields, 4, MESSAGETYPE, intendedReceiverId);
-        return new FS2FederateStartedMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[8].toString(), fields[9].toString(), ((Number) fields[10]).shortValue(), fields[11].toString());
+        check(fields, 3, MESSAGETYPE, intendedReceiverId);
+        return new FS4FederateKilledMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
+                fields[8].toString(), (boolean) fields[9], fields[10].toString());
     }
 
     /**
@@ -166,7 +145,7 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
      * </p>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<FS2FederateStartedMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<FS4FederateKilledMessage.Builder>
     {
         /**
          * The sender id of the model that was started or had an error while starting. This is exactly the same as the
@@ -174,13 +153,10 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
          */
         private String instanceId;
 
-        /** A string that refers to the model status. Four options: "started", "running", "ended", "error". */
-        private String status;
+        /** Did the termination of the model succeed? */
+        private boolean status;
 
-        /** The model port number. We use an int in Java due to the fact there is no unsigned short. */
-        private int modelPort;
-
-        /** Optional. If there is an error, the error message is sent as well. Otherwise this field is an empty string. */
+        /** If there was an error, the error message is sent as well. Otherwise this field is an empty string. */
         private String error;
 
         /**
@@ -205,19 +181,9 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
          * @param newStatus set status
          * @return the original object for chaining
          */
-        public final Builder setStatus(final String newStatus)
+        public final Builder setStatus(final boolean newStatus)
         {
             this.status = newStatus;
-            return this;
-        }
-
-        /**
-         * @param newModelPort set modelPort (int instead of short because of signed short in Java)
-         * @return the original object for chaining
-         */
-        public final Builder setModelPort(final int newModelPort)
-        {
-            this.modelPort = newModelPort;
             return this;
         }
 
@@ -233,10 +199,10 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public FS2FederateStartedMessage build() throws Sim0MQException, NullPointerException
+        public FS4FederateKilledMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FS2FederateStartedMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
-                    this.instanceId, this.status, this.modelPort, this.error);
+            return new FS4FederateKilledMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+                    this.instanceId, this.status, this.error);
         }
 
     }
