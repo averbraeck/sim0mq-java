@@ -13,11 +13,9 @@ import org.sim0mq.message.SimulationMessage;
  * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
- * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
- * initial version Apr 22, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class FederateStartedMessage extends Sim0MQMessage
+public class FS2FederateStartedMessage extends Sim0MQMessage
 {
     /** */
     private static final long serialVersionUID = 20170422L;
@@ -58,7 +56,7 @@ public class FederateStartedMessage extends Sim0MQMessage
      * @throws NullPointerException when one of the parameters is null
      */
     @SuppressWarnings("checkstyle:parameternumber")
-    public FederateStartedMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+    public FS2FederateStartedMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final String instanceId, final String status, final int modelPort, final String error)
             throws Sim0MQException, NullPointerException
     {
@@ -89,10 +87,18 @@ public class FederateStartedMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 4;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] { getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), this.instanceId, this.status, this.modelPort, this.error };
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId, this.status, this.modelPort,
+                this.error};
     }
 
     /** {@inheritDoc} */
@@ -110,12 +116,12 @@ public class FederateStartedMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static FederateStartedMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static FS2FederateStartedMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
         check(fields, 4, MESSAGETYPE, intendedReceiverId);
-        return new FederateStartedMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8].toString(),
-                fields[9].toString(), ((Short) fields[10]).intValue(), fields[11].toString());
+        return new FS2FederateStartedMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
+                fields[8].toString(), fields[9].toString(), ((Short) fields[10]).intValue(), fields[11].toString());
     }
 
     /**
@@ -126,11 +132,9 @@ public class FederateStartedMessage extends Sim0MQMessage
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>
-     * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
-     * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<FederateStartedMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<FS2FederateStartedMessage.Builder>
     {
         /**
          * The sender id of the model that was started or had an error while starting. This is exactly the same as the
@@ -199,7 +203,7 @@ public class FederateStartedMessage extends Sim0MQMessage
         @Override
         public Sim0MQMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FederateStartedMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+            return new FS2FederateStartedMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
                     this.instanceId, this.status, this.modelPort, this.error);
         }
 

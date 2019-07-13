@@ -73,10 +73,17 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 1;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] {getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), this.variableName};
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.variableName};
     }
 
     /** {@inheritDoc} */
@@ -133,7 +140,7 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
          * @param newVariableName set statistics variable name
          * @return the original object for chaining
          */
-        public final Builder setParameterName(final String newVariableName)
+        public final Builder setVariableName(final String newVariableName)
         {
             this.variableName = newVariableName;
             return this;
@@ -141,7 +148,7 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FM6RequestStatisticsMessage build() throws Sim0MQException, NullPointerException
         {
             return new FM6RequestStatisticsMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
                     this.variableName);

@@ -52,10 +52,17 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] { getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus() };
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
     }
 
     /** {@inheritDoc} */

@@ -7,7 +7,7 @@ import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
 
 /**
- * SimReset, FM.7. Reset the model to its initial state. 
+ * SimReset, FM.7. Reset the model to its initial state.
  * <p>
  * Copyright (c) 2019-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
@@ -51,10 +51,17 @@ public class FM7SimResetMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] {getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus()};
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
     }
 
     /** {@inheritDoc} */
@@ -100,7 +107,7 @@ public class FM7SimResetMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FM7SimResetMessage build() throws Sim0MQException, NullPointerException
         {
             return new FM7SimResetMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
         }

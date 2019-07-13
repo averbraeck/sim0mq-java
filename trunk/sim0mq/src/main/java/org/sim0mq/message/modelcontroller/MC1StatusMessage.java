@@ -19,7 +19,7 @@ import org.sim0mq.message.SimulationMessage;
  * initial version Apr 22, 2017 <br>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class StatusMessage extends Sim0MQReply
+public class MC1StatusMessage extends Sim0MQReply
 {
     /** A string that refers to the model status. Four options: "started", "running", "ended", "error". */
     private final String status;
@@ -52,7 +52,7 @@ public class StatusMessage extends Sim0MQReply
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public StatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId, final long messageId,
+    public MC1StatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId, final long messageId,
             final long uniqueId, final String status, final String error) throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW, uniqueId);
@@ -93,10 +93,17 @@ public class StatusMessage extends Sim0MQReply
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 3;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] { getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), getReplyToId(), this.status, this.error };
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), getReplyToId(), this.status, this.error};
     }
 
     /** {@inheritDoc} */
@@ -114,10 +121,10 @@ public class StatusMessage extends Sim0MQReply
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static StatusMessage createMessage(final Object[] fields, final Object intendedReceiverId) throws Sim0MQException
+    public static MC1StatusMessage createMessage(final Object[] fields, final Object intendedReceiverId) throws Sim0MQException
     {
         check(fields, 3, MESSAGETYPE, intendedReceiverId);
-        return new StatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
+        return new MC1StatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
                 ((Long) fields[8]).longValue(), fields[9].toString(), fields[10].toString());
     }
 
@@ -133,7 +140,7 @@ public class StatusMessage extends Sim0MQReply
      * initial version Apr 22, 2017 <br>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<StatusMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<MC1StatusMessage.Builder>
     {
         /** The unique message id (Frame 5) of the sender for which this is the reply. */
         private long uniqueId;
@@ -186,7 +193,7 @@ public class StatusMessage extends Sim0MQReply
         @Override
         public Sim0MQMessage build() throws Sim0MQException, NullPointerException
         {
-            return new StatusMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.uniqueId,
+            return new MC1StatusMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.uniqueId,
                     this.status, this.error);
         }
 

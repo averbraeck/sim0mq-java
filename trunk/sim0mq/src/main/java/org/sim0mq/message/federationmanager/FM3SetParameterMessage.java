@@ -82,10 +82,17 @@ public class FM3SetParameterMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 2;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] {getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), this.parameterName, this.parameterValue};
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.parameterName, this.parameterValue};
     }
 
     /** {@inheritDoc} */
@@ -159,7 +166,7 @@ public class FM3SetParameterMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FM3SetParameterMessage build() throws Sim0MQException, NullPointerException
         {
             return new FM3SetParameterMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
                     this.parameterName, this.parameterValue);

@@ -51,10 +51,17 @@ public class FM4SimStartMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] {getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus()};
+        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
     }
 
     /** {@inheritDoc} */
@@ -100,7 +107,7 @@ public class FM4SimStartMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FM4SimStartMessage build() throws Sim0MQException, NullPointerException
         {
             return new FM4SimStartMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
         }

@@ -1,6 +1,6 @@
 package org.sim0mq.message.federationmanager;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.djunits.value.vdouble.scalar.Duration;
@@ -27,16 +27,16 @@ import org.sim0mq.message.types.NumberTime;
 public class FM2SimRunControlMessage extends Sim0MQMessage
 {
     /**
-     * Duration of the run of a single replication, including the warmup time, if present. The type is any numeric type (1-5) or
-     * Float or Double with Unit (25, 26) of type Duration (25).
+     * Duration of the run of a single replication, including the warmup duration, if present. The type is any numeric type
+     * (1-5) or Float or Double with Unit (25, 26) of type Duration (25).
      */
-    private final NumberDuration runTime;
+    private final NumberDuration runDuration;
 
     /**
-     * Warmup time of the model in time units that the model uses. The type is any numeric type (1-5) or Float or Double with
-     * Unit (25, 26) of type Duration (25).
+     * Warmup duration of the model in durationunits that the model uses. The type is any numeric type (1-5) or Float or Double
+     * with Unit (25, 26) of type Duration (25).
      */
-    private final NumberDuration warmupTime;
+    private final NumberDuration warmupDuration;
 
     /**
      * Offset of the time (e.g., a model time of 0 is the year 2016, or 1-1-2015). The type is any numeric type (1-5) or Float
@@ -54,7 +54,7 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
     private final int numberRandomStreams;
 
     /** Random streams and seeds. */
-    private final Map<Object, Long> streamMap = new HashMap<>();
+    private final Map<Object, Long> streamMap = new LinkedHashMap<>();
 
     /** the unique message id. */
     private static final String MESSAGETYPE = "FM.2";
@@ -71,10 +71,10 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
      *            error can be sent if we receive a message not meant for us).
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
-     * @param runTime Duration of the run of a single replication, including the warmup time, if present. The type is any
+     * @param runDuration Duration of the run of a single replication, including the warmup time, if present. The type is any
      *            numeric type (1-5) or Float or Double with Unit (25, 26) of type Duration (25).
-     * @param warmupTime Warmup time of the model in time units that the model uses. The type is any numeric type (1-5) or Float
-     *            or Double with Unit (25, 26) of type Duration (25).
+     * @param warmupDuration Warmup time of the model in time units that the model uses. The type is any numeric type (1-5) or
+     *            Float or Double with Unit (25, 26) of type Duration (25).
      * @param offsetTime Offset of the time (e.g., a model time of 0 is the year 2016, or 1-1-2015). The type is any numeric
      *            type (1-5) or Float or Double with Unit (25, 26) of type Time (26).
      * @param speed Speed as the number of times real-time the model should run; Double.INFINITY means as fast as possible.
@@ -86,61 +86,61 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
      */
     @SuppressWarnings("checkstyle:parameternumber")
     public FM2SimRunControlMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final long messageId, final Object runTime, final Object warmupTime, final Object offsetTime, final double speed,
-            final int numberReplications, final int numberRandomStreams, final Map<Object, Long> streamMap)
+            final long messageId, final Object runDuration, final Object warmupDuration, final Object offsetTime,
+            final double speed, final int numberReplications, final int numberRandomStreams, final Map<Object, Long> streamMap)
             throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
-        Throw.whenNull(runTime, "runTime cannot be null");
-        Throw.whenNull(warmupTime, "warmupTime cannot be null");
+        Throw.whenNull(runDuration, "runDuration cannot be null");
+        Throw.whenNull(warmupDuration, "warmupDuration cannot be null");
         Throw.whenNull(offsetTime, "offsetTime cannot be null");
         Throw.whenNull(streamMap, "streamMap cannot be null");
 
-        if (runTime instanceof Number)
+        if (runDuration instanceof Duration)
         {
-            this.runTime = new NumberDuration((Number) runTime);
+            this.runDuration = new NumberDuration((Duration) runDuration);
         }
-        else if (runTime instanceof Duration)
+        else if (runDuration instanceof FloatDuration)
         {
-            this.runTime = new NumberDuration((Duration) runTime);
+            this.runDuration = new NumberDuration((FloatDuration) runDuration);
         }
-        else if (runTime instanceof FloatDuration)
+        else if (runDuration instanceof Number)
         {
-            this.runTime = new NumberDuration((FloatDuration) runTime);
-        }
-        else
-        {
-            throw new Sim0MQException("runTime should be Number, Duration or FloatDuration");
-        }
-
-        if (warmupTime instanceof Number)
-        {
-            this.warmupTime = new NumberDuration((Number) warmupTime);
-        }
-        else if (warmupTime instanceof Duration)
-        {
-            this.warmupTime = new NumberDuration((Duration) warmupTime);
-        }
-        else if (warmupTime instanceof FloatDuration)
-        {
-            this.warmupTime = new NumberDuration((FloatDuration) warmupTime);
+            this.runDuration = new NumberDuration((Number) runDuration);
         }
         else
         {
-            throw new Sim0MQException("warmupTime should be Number, Duration or FloatDuration");
+            throw new Sim0MQException("runDuration should be Number, Duration or FloatDuration");
         }
 
-        if (offsetTime instanceof Number)
+        if (warmupDuration instanceof Duration)
         {
-            this.offsetTime = new NumberTime((Number) offsetTime);
+            this.warmupDuration = new NumberDuration((Duration) warmupDuration);
         }
-        else if (offsetTime instanceof Time)
+        else if (warmupDuration instanceof FloatDuration)
+        {
+            this.warmupDuration = new NumberDuration((FloatDuration) warmupDuration);
+        }
+        else if (warmupDuration instanceof Number)
+        {
+            this.warmupDuration = new NumberDuration((Number) warmupDuration);
+        }
+        else
+        {
+            throw new Sim0MQException("warmupDuration should be Number, Duration or FloatDuration");
+        }
+
+        if (offsetTime instanceof Time)
         {
             this.offsetTime = new NumberTime((Time) offsetTime);
         }
         else if (offsetTime instanceof FloatTime)
         {
             this.offsetTime = new NumberTime((FloatTime) offsetTime);
+        }
+        else if (offsetTime instanceof Number)
+        {
+            this.offsetTime = new NumberTime((Number) offsetTime);
         }
         else
         {
@@ -160,19 +160,19 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
     }
 
     /**
-     * @return runTime
+     * @return runDuration
      */
-    public final NumberDuration getRunTime()
+    public final NumberDuration getRunDuration()
     {
-        return this.runTime;
+        return this.runDuration;
     }
 
     /**
-     * @return warmupTime
+     * @return warmupDuration
      */
-    public final NumberDuration getWarmupTime()
+    public final NumberDuration getWarmupDuration()
     {
-        return this.warmupTime;
+        return this.warmupDuration;
     }
 
     /**
@@ -225,20 +225,58 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
 
     /** {@inheritDoc} */
     @Override
+    public short getNumberOfPayloadFields()
+    {
+        return (short) (6 + 2 * this.numberRandomStreams);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] createObjectArray()
     {
-        return new Object[] { getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(), getMessageId(),
-                getMessageStatus(), this.runTime, this.warmupTime, this.offsetTime, this.speed, this.numberReplications,
-                this.numberRandomStreams, this.streamMap };
+        Object[] array = new Object[8 + getNumberOfPayloadFields()];
+        array[0] = getMagicNumber();
+        array[1] = getSimulationRunId();
+        array[2] = getSenderId();
+        array[3] = getReceiverId();
+        array[4] = getMessageTypeId();
+        array[5] = getMessageId();
+        array[6] = getMessageStatus();
+        array[7] = getNumberOfPayloadFields();
+        array[8] = this.runDuration.getObject();
+        array[9] = this.warmupDuration.getObject();
+        array[10] = this.offsetTime.getObject();
+        array[11] = this.speed;
+        array[12] = this.numberReplications;
+        array[13] = this.numberRandomStreams;
+        int i = 14;
+        for (Object key : this.streamMap.keySet())
+        {
+            array[i++] = key;
+            array[i++] = this.streamMap.get(key);
+        }
+        return array;
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
+        Object[] array = new Object[getNumberOfPayloadFields()];
+        array[0] = this.runDuration.getObject();
+        array[1] = this.warmupDuration.getObject();
+        array[2] = this.offsetTime.getObject();
+        array[3] = this.speed;
+        array[4] = this.numberReplications;
+        array[5] = this.numberRandomStreams;
+        int i = 6;
+        for (Object key : this.streamMap.keySet())
+        {
+            array[i++] = key;
+            array[i++] = this.streamMap.get(key);
+        }
         return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.runTime, this.warmupTime, this.offsetTime, this.speed,
-                this.numberReplications, this.numberRandomStreams, this.streamMap);
+                getMessageId(), getMessageStatus(), array);
     }
 
     /**
@@ -251,7 +289,7 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
     public static FM2SimRunControlMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
-        Map<Object, Long> streams = new HashMap<>();
+        Map<Object, Long> streams = new LinkedHashMap<>();
         int numberStreams = ((Integer) fields[13]).intValue();
         check(fields, 6 + 2 * numberStreams, MESSAGETYPE, intendedReceiverId);
         for (int i = 14; i < 14 + 2 * numberStreams; i += 2)
@@ -260,8 +298,9 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
             Long seed = ((Long) fields[i + 1]).longValue();
             streams.put(streamId, seed);
         }
-        return new FM2SimRunControlMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8], fields[9],
-                fields[10], ((Double) fields[11]).doubleValue(), ((Integer) fields[12]).intValue(), numberStreams, streams);
+        return new FM2SimRunControlMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8],
+                fields[9], fields[10], ((Double) fields[11]).doubleValue(), ((Integer) fields[12]).intValue(), numberStreams,
+                streams);
     }
 
     /**
@@ -280,19 +319,19 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
          * Duration of the run of a single replication, including the warmup time, if present. The type is any numeric type
          * (1-5) or Float or Double with Unit (25, 26) of type Duration (25).
          */
-        private NumberDuration runTime;
+        private Object runDuration;
 
         /**
          * Warmup time of the model in time units that the model uses. The type is any numeric type (1-5) or Float or Double
          * with Unit (25, 26) of type Duration (25).
          */
-        private NumberDuration warmupTime;
+        private Object warmupDuration;
 
         /**
          * Offset of the time (e.g., a model time of 0 is the year 2016, or 1-1-2015). The type is any numeric type (1-5) or
          * Float or Double with Unit (25, 26) of type Time (26).
          */
-        private NumberTime offsetTime;
+        private Object offsetTime;
 
         /** Speed as the number of times real-time the model should run; Double.INFINITY means as fast as possible. */
         private double speed;
@@ -301,7 +340,7 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
         private int numberReplications;
 
         /** Random streams and seeds. */
-        private Map<Object, Long> streamMap = new HashMap<>();
+        private Map<Object, Long> streamMap = new LinkedHashMap<>();
 
         /**
          * Empty constructor.
@@ -312,72 +351,62 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
         }
 
         /**
-         * @param newRunTime set runTime
+         * @param newRunDuration set runDuration
          * @return the original object for chaining
          */
-        public final Builder setRunTime(final Number newRunTime)
+        public final Builder setRunDurationNumber(final Number newRunDuration)
         {
-            this.runTime = new NumberDuration(newRunTime);
+            this.runDuration = newRunDuration;
             return this;
         }
 
         /**
-         * @param newRunTime set runTime
+         * @param newRunDuration set runDuration
          * @return the original object for chaining
          */
-        public final Builder setRunTime(final Duration newRunTime)
+        public final Builder setRunDuration(final Duration newRunDuration)
         {
-            this.runTime = new NumberDuration(newRunTime);
+            this.runDuration = newRunDuration;
             return this;
         }
 
         /**
-         * @param newRunTime set runTime
+         * @param newRunDuration set runDuration
          * @return the original object for chaining
          */
-        public final Builder setRunTime(final FloatDuration newRunTime)
+        public final Builder setRunDurationFloat(final FloatDuration newRunDuration)
         {
-            this.runTime = new NumberDuration(newRunTime);
+            this.runDuration = newRunDuration;
             return this;
         }
 
         /**
-         * @param newWarmupTime set warmupTime
+         * @param newWarmupDuration set warmupDuration
          * @return the original object for chaining
          */
-        public final Builder setWarmupTime(final Number newWarmupTime)
+        public final Builder setWarmupDurationNumber(final Number newWarmupDuration)
         {
-            this.warmupTime = new NumberDuration(newWarmupTime);
+            this.warmupDuration = newWarmupDuration;
             return this;
         }
 
         /**
-         * @param newWarmupTime set warmupTime
+         * @param newWarmupDuration set warmupDuration
          * @return the original object for chaining
          */
-        public final Builder setWarmupTime(final Duration newWarmupTime)
+        public final Builder setWarmupDuration(final Duration newWarmupDuration)
         {
-            this.warmupTime = new NumberDuration(newWarmupTime);
+            this.warmupDuration = newWarmupDuration;
             return this;
         }
 
         /**
-         * @param newWarmupTime set warmupTime
+         * @param newWarmupDuration set warmupDuration
          * @return the original object for chaining
          */
-        public final Builder setWarmupTime(final FloatDuration newWarmupTime)
+        public final Builder setWarmupDurationFloat(final FloatDuration newWarmupDuration)
         {
-            this.warmupTime = new NumberDuration(newWarmupTime);
-            return this;
-        }
-
-        /**
-         * @param newOffsetTime set offsetTime
-         * @return the original object for chaining
-         */
-        public final Builder setOffsetTime(final Number newOffsetTime)
-        {
-            this.offsetTime = new NumberTime(newOffsetTime);
+            this.warmupDuration = newWarmupDuration;
             return this;
         }
 
@@ -385,9 +414,9 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
          * @param newOffsetTime set offsetTime
          * @return the original object for chaining
          */
-        public final Builder setOffsetTime(final Duration newOffsetTime)
+        public final Builder setOffsetTimeNumber(final Number newOffsetTime)
         {
-            this.offsetTime = new NumberTime(newOffsetTime);
+            this.offsetTime = newOffsetTime;
             return this;
         }
 
@@ -395,9 +424,19 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
          * @param newOffsetTime set offsetTime
          * @return the original object for chaining
          */
-        public final Builder setOffsetTime(final FloatDuration newOffsetTime)
+        public final Builder setOffsetTime(final Time newOffsetTime)
         {
-            this.offsetTime = new NumberTime(newOffsetTime);
+            this.offsetTime = newOffsetTime;
+            return this;
+        }
+
+        /**
+         * @param newOffsetTime set offsetTime
+         * @return the original object for chaining
+         */
+        public final Builder setOffsetTimeFloat(final FloatTime newOffsetTime)
+        {
+            this.offsetTime = newOffsetTime;
             return this;
         }
 
@@ -433,11 +472,11 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public Sim0MQMessage build() throws Sim0MQException, NullPointerException
+        public FM2SimRunControlMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FM2SimRunControlMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.runTime,
-                    this.warmupTime, this.offsetTime, this.speed, this.numberReplications, this.streamMap.size(),
-                    this.streamMap);
+            return new FM2SimRunControlMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+                    this.runDuration, this.warmupDuration, this.offsetTime, this.speed, this.numberReplications,
+                    this.streamMap.size(), this.streamMap);
         }
 
     }
