@@ -25,6 +25,7 @@ import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import org.zeromq.ZMQException;
 
 /**
  * The FederateStarter start listening on the given port for messages to start components. Report back via the call-back port on
@@ -71,22 +72,27 @@ public class FederateStarter
     /** message count. */
     private long messageCount = 0;
 
+    /** does the Federate Starter concern models with an MC or just processes? */
+    private final boolean modelController;
+
     /**
      * @param fsPort the port number to listen on
      * @param softwareProperties the software properties to use
      * @param startPort first port to be used for the models, inclusive
      * @param endPort last port to be used for the models, inclusive
+     * @param modelController does the Federate Starter concern models with an MC or just processes?
      * @throws Sim0MQException on error
      * @throws SerializationException on error
      */
-    public FederateStarter(final int fsPort, final Properties softwareProperties, final int startPort, final int endPort)
-            throws Sim0MQException, SerializationException
+    public FederateStarter(final int fsPort, final Properties softwareProperties, final int startPort, final int endPort,
+            final boolean modelController) throws Sim0MQException, SerializationException
     {
         super();
         this.softwareProperties = softwareProperties;
         this.fsPort = fsPort;
         this.startPort = startPort;
         this.endPort = endPort;
+        this.modelController = modelController;
 
         this.fsContext = new ZContext(1);
 
@@ -96,45 +102,60 @@ public class FederateStarter
         while (!Thread.currentThread().isInterrupted())
         {
             // Wait for next request from the client -- first the identity (String) and the delimiter (#0)
-            String identity = this.fsSocket.recvStr();
-            this.fsSocket.recvStr();
-
-            byte[] request = this.fsSocket.recv(0);
-            Object[] fields = SimulationMessage.decode(request);
-            String messageTypeId = fields[4].toString();
-            String receiverId = fields[3].toString();
-
-            System.out.println("Received " + SimulationMessage.print(fields));
-
-            if (receiverId.equals("FS"))
+            try
             {
-                switch (messageTypeId)
+                String identity = this.fsSocket.recvStr();
+                this.fsSocket.recvStr();
+
+                byte[] request = this.fsSocket.recv(0);
+                Object[] fields = SimulationMessage.decode(request);
+                String messageTypeId = fields[4].toString();
+                String receiverId = fields[3].toString();
+
+                System.out.println("Received " + SimulationMessage.print(fields));
+
+                if (receiverId.equals("FS"))
                 {
-                    case "FM.1":
-                        processStartFederate(identity, fields);
-                        break;
+                    switch (messageTypeId)
+                    {
+                        case "FM.1":
+                            processStartFederate(identity, fields);
+                            break;
 
-                    case "FM.8":
-                        processKillFederate(identity, fields);
-                        break;
+                        case "FM.8":
+                            processKillFederate(identity, fields);
+                            break;
 
-                    case "FM.9":
-                        // processKillAllFederates(senderId, uniqueId);
-                        break;
+                        case "FM.9":
+                            // processKillAllFederates(senderId, uniqueId);
+                            break;
 
-                    default:
-                        // wrong message
-                        System.err.println("Received unknown message -- not processed: " + messageTypeId);
+                        default:
+                            // wrong message
+                            System.err.println("Received unknown message -- not processed: " + messageTypeId);
+                    }
+                }
+                else
+                {
+                    // wrong receiver
+                    System.err.println("Received message not intended for FS but for " + receiverId + " -- not processed: ");
                 }
             }
-            else
+            catch (ZMQException e)
             {
-                // wrong receiver
-                System.err.println("Received message not intended for FS but for " + receiverId + " -- not processed: ");
+                System.err.println(e.getMessage());
             }
         }
-        this.fsSocket.close();
-        this.fsContext.destroy();
+        
+        try
+        {
+            this.fsSocket.close();
+            this.fsContext.destroy();
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
@@ -235,8 +256,12 @@ public class FederateStarter
                     // Thread.sleep(1000);
 
                     // wait till the model is ready...
-                    error = waitForModelStarted(startFederateMessage.getSimulationRunId(), startFederateMessage.getInstanceId(),
-                            modelPort);
+                    System.out.println("modelController : " + this.modelController);
+                    if (this.modelController)
+                    {
+                        error = waitForModelStarted(startFederateMessage.getSimulationRunId(),
+                                startFederateMessage.getInstanceId(), modelPort);
+                    }
                 }
             }
             catch (IOException exception)
@@ -486,6 +511,14 @@ public class FederateStarter
     }
 
     /**
+     * @return modelController
+     */
+    public boolean isModelController()
+    {
+        return this.modelController;
+    }
+
+    /**
      * Start listening on the given port for messages to start components. Report back via the call-back port on the status of
      * the started components. If necessary, the FederateStarter can also forcefully stop a started (sub)process.
      * @param args the federation name and port on which the FederateStarter is listening
@@ -564,7 +597,7 @@ public class FederateStarter
             System.exit(-1);
         }
 
-        new FederateStarter(port, softwareProperties, startPort, endPort);
+        new FederateStarter(port, softwareProperties, startPort, endPort, true);
     }
 
 }

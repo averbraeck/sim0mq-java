@@ -114,7 +114,7 @@ public class MM1FederationManager
     }
 
     /**
-     * Sed the FM.1 message to the FederateStarter to start the MM1 model.
+     * Send the FM.1 message to the FederateStarter to start the MM1 model.
      * @param federationName the name of the federation
      * @param fsPort the port where the federate starter can be reached
      * @param localSk3 local/sk-3 to indicate where the federate starter and model can be found
@@ -403,7 +403,6 @@ public class MM1FederationManager
             System.err.println("Tried to kill model = " + replyMessage[8]);
             System.err.println("Error message = " + replyMessage[10]);
         }
-
     }
 
     /**
