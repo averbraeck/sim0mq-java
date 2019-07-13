@@ -84,21 +84,23 @@ public abstract class Sim0MQReply extends Sim0MQMessage
          * @param newReplyToId set replyToId
          * @return the original object for chaining
          */
-        public final Builder<B> setReplyToId(final long newReplyToId)
+        @SuppressWarnings("unchecked")
+        public final B setReplyToId(final long newReplyToId)
         {
             this.replyToId = newReplyToId;
-            return this;
+            return (B) this;
         }
 
         /**
          * @param message set replyToId and receiver based on the message to which this is a reply
          * @return the original object for chaining
          */
-        public final Builder<B> setReplyTo(final Sim0MQMessage message)
+        @SuppressWarnings("unchecked")
+        public final B setReplyTo(final Sim0MQMessage message)
         {
             this.replyToId = message.getMessageId();
             this.receiverId = message.getSenderId();
-            return this;
+            return (B) this;
         }
 
         /** {@inheritDoc} */

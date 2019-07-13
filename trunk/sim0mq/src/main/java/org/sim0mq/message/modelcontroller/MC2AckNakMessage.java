@@ -8,27 +8,27 @@ import org.sim0mq.message.Sim0MQReply;
 import org.sim0mq.message.SimulationMessage;
 
 /**
- * StatusMessage, MC.1. The Model sends this message as a response to RequestStatus messages sent by the Federate Starter or the
- * Federation Manager.
+ * AckNak, MC.2. Message sent by the Model to acknowledge the reception and implementation of a message sent by the Federation
+ * Manager.
  * <p>
  * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class MC1StatusMessage extends Sim0MQReply
+public class MC2AckNakMessage extends Sim0MQReply
 {
     /** A string that refers to the model status. Four options: "started", "running", "ended", "error". */
-    private final String status;
+    private final boolean status;
 
     /** Optional. If there is an error, the error message is sent as well. Otherwise this field is an empty string. */
     private final String error;
 
     /** the unique message id. */
-    private static final String MESSAGETYPE = "MC.1";
+    private static final String MESSAGETYPE = "MC.2";
 
     /** */
-    private static final long serialVersionUID = 20170422L;
+    private static final long serialVersionUID = 20190712;
 
     /**
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
@@ -40,22 +40,17 @@ public class MC1StatusMessage extends Sim0MQReply
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
      * @param uniqueId Id to identify the callback to the message.
-     * @param status A string that refers to the model status. Four options: "started", "running", "ended", "error".
-     * @param error Optional. If there is an error, the error message is sent as well. Otherwise this field is an empty string.
+     * @param status boolean; indicates whether the command sent by the FM has been successfully implemented, e.g. whether the
+     *            run control parameters are set successfully.
+     * @param error If ‘status’ is False, an error message that indicates what went wrong. Otherwise, an empty string.
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public MC1StatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId, final long messageId,
-            final long uniqueId, final String status, final String error) throws Sim0MQException, NullPointerException
+    public MC2AckNakMessage(final Object simulationRunId, final Object senderId, final Object receiverId, final long messageId,
+            final long uniqueId, final boolean status, final String error) throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW, uniqueId);
-        Throw.whenNull(status, "status cannot be null");
         Throw.whenNull(error, "error cannot be null");
-
-        Throw.when(status.isEmpty(), Sim0MQException.class, "status cannot be empty");
-        Throw.when(!status.equals("started") && !status.equals("running") && !status.equals("ended") && !status.equals("error"),
-                Sim0MQException.class, "status should be one of 'started', 'running', 'ended', 'error'");
-
         this.status = status;
         this.error = error;
     }
@@ -63,7 +58,7 @@ public class MC1StatusMessage extends Sim0MQReply
     /**
      * @return status
      */
-    public final String getStatus()
+    public final boolean getStatus()
     {
         return this.status;
     }
@@ -114,11 +109,11 @@ public class MC1StatusMessage extends Sim0MQReply
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static MC1StatusMessage createMessage(final Object[] fields, final Object intendedReceiverId) throws Sim0MQException
+    public static MC2AckNakMessage createMessage(final Object[] fields, final Object intendedReceiverId) throws Sim0MQException
     {
         check(fields, 3, MESSAGETYPE, intendedReceiverId);
-        return new MC1StatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                ((Long) fields[8]).longValue(), fields[9].toString(), fields[10].toString());
+        return new MC2AckNakMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
+                ((Long) fields[8]).longValue(), (boolean) fields[9], fields[10].toString());
     }
 
     /**
@@ -131,10 +126,10 @@ public class MC1StatusMessage extends Sim0MQReply
      * </p>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQReply.Builder<MC1StatusMessage.Builder>
+    public static class Builder extends Sim0MQReply.Builder<MC2AckNakMessage.Builder>
     {
         /** A string that refers to the model status. Four options: "started", "running", "ended", "error". */
-        private String status;
+        private boolean status;
 
         /** Optional. If there is an error, the error message is sent as well. Otherwise this field is an empty string. */
         private String error;
@@ -151,7 +146,7 @@ public class MC1StatusMessage extends Sim0MQReply
          * @param newStatus set status
          * @return the original object for chaining
          */
-        public final Builder setStatus(final String newStatus)
+        public final Builder setStatus(final boolean newStatus)
         {
             this.status = newStatus;
             return this;
@@ -169,9 +164,9 @@ public class MC1StatusMessage extends Sim0MQReply
 
         /** {@inheritDoc} */
         @Override
-        public MC1StatusMessage build() throws Sim0MQException, NullPointerException
+        public MC2AckNakMessage build() throws Sim0MQException, NullPointerException
         {
-            return new MC1StatusMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.replyToId,
+            return new MC2AckNakMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.replyToId,
                     this.status, this.error);
         }
 

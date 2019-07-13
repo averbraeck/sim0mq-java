@@ -37,6 +37,10 @@ import org.sim0mq.message.federationmanager.FM6RequestStatisticsMessage;
 import org.sim0mq.message.federationmanager.FM7SimResetMessage;
 import org.sim0mq.message.federationmanager.FM8KillFederateMessage;
 import org.sim0mq.message.federationmanager.FM9KillAllMessage;
+import org.sim0mq.message.modelcontroller.MC1StatusMessage;
+import org.sim0mq.message.modelcontroller.MC2AckNakMessage;
+import org.sim0mq.message.modelcontroller.MC3StatisticsMessage;
+import org.sim0mq.message.modelcontroller.MC4StatisticsErrorMessage;
 
 /**
  * Test the field types of the messages.
@@ -251,6 +255,70 @@ public class TestMessageTypes
         testMessage(fs5, fs5o, fs5c, fs5d, fsfm, "FS.5");
         assertEquals(false, fs5.isStatus());
         assertEquals("", fs5.getError());
+    }
+
+    /**
+     * Test Model Controller (MC) message type classes one by one.
+     * @throws Sim0MQException on encoding error
+     * @throws SerializationException on serialization error
+     */
+    @SuppressWarnings("checkstyle:needbraces")
+    @Test
+    public void testMessageTypesMC() throws Sim0MQException, SerializationException
+    {
+        Header mcfm = new Header();
+        mcfm.senderId = "MODEL.12";
+        mcfm.receiverId = "FM.1";
+        Header mcfs = new Header();
+        mcfs.senderId = "MODEL.12";
+        mcfs.receiverId = "FS.2";
+
+        MC1StatusMessage mc1 =
+                new MC1StatusMessage(mcfs.simulationRunId, mcfs.senderId, mcfs.receiverId, mcfs.messageId, 802L, "running", "");
+        Object[] mc1o = mc1.createObjectArray();
+        MC1StatusMessage mc1c = MC1StatusMessage.createMessage(mc1o, mcfs.receiverId);
+        MC1StatusMessage mc1d = new MC1StatusMessage.Builder().setSimulationRunId(mcfs.simulationRunId)
+                .setSenderId(mcfs.senderId).setReceiverId(mcfs.receiverId).setMessageId(mcfs.messageId).setReplyToId(802L)
+                .setStatus("running").setError("").build();
+        testMessage(mc1, mc1o, mc1c, mc1d, mcfs, "MC.1");
+        assertEquals(802L, mc1.getReplyToId());
+        assertEquals("running", mc1.getStatus());
+        assertEquals("", mc1.getError());
+
+        MC2AckNakMessage mc2 = new MC2AckNakMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, 802L,
+                false, "Simulation model crashed");
+        Object[] mc2o = mc2.createObjectArray();
+        MC2AckNakMessage mc2c = MC2AckNakMessage.createMessage(mc2o, mcfm.receiverId);
+        MC2AckNakMessage mc2d = new MC2AckNakMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
+                .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyToId(802L)
+                .setStatus(false).setError("Simulation model crashed").build();
+        testMessage(mc2, mc2o, mc2c, mc2d, mcfm, "MC.2");
+        assertEquals(802L, mc2.getReplyToId());
+        assertEquals(false, mc2.getStatus());
+        assertEquals("Simulation model crashed", mc2.getError());
+
+        MC3StatisticsMessage mc3 = new MC3StatisticsMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId,
+                mcfm.messageId, "ThroughputAvg", 80.56d);
+        Object[] mc3o = mc3.createObjectArray();
+        MC3StatisticsMessage mc3c = MC3StatisticsMessage.createMessage(mc3o, mcfm.receiverId);
+        MC3StatisticsMessage mc3d = new MC3StatisticsMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
+                .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId)
+                .setVariableName("ThroughputAvg").setVariableValue(80.56d).build();
+        testMessage(mc3, mc3o, mc3c, mc3d, mcfm, "MC.3");
+        assertEquals("ThroughputAvg", mc3.getVariableName());
+        assertEquals(80.56d, mc3.getVariableValue());
+
+        MC4StatisticsErrorMessage mc4 = new MC4StatisticsErrorMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId,
+                mcfm.messageId, "ThroughputAvg", "ThroughputAvg not known in the model");
+        Object[] mc4o = mc4.createObjectArray();
+        MC4StatisticsErrorMessage mc4c = MC4StatisticsErrorMessage.createMessage(mc4o, mcfm.receiverId);
+        MC4StatisticsErrorMessage mc4d = new MC4StatisticsErrorMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
+                .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId)
+                .setVariableName("ThroughputAvg").setError("ThroughputAvg not known in the model").build();
+        testMessage(mc4, mc4o, mc4c, mc4d, mcfm, "MC.4");
+        assertEquals("ThroughputAvg", mc4.getVariableName());
+        assertEquals("ThroughputAvg not known in the model", mc4.getError());
+
     }
 
     /**
