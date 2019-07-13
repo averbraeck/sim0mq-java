@@ -2,7 +2,14 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="1.01.00" date="2019-07-12" description="Complete messages; Unit tests">
+    <release version="1.01.01" date="2019-07-12" description="First version of FederateStarter unit test">
+      <action dev="averbraeck" type="add">
+        A first unit test for the reference implementation of the FederateStarter has been added. This test 
+        communicates using port 5500 to the FederateStarter.
+      </action>
+    </release>
+    
+    <release version="1.01.00" date="2019-07-11" description="Complete messages; Unit tests">
       <action dev="averbraeck" type="update">
         For reproducibility: HashMap replaced by LinkedHashMap; HashSet replaced by LinkedHashSet.
       </action>
