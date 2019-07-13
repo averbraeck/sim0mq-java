@@ -2,16 +2,19 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="1.00.00" date="2019-07-03" description="Serializing / deserializing moved to djutils-serialization project">
+    <release version="1.01.00" date="2019-07-12" description="Complete messages; Unit tests">
       <action dev="averbraeck" type="update">
         For reproducibility: HashMap replaced by LinkedHashMap; HashSet replaced by LinkedHashSet.
       </action>
       <action dev="averbraeck" type="add">
-        Unit tests for FM messages (and a number of errors resolved).
+        Unit tests for FM, FS, MC messages implemented (and a number of errors resolved).
       </action>
       <action dev="averbraeck" type="update">
         NumberDuration and NumberTime made more precise in terms of which object they represent.
       </action>
+    </release>
+    
+    <release version="1.00.00" date="2019-07-04" description="Serializing / deserializing moved to djutils-serialization project">
       <action dev="averbraeck" type="update">
         Changes made to update deprecated methods in jeromq 0.5.1.
       </action>
