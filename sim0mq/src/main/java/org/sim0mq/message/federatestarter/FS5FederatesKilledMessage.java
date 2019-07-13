@@ -1,5 +1,6 @@
 package org.sim0mq.message.federatestarter;
 
+import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.MessageStatus;
@@ -7,22 +8,26 @@ import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.SimulationMessage;
 
 /**
- * RequestStatus, FS.1. This message is sent by the Federate Starter to the Model until a "started" response is received from
- * the Model. Since the message type id clarifies the function of this message and no information exchange is necessary, the
- * payload field can be empty (number of fields = 0).
+ * FederatesKilled, FS.5. Message sent by the Federate Starter to the Federation Manager in response to message FM.9.
  * <p>
  * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class FS1RequestStatusMessage extends Sim0MQMessage
+public class FS5FederatesKilledMessage extends Sim0MQMessage
 {
     /** */
     private static final long serialVersionUID = 20170422L;
 
+    /** succeeded? */
+    private final boolean status;
+
+    /** If there is an error, the error message is sent as well. Otherwise this field is an empty string. */
+    private final String error;
+
     /** the unique message id. */
-    private static final String MESSAGETYPE = "FS.1";
+    private static final String MESSAGETYPE = "FS.5";
 
     /**
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
@@ -33,13 +38,35 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
      *            error can be sent if we receive a message not meant for us).
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
+     * @param status boolean; success or failure of killing all models.
+     * @param error If there is an error, the error message is sent as well. Otherwise this field is an empty string.
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public FS1RequestStatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final long messageId) throws Sim0MQException, NullPointerException
+    @SuppressWarnings("checkstyle:parameternumber")
+    public FS5FederatesKilledMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+            final long messageId, final boolean status, final String error) throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        Throw.whenNull(error, "error cannot be null");
+        this.status = status;
+        this.error = error;
+    }
+
+    /**
+     * @return status
+     */
+    public boolean isStatus()
+    {
+        return this.status;
+    }
+
+    /**
+     * @return error
+     */
+    public String getError()
+    {
+        return this.error;
     }
 
     /**
@@ -54,7 +81,7 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
     @Override
     public short getNumberOfPayloadFields()
     {
-        return 0;
+        return 2;
     }
 
     /** {@inheritDoc} */
@@ -62,7 +89,7 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
+                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.status, this.error};
     }
 
     /** {@inheritDoc} */
@@ -70,7 +97,7 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
         return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus());
+                getMessageId(), getMessageStatus(), this.status, this.error);
     }
 
     /**
@@ -80,15 +107,16 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static FS1RequestStatusMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static FS5FederatesKilledMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
-        check(fields, 0, MESSAGETYPE, intendedReceiverId);
-        return new FS1RequestStatusMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());
+        check(fields, 2, MESSAGETYPE, intendedReceiverId);
+        return new FS5FederatesKilledMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
+                (boolean) fields[8], fields[9].toString());
     }
 
     /**
-     * Builder for the StartFederate Message. Can string setters together, and call build() at the end to build the actual
+     * Builder for the FederateStarted Message. Can string setters together, and call build() at the end to build the actual
      * message.
      * <p>
      * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
@@ -97,8 +125,14 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
      * </p>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<FS1RequestStatusMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<FS5FederatesKilledMessage.Builder>
     {
+        /** did the kill operation succeed? */
+        private boolean status;
+
+        /** If there is an error, the error message is sent as well. Otherwise this field is an empty string. */
+        private String error;
+
         /**
          * Empty constructor.
          */
@@ -107,11 +141,32 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
             // nothing to do.
         }
 
+        /**
+         * @param newStatus set status
+         * @return the original object for chaining
+         */
+        public final Builder setStatus(final boolean newStatus)
+        {
+            this.status = newStatus;
+            return this;
+        }
+
+        /**
+         * @param newError set error
+         * @return the original object for chaining
+         */
+        public final Builder setError(final String newError)
+        {
+            this.error = newError;
+            return this;
+        }
+
         /** {@inheritDoc} */
         @Override
-        public FS1RequestStatusMessage build() throws Sim0MQException, NullPointerException
+        public FS5FederatesKilledMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FS1RequestStatusMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
+            return new FS5FederatesKilledMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+                    this.status, this.error);
         }
 
     }
