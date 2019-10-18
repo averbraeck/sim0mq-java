@@ -9,8 +9,7 @@ import java.util.UUID;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.federationmanager.ModelState;
-import org.sim0mq.message.MessageStatus;
-import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.Sim0MQMessage;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -46,13 +45,14 @@ public class MM1FederationManager
      * Send an FM.1 message to the FederateStarter.
      * @param federationName the name of the federation
      * @param fmPort the port number to listen on
+     * @param fsServerNameOrIP name or IP address of the federate starter we are using
      * @param fsPort the port where the federate starter can be reached
-     * @param localSk3 local/sk-3 to indicate where the federate starter and model can be found
+     * @param mm1ModelFolder location on the computer of the federate starter where the model can be found
      * @throws Sim0MQException on error
      * @throws SerializationException on serialization problem
      */
-    public MM1FederationManager(final String federationName, final int fmPort, final int fsPort, final String localSk3)
-            throws Sim0MQException, SerializationException
+    public MM1FederationManager(final String federationName, final int fmPort, final String fsServerNameOrIP, final int fsPort,
+            final String mm1ModelFolder) throws Sim0MQException, SerializationException
     {
         this.fmContext = new ZContext(1);
         this.modelSocket = this.fmContext.createSocket(SocketType.REQ);
@@ -69,7 +69,7 @@ public class MM1FederationManager
             switch (this.state)
             {
                 case NOT_STARTED:
-                    startModel(federationName, fsPort, localSk3);
+                    startModel(federationName, fsServerNameOrIP, fsPort, mm1ModelFolder);
                     break;
 
                 case STARTED:
@@ -116,48 +116,37 @@ public class MM1FederationManager
     /**
      * Send the FM.1 message to the FederateStarter to start the MM1 model.
      * @param federationName the name of the federation
+     * @param fsServerNameOrIP name or IP address of the federate starter we are using
      * @param fsPort the port where the federate starter can be reached
-     * @param localSk3 local/sk-3 to indicate where the federate starter and model can be found
+     * @param mm1ModelFolder location on the computer of the federate starter where the model can be found
      * @throws Sim0MQException on error
      * @throws SerializationException on serialization problem
      */
-    private void startModel(final String federationName, final int fsPort, final String localSk3)
-            throws Sim0MQException, SerializationException
+    private void startModel(final String federationName, final String fsServerNameOrIP, final int fsPort,
+            final String mm1ModelFolder) throws Sim0MQException, SerializationException
     {
         // Start model mmm1.jar
-        byte[] fm1Message;
-        if (localSk3.equals("sk-3"))
-        {
-            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount,
-                    MessageStatus.NEW, "MM1.1", "java8+", "-jar", "/home/alexandv/sim0mq/MM1/mm1.jar", "MM1.1 %PORT%",
-                    "/home/alexandv/sim0mq/MM1", "", "/home/alexandv/sim0mq/MM1/out.txt", "/home/alexandv/sim0mq/MM1/err.txt",
-                    false, false, false);
-            this.fsSocket.connect("tcp://130.161.3.179:" + fsPort);
-        }
-        else
-        {
-            fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount,
-                    MessageStatus.NEW, "MM1.1", "java8+", "-jar", "e:/sim0mq/MM1/mm1.jar", "MM1.1 %PORT%", "e:/sim0mq/MM1", "",
-                    "e:/sim0mq/MM1/out.txt", "e:/sim0mq/MM1/err.txt", false, false, false);
-            this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
-        }
+        byte[] fm1Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, "MM1.1", "java8+",
+                "-jar", mm1ModelFolder + "/mm1.jar", "MM1.1 %PORT%", mm1ModelFolder, "", mm1ModelFolder + "/out.txt",
+                mm1ModelFolder + "/err.txt", false, true, true);
+        this.fsSocket.connect("tcp://" + fsServerNameOrIP + ":" + fsPort);
         this.fsSocket.send(fm1Message);
 
         byte[] reply = this.fsSocket.recv(0);
-        Object[] replyMessage = SimulationMessage.decode(reply);
-        System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-        if (replyMessage[4].toString().equals("FS.2") && replyMessage[9].toString().equals("started")
-                && replyMessage[8].toString().equals("MM1.1"))
+        if (replyMessage[4].toString().equals("FS.2") && replyMessage[8].toString().equals("started")
+                && replyMessage[7].toString().equals("MM1.1"))
         {
             this.state = ModelState.STARTED;
-            this.modelSocket.connect("tcp://127.0.0.1:" + replyMessage[10].toString());
+            this.modelSocket.connect("tcp://127.0.0.1:" + replyMessage[9].toString());
         }
         else
         {
             this.state = ModelState.ERROR;
-            System.err.println("Model not started correctly -- state = " + replyMessage[9]);
-            System.err.println("Started model = " + replyMessage[8]);
+            System.err.println("Model not started correctly -- state = " + replyMessage[8]);
+            System.err.println("Started model = " + replyMessage[7] + " on port " + replyMessage[9]);
             System.err.println("Error message = " + replyMessage[10]);
         }
 
@@ -172,24 +161,24 @@ public class MM1FederationManager
     private void sendSimRunControl(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm2Message;
-        fm2Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.2", ++this.messageCount, MessageStatus.NEW,
-                100.0, 0.0, 0.0, Double.POSITIVE_INFINITY, 1, 0);
+        fm2Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.2", ++this.messageCount, 100.0, 0.0, 0.0,
+                Double.POSITIVE_INFINITY, 1, 0);
         this.modelSocket.send(fm2Message);
 
         byte[] reply = this.modelSocket.recv(0);
-        Object[] replyMessage = SimulationMessage.decode(reply);
-        System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-        if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[9]
-                && ((Long) replyMessage[8]).longValue() == this.messageCount)
+        if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[8]
+                && ((Long) replyMessage[7]).longValue() == this.messageCount)
         {
             this.state = ModelState.RUNCONTROL;
         }
         else
         {
             this.state = ModelState.ERROR;
-            System.err.println("Model not started correctly -- status = " + replyMessage[9]);
-            System.err.println("Error message = " + replyMessage[10]);
+            System.err.println("Model not started correctly -- status = " + replyMessage[8]);
+            System.err.println("Error message = " + replyMessage[9]);
         }
     }
 
@@ -210,24 +199,24 @@ public class MM1FederationManager
             if (!this.state.isError())
             {
                 byte[] fm3Message;
-                fm3Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.3", ++this.messageCount,
-                        MessageStatus.NEW, parameterName, parameters.get(parameterName));
+                fm3Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.3", ++this.messageCount, parameterName,
+                        parameters.get(parameterName));
                 this.modelSocket.send(fm3Message);
 
                 byte[] reply = this.modelSocket.recv(0);
-                Object[] replyMessage = SimulationMessage.decode(reply);
-                System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+                Object[] replyMessage = Sim0MQMessage.decode(reply);
+                System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-                if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[9]
-                        && ((Long) replyMessage[8]).longValue() == this.messageCount)
+                if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[8]
+                        && ((Long) replyMessage[7]).longValue() == this.messageCount)
                 {
                     this.state = ModelState.PARAMETERS;
                 }
                 else
                 {
                     this.state = ModelState.ERROR;
-                    System.err.println("Model parameter error -- status = " + replyMessage[9]);
-                    System.err.println("Error message = " + replyMessage[10]);
+                    System.err.println("Model parameter error -- status = " + replyMessage[8]);
+                    System.err.println("Error message = " + replyMessage[9]);
                 }
             }
         }
@@ -246,24 +235,23 @@ public class MM1FederationManager
     private void sendSimStart(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm4Message;
-        fm4Message =
-                SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.4", ++this.messageCount, MessageStatus.NEW);
+        fm4Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.4", ++this.messageCount);
         this.modelSocket.send(fm4Message);
 
         byte[] reply = this.modelSocket.recv(0);
-        Object[] replyMessage = SimulationMessage.decode(reply);
-        System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-        if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[9]
-                && ((Long) replyMessage[8]).longValue() == this.messageCount)
+        if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[8]
+                && ((Long) replyMessage[7]).longValue() == this.messageCount)
         {
             this.state = ModelState.SIMULATORSTARTED;
         }
         else
         {
             this.state = ModelState.ERROR;
-            System.err.println("Simulation start error -- status = " + replyMessage[9]);
-            System.err.println("Error message = " + replyMessage[10]);
+            System.err.println("Simulation start error -- status = " + replyMessage[8]);
+            System.err.println("Error message = " + replyMessage[9]);
         }
     }
 
@@ -278,19 +266,18 @@ public class MM1FederationManager
         while (!this.state.isSimulatorEnded() && !this.state.isError())
         {
             byte[] fm5Message;
-            fm5Message =
-                    SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.5", ++this.messageCount, MessageStatus.NEW);
+            fm5Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.5", ++this.messageCount);
             this.modelSocket.send(fm5Message);
 
             byte[] reply = this.modelSocket.recv(0);
-            Object[] replyMessage = SimulationMessage.decode(reply);
-            System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+            Object[] replyMessage = Sim0MQMessage.decode(reply);
+            System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-            if (replyMessage[4].toString().equals("MC.1") && !replyMessage[9].toString().equals("error")
-                    && !replyMessage[9].toString().equals("started")
-                    && ((Long) replyMessage[8]).longValue() == this.messageCount)
+            if (replyMessage[4].toString().equals("MC.1") && !replyMessage[8].toString().equals("error")
+                    && !replyMessage[8].toString().equals("started")
+                    && ((Long) replyMessage[7]).longValue() == this.messageCount)
             {
-                if (replyMessage[9].toString().equals("ended"))
+                if (replyMessage[8].toString().equals("ended"))
                 {
                     this.state = ModelState.SIMULATORENDED;
                 }
@@ -310,8 +297,8 @@ public class MM1FederationManager
             else
             {
                 this.state = ModelState.ERROR;
-                System.err.println("Simulation start error -- status = " + replyMessage[9]);
-                System.err.println("Error message = " + replyMessage[10]);
+                System.err.println("Simulation start error -- status = " + replyMessage[8]);
+                System.err.println("Error message = " + replyMessage[9]);
             }
         }
     }
@@ -334,32 +321,31 @@ public class MM1FederationManager
             if (!this.state.isError())
             {
                 byte[] fm6Message;
-                fm6Message = SimulationMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.6", ++this.messageCount,
-                        MessageStatus.NEW, statName);
+                fm6Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "MM1.1", "FM.6", ++this.messageCount, statName);
                 this.modelSocket.send(fm6Message);
 
                 byte[] reply = this.modelSocket.recv(0);
-                Object[] replyMessage = SimulationMessage.decode(reply);
-                System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+                Object[] replyMessage = Sim0MQMessage.decode(reply);
+                System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
                 if (replyMessage[4].toString().equals("MC.3"))
                 {
-                    if (replyMessage[9].toString().equals(statName))
+                    if (replyMessage[7].toString().equals(statName))
                     {
-                        System.out.println("Received statistic for " + statName + " = " + replyMessage[10].toString());
+                        System.out.println("Received statistic for " + statName + " = " + replyMessage[8].toString());
                     }
                     else
                     {
                         this.state = ModelState.ERROR;
                         System.err.println(
-                                "Statistics Error: Stat variable expected = " + statName + ", got: " + replyMessage[8]);
+                                "Statistics Error: Stat variable expected = " + statName + ", got: " + replyMessage[7]);
                     }
                 }
                 else if (replyMessage[4].toString().equals("MC.4"))
                 {
                     this.state = ModelState.ERROR;
-                    System.err.println("Statistics Error: Stat variable = " + replyMessage[8]);
-                    System.err.println("Error message = " + replyMessage[9]);
+                    System.err.println("Statistics Error: Stat variable = " + replyMessage[7]);
+                    System.err.println("Error message = " + replyMessage[8]);
                 }
                 else
                 {
@@ -383,16 +369,15 @@ public class MM1FederationManager
     private void killFederate(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm8Message;
-        fm8Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, MessageStatus.NEW,
-                "MM1.1");
+        fm8Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, "MM1.1");
         this.fsSocket.send(fm8Message);
 
         byte[] reply = this.fsSocket.recv(0);
-        Object[] replyMessage = SimulationMessage.decode(reply);
-        System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-        if (replyMessage[4].toString().equals("FS.4") && (boolean) replyMessage[9]
-                && replyMessage[8].toString().equals("MM1.1"))
+        if (replyMessage[4].toString().equals("FS.4") && (boolean) replyMessage[8]
+                && replyMessage[7].toString().equals("MM1.1"))
         {
             this.state = ModelState.TERMINATED;
         }
@@ -400,8 +385,8 @@ public class MM1FederationManager
         {
             this.state = ModelState.ERROR;
             System.err.println("Model not killed correctly");
-            System.err.println("Tried to kill model = " + replyMessage[8]);
-            System.err.println("Error message = " + replyMessage[10]);
+            System.err.println("Tried to kill model = " + replyMessage[7]);
+            System.err.println("Error message = " + replyMessage[9]);
         }
     }
 
@@ -412,10 +397,10 @@ public class MM1FederationManager
      */
     public static void main(final String[] args) throws Sim0MQException, SerializationException
     {
-        if (args.length < 4)
+        if (args.length < 5)
         {
-            System.err.println(
-                    "Use as FederationManager federationName federationManagerPortNumber federateStarterPortNumber local/sk-3");
+            System.err.println("Use as FederationManager federationName federationManagerPortNumber "
+                    + "federateStarterIPorName federateStarterPortNumber modelFolder");
             System.exit(-1);
         }
         String federationName = args[0];
@@ -428,7 +413,7 @@ public class MM1FederationManager
         }
         catch (NumberFormatException nfe)
         {
-            System.err.println("Use as FederationManager fedNname fmPort fsPort local/sk-3, where fmPort is a number");
+            System.err.println("Use as FederationManager fedName fmPort fsIP fsPort modelFolder, where fmPort is a number");
             System.exit(-1);
         }
         if (fmPort == 0 || fmPort > 65535)
@@ -437,15 +422,17 @@ public class MM1FederationManager
             System.exit(-1);
         }
 
-        String fssPort = args[2];
+        String fsServerNameOrIP = args[2];
+
+        String fsPortString = args[3];
         int fsPort = 0;
         try
         {
-            fsPort = Integer.parseInt(fssPort);
+            fsPort = Integer.parseInt(fsPortString);
         }
         catch (NumberFormatException nfe)
         {
-            System.err.println("Use as FederationManager fedNname fmPort fsPort local/sk3, where fsPort is a number");
+            System.err.println("Use as FederationManager fedName fmPort fsIP fsPort modelFolder, where fmPort is a number");
             System.exit(-1);
         }
         if (fsPort == 0 || fsPort > 65535)
@@ -454,15 +441,9 @@ public class MM1FederationManager
             System.exit(-1);
         }
 
-        String localSk3 = args[3];
-        if (!localSk3.equals("local") && !localSk3.equals("sk-3"))
-        {
-            System.err.println("Use as FederationManager fedNname fmPort fsPort local/sk3, where last arg is local/sk-3");
-            System.exit(-1);
-        }
+        String mm1ModelFolder = args[4];
 
-        new MM1FederationManager(federationName, fmPort, fsPort, localSk3);
-
+        new MM1FederationManager(federationName, fmPort, fsServerNameOrIP, fsPort, mm1ModelFolder);
     }
 
 }

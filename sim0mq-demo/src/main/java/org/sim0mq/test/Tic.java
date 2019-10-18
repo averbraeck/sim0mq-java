@@ -3,6 +3,7 @@ package org.sim0mq.test;
 import java.util.Arrays;
 
 import org.sim0mq.Sim0MQException;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -35,7 +36,7 @@ public final class Tic
             // Socket to talk to server
             System.out.println("Connecting to server on port 5556...");
 
-            ZMQ.Socket requester = context.createSocket(ZMQ.REQ);
+            ZMQ.Socket requester = context.createSocket(SocketType.REQ);
             requester.connect("tcp://localhost:5556");
 
             for (int i = 0; i < nummessages; i++)

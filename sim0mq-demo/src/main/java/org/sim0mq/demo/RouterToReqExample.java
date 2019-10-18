@@ -3,6 +3,7 @@ package org.sim0mq.demo;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -75,7 +76,7 @@ public final class RouterToReqExample
             String endpoint = "tcp://localhost:5671";
 
             ZContext context = new ZContext(1);
-            ZMQ.Socket worker = context.createSocket(ZMQ.REQ);
+            ZMQ.Socket worker = context.createSocket(SocketType.REQ);
             worker.setIdentity(this.workerId.getBytes());
 
             worker.connect(endpoint);
@@ -146,7 +147,7 @@ public final class RouterToReqExample
                             // Old socket is confused; close it and open a new one
                             worker.close();
                             System.err.println("I: reconnecting to server\n");
-                            worker = context.createSocket(ZMQ.REQ);
+                            worker = context.createSocket(SocketType.REQ);
                             worker.setIdentity(this.workerId.getBytes());
                             worker.connect(endpoint);
                             // Send message again, on new socket
@@ -190,7 +191,7 @@ public final class RouterToReqExample
     public static void main(final String[] args) throws Exception
     {
         ZContext context = new ZContext(1);
-        ZMQ.Socket broker = context.createSocket(ZMQ.ROUTER);
+        ZMQ.Socket broker = context.createSocket(SocketType.ROUTER);
         broker.bind("tcp://*:5671");
 
         System.out.println("Recv buf size = " + broker.getReceiveBufferSize());

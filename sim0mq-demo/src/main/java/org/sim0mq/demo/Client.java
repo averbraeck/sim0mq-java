@@ -2,8 +2,8 @@ package org.sim0mq.demo;
 
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
-import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.Sim0MQMessage;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -35,19 +35,19 @@ public final class Client
         // Socket to talk to server
         System.out.println("Connecting to server...");
 
-        ZMQ.Socket requester = context.createSocket(ZMQ.REQ);
+        ZMQ.Socket requester = context.createSocket(SocketType.REQ);
         requester.connect("tcp://localhost:5556");
         // requester.connect("tcp://131.180.98.169:5556");
         // requester.connect("tcp://130.161.3.179:5556");
 
         // send a reply
         Object[] request = new Object[] { "test message", new Double(14.2), new Float(-28.4), new Short((short) 10) };
-        requester.send(SimulationMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, request),
+        requester.send(Sim0MQMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, request),
                 0);
 
         byte[] reply = requester.recv(0);
-        Object[] replyMessage = SimulationMessage.decode(reply);
-        System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
         requester.close();
         context.destroy();

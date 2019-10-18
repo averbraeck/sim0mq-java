@@ -2,8 +2,8 @@ package org.sim0mq.demo.reqrep;
 
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
-import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.Sim0MQMessage;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -81,7 +81,7 @@ public class Rep
             System.out.println("REP: Connecting to server with thread on port " + this.port);
 
             // Socket to talk to clients
-            ZMQ.Socket socket = this.context.createSocket(ZMQ.REP);
+            ZMQ.Socket socket = this.context.createSocket(SocketType.REP);
             socket.bind("tcp://*:" + this.port);
 
             String senderId = "REP." + this.port;
@@ -95,40 +95,40 @@ public class Rep
                 {
                     // Wait for next request from the client
                     byte[] request = socket.recv(0);
-                    Object[] message = SimulationMessage.decode(request);
+                    Object[] message = Sim0MQMessage.decode(request);
 
                     if (message[4].toString().equals("STOP"))
                     {
                         // send a reply
                         Object[] reply = new Object[] { "STOPPED" };
-                        socket.send(SimulationMessage.encodeUTF8(message[1], senderId, receiverId, "STOPPED", messagenr,
-                                MessageStatus.NEW, reply), 0);
+                        socket.send(Sim0MQMessage.encodeUTF8(message[1], senderId, receiverId, "STOPPED", messagenr,
+                                reply), 0);
                         break;
                     }
 
                     // check the message
                     if (!message[3].toString().equals(senderId))
                     {
-                        System.err.println(SimulationMessage.print(message));
+                        System.err.println(Sim0MQMessage.print(message));
                         System.err.println("receive message " + messagenr + " for port " + this.port + ", receiver = "
                                 + message[3].toString() + ", expected " + senderId);
                     }
                     if (((Number) message[7]).intValue() == 0)
                     {
-                        System.err.println(SimulationMessage.print(message));
+                        System.err.println(Sim0MQMessage.print(message));
                         System.err.println("receive message " + messagenr + " for port " + this.port + ", #fields = 0");
                     }
                     else if (((Number) message[5]).intValue() != messagenr)
                     {
-                        System.err.println(SimulationMessage.print(message));
+                        System.err.println(Sim0MQMessage.print(message));
                         System.err.println(
                                 "receive message " + messagenr + " for port " + this.port + ", payload# = " + message[5]);
                     }
 
                     // send a reply
                     Object[] reply = new Object[] { message[8], message[9] };
-                    socket.send(SimulationMessage.encodeUTF8(message[1], senderId, receiverId, "REPLY", messagenr,
-                            MessageStatus.NEW, reply), 0);
+                    socket.send(Sim0MQMessage.encodeUTF8(message[1], senderId, receiverId, "REPLY", messagenr,
+                            reply), 0);
                 }
                 catch (Sim0MQException | SerializationException exception)
                 {
