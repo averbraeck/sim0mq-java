@@ -3,9 +3,7 @@ package org.sim0mq.message.federationmanager;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * KillFederate, FM.8. Kill the given federate (including termination of the process on the computer / node / processor where
@@ -44,7 +42,7 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     public FM8KillFederateMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final String instanceId) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
         Throw.whenNull(instanceId, "instanceId cannot be null");
         this.instanceId = instanceId;
     }
@@ -77,15 +75,15 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId};
+                getMessageId(), getNumberOfPayloadFields(), this.instanceId};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.instanceId);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), this.instanceId);
     }
 
     /**
@@ -100,7 +98,7 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     {
         check(fields, 1, MESSAGETYPE, intendedReceiverId);
         return new FM8KillFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[8].toString());
+                fields[7].toString());
     }
 
     /**

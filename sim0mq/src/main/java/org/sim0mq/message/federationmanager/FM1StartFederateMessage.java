@@ -3,9 +3,7 @@ package org.sim0mq.message.federationmanager;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * StartFederateMessage, FM.1. When it receives a StartFederate message, the Federate starter creates a process to run the model
@@ -151,7 +149,7 @@ public class FM1StartFederateMessage extends Sim0MQMessage
             final String redirectStdout, final String redirectStderr, final boolean deleteWorkingDirectory,
             final boolean deleteStdout, final boolean deleteStderr) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
         Throw.whenNull(instanceId, "instanceId cannot be null");
         Throw.whenNull(softwareCode, "softwareCode cannot be null");
         Throw.whenNull(argsBefore, "argsBefore cannot be null");
@@ -299,7 +297,7 @@ public class FM1StartFederateMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId, this.softwareCode,
+                getMessageId(), getNumberOfPayloadFields(), this.instanceId, this.softwareCode,
                 this.argsBefore, this.modelPath, this.argsAfter, this.workingDirectory, this.redirectStdin, this.redirectStdout,
                 this.redirectStderr, this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr};
     }
@@ -308,8 +306,8 @@ public class FM1StartFederateMessage extends Sim0MQMessage
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath,
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath,
                 this.argsAfter, this.workingDirectory, this.redirectStdin, this.redirectStdout, this.redirectStderr,
                 this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr);
     }
@@ -326,9 +324,9 @@ public class FM1StartFederateMessage extends Sim0MQMessage
     {
         check(fields, 12, MESSAGETYPE, intendedReceiverId);
         return new FM1StartFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[8].toString(), fields[9].toString(), fields[10].toString(), fields[11].toString(), fields[12].toString(),
-                fields[13].toString(), fields[14].toString(), fields[15].toString(), fields[16].toString(),
-                (Boolean) fields[17], (Boolean) fields[18], (Boolean) fields[19]);
+                fields[7].toString(), fields[8].toString(), fields[9].toString(), fields[10].toString(), fields[11].toString(),
+                fields[12].toString(), fields[13].toString(), fields[14].toString(), fields[15].toString(),
+                (Boolean) fields[16], (Boolean) fields[17], (Boolean) fields[18]);
     }
 
     /**

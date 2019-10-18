@@ -2,9 +2,7 @@ package org.sim0mq.message.federatestarter;
 
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * RequestStatus, FS.1. This message is sent by the Federate Starter to the Model until a "started" response is received from
@@ -39,7 +37,7 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
     public FS1RequestStatusMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
     }
 
     /**
@@ -62,15 +60,15 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
+                getMessageId(), getNumberOfPayloadFields()};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus());
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId());
     }
 
     /**

@@ -32,17 +32,14 @@ public abstract class Sim0MQReply extends Sim0MQMessage
      *            Examples are a String with a meaningful identification, or a short or an int with a message type number.
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
-     * @param messageStatus Three different status messages are defined: 1 for new, 2 for change, and 3 for delete. This field
-     *            is coded as a byte.
      * @param replyToId The unique message id (Frame 5) of the sender for which this is the reply.
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
     public Sim0MQReply(final Object simulationRunId, final Object senderId, final Object receiverId, final Object messageTypeId,
-            final long messageId, final MessageStatus messageStatus, final long replyToId)
-            throws Sim0MQException, NullPointerException
+            final long messageId, final long replyToId) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, messageTypeId, messageId, messageStatus);
+        super(simulationRunId, senderId, receiverId, messageTypeId, messageId);
         this.replyToId = replyToId;
     }
 

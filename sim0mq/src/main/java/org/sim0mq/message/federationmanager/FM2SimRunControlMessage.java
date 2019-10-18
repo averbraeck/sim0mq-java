@@ -10,9 +10,7 @@ import org.djunits.value.vfloat.scalar.FloatTime;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 import org.sim0mq.message.types.NumberDuration;
 import org.sim0mq.message.types.NumberTime;
 
@@ -90,7 +88,7 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
             final double speed, final int numberReplications, final int numberRandomStreams, final Map<Object, Long> streamMap)
             throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
         Throw.whenNull(runDuration, "runDuration cannot be null");
         Throw.whenNull(warmupDuration, "warmupDuration cannot be null");
         Throw.whenNull(offsetTime, "offsetTime cannot be null");
@@ -234,22 +232,21 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
     @Override
     public Object[] createObjectArray()
     {
-        Object[] array = new Object[8 + getNumberOfPayloadFields()];
+        Object[] array = new Object[7 + getNumberOfPayloadFields()];
         array[0] = getMagicNumber();
         array[1] = getSimulationRunId();
         array[2] = getSenderId();
         array[3] = getReceiverId();
         array[4] = getMessageTypeId();
         array[5] = getMessageId();
-        array[6] = getMessageStatus();
-        array[7] = getNumberOfPayloadFields();
-        array[8] = this.runDuration.getObject();
-        array[9] = this.warmupDuration.getObject();
-        array[10] = this.offsetTime.getObject();
-        array[11] = this.speed;
-        array[12] = this.numberReplications;
-        array[13] = this.numberRandomStreams;
-        int i = 14;
+        array[6] = getNumberOfPayloadFields();
+        array[7] = this.runDuration.getObject();
+        array[8] = this.warmupDuration.getObject();
+        array[9] = this.offsetTime.getObject();
+        array[10] = this.speed;
+        array[11] = this.numberReplications;
+        array[12] = this.numberRandomStreams;
+        int i = 13;
         for (Object key : this.streamMap.keySet())
         {
             array[i++] = key;
@@ -275,8 +272,8 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
             array[i++] = key;
             array[i++] = this.streamMap.get(key);
         }
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), array);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), array);
     }
 
     /**
@@ -290,16 +287,16 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
             throws Sim0MQException
     {
         Map<Object, Long> streams = new LinkedHashMap<>();
-        int numberStreams = ((Integer) fields[13]).intValue();
+        int numberStreams = ((Integer) fields[12]).intValue();
         check(fields, 6 + 2 * numberStreams, MESSAGETYPE, intendedReceiverId);
-        for (int i = 14; i < 14 + 2 * numberStreams; i += 2)
+        for (int i = 13; i < 13 + 2 * numberStreams; i += 2)
         {
             Object streamId = fields[i];
             Long seed = ((Long) fields[i + 1]).longValue();
             streams.put(streamId, seed);
         }
-        return new FM2SimRunControlMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8],
-                fields[9], fields[10], ((Double) fields[11]).doubleValue(), ((Integer) fields[12]).intValue(), numberStreams,
+        return new FM2SimRunControlMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[7],
+                fields[8], fields[9], ((Double) fields[10]).doubleValue(), ((Integer) fields[11]).intValue(), numberStreams,
                 streams);
     }
 

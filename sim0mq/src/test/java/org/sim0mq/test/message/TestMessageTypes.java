@@ -1,7 +1,6 @@
 package org.sim0mq.test.message;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,9 +19,7 @@ import org.djunits.value.vfloat.scalar.FloatTime;
 import org.djutils.serialization.SerializationException;
 import org.junit.Test;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 import org.sim0mq.message.federatestarter.FS1RequestStatusMessage;
 import org.sim0mq.message.federatestarter.FS2FederateStartedMessage;
 import org.sim0mq.message.federatestarter.FS3KillModelMessage;
@@ -37,6 +34,8 @@ import org.sim0mq.message.federationmanager.FM6RequestStatisticsMessage;
 import org.sim0mq.message.federationmanager.FM7SimResetMessage;
 import org.sim0mq.message.federationmanager.FM8KillFederateMessage;
 import org.sim0mq.message.federationmanager.FM9KillAllMessage;
+import org.sim0mq.message.heartbeat.HB1HeartbeatMessage;
+import org.sim0mq.message.heartbeat.HB2AliveMessage;
 import org.sim0mq.message.modelcontroller.MC1StatusMessage;
 import org.sim0mq.message.modelcontroller.MC2AckNakMessage;
 import org.sim0mq.message.modelcontroller.MC3StatisticsMessage;
@@ -322,6 +321,47 @@ public class TestMessageTypes
     }
 
     /**
+     * Test Heartbeat (HB) message type classes one by one.
+     * @throws Sim0MQException on encoding error
+     * @throws SerializationException on serialization error
+     */
+    @SuppressWarnings("checkstyle:needbraces")
+    @Test
+    public void testMessageTypesHB() throws Sim0MQException, SerializationException
+    {
+        Header fmmc = new Header();
+        fmmc.senderId = "FM.1";
+        fmmc.receiverId = "MODEL.14";
+        Header mcfm = new Header();
+        mcfm.senderId = "MODEL.14";
+        mcfm.receiverId = "FM.1";
+
+        HB1HeartbeatMessage hb1 = new HB1HeartbeatMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
+        Object[] hb1o = hb1.createObjectArray();
+        HB1HeartbeatMessage hb1c = HB1HeartbeatMessage.createMessage(hb1o, fmmc.receiverId);
+        HB1HeartbeatMessage hb1d = new HB1HeartbeatMessage.Builder().setSimulationRunId(fmmc.simulationRunId)
+                .setSenderId(fmmc.senderId).setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).build();
+        testMessage(hb1, hb1o, hb1c, hb1d, fmmc, "HB.1");
+
+        HB2AliveMessage hb2 = new HB2AliveMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, 1806L);
+        Object[] hb2o = hb2.createObjectArray();
+        HB2AliveMessage hb2c = HB2AliveMessage.createMessage(hb2o, mcfm.receiverId);
+        HB2AliveMessage hb2d = new HB2AliveMessage.Builder().setSimulationRunId(mcfm.simulationRunId).setSenderId(mcfm.senderId)
+                .setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyToId(1806L).build();
+        testMessage(hb2, hb2o, hb2c, hb2d, mcfm, "HB.2");
+        assertEquals(1806L, hb2.getReplyToId());
+
+        HB2AliveMessage ahb2 =
+                new HB2AliveMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, hb1.getMessageId());
+        Object[] ahb2o = ahb2.createObjectArray();
+        HB2AliveMessage ahb2c = HB2AliveMessage.createMessage(ahb2o, mcfm.receiverId);
+        HB2AliveMessage ahb2d = new HB2AliveMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
+                .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyTo(hb1).build();
+        testMessage(ahb2, ahb2o, ahb2c, ahb2d, mcfm, "HB.2");
+        assertEquals(hb1.getMessageId(), ahb2.getReplyToId());
+    }
+
+    /**
      * test the FM.2 message with different parameters.
      * @param runDuration run duration
      * @param warmupDuration warmup duration
@@ -401,17 +441,17 @@ public class TestMessageTypes
     {
         testStandardFields(message, headers, messageType);
         byte[] bytes = message.createByteArray();
-        assertEquals(8 + message.getNumberOfPayloadFields(), objectArray.length);
+        assertEquals(7 + message.getNumberOfPayloadFields(), objectArray.length);
         testStandardFields(messageCoded, headers, messageType);
         Object[] codedObjects = messageCoded.createObjectArray();
         compareFields(objectArray, codedObjects);
         testStandardFields(messageBuild, headers, messageType);
         Object[] buildObjects = messageBuild.createObjectArray();
         compareFields(objectArray, buildObjects);
-        Object[] decodedObjects = SimulationMessage.decode(bytes);
+        Object[] decodedObjects = Sim0MQMessage.decode(bytes);
         compareFields(objectArray, decodedObjects);
 
-        assertEquals("SIM01", message.getMagicNumber());
+        assertEquals("SIM02", message.getMagicNumber());
         assertEquals(headers.senderId, message.getSenderId());
         assertEquals(headers.messageId, message.getMessageId());
         assertEquals(headers.receiverId, message.getReceiverId());
@@ -455,29 +495,10 @@ public class TestMessageTypes
         assertEquals(o1.length, o2.length);
         for (int i = 0; i < o1.length; i++)
         {
-            if (o1[i].getClass().equals(MessageStatus.class))
-            {
-                if (!o2[i].getClass().equals(MessageStatus.class) && !o2[i].getClass().equals(byte.class)
-                        && !o2[i].getClass().equals(Byte.class))
-                {
-                    fail("field " + i + ", expected class: " + o1[i].getClass() + ", actual class: " + o2[i].getClass());
-                }
-            }
-            else if (o2[i].getClass().equals(MessageStatus.class))
-            {
-                if (!o1[i].getClass().equals(MessageStatus.class) && !o1[i].getClass().equals(byte.class)
-                        && !o1[i].getClass().equals(Byte.class))
-                {
-                    fail("field " + i + ", expected class: " + o1[i].getClass() + ", actual class: " + o2[i].getClass());
-                }
-            }
-            else
-            {
-                assertEquals("field " + i + ", expected class: " + o1[i].getClass() + ", actual class: " + o2[i].getClass(),
-                        o1[i].getClass(), o2[i].getClass());
-                assertEquals("field " + i + ", expected value: " + o1[i].toString() + ", actual value: " + o2[i].toString(),
-                        o1[i], o2[i]);
-            }
+            assertEquals("field " + i + ", expected class: " + o1[i].getClass() + ", actual class: " + o2[i].getClass(),
+                    o1[i].getClass(), o2[i].getClass());
+            assertEquals("field " + i + ", expected value: " + o1[i].toString() + ", actual value: " + o2[i].toString(), o1[i],
+                    o2[i]);
         }
     }
 }
