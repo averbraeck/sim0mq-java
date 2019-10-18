@@ -2,9 +2,7 @@ package org.sim0mq.message.federatestarter;
 
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * KillModel, FS.3. The message is sent by the federate starter to a Model Controller. The number of extra fields is zero.
@@ -37,7 +35,7 @@ public class FS3KillModelMessage extends Sim0MQMessage
     public FS3KillModelMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
     }
 
     /**
@@ -60,15 +58,15 @@ public class FS3KillModelMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields()};
+                getMessageId(), getNumberOfPayloadFields()};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus());
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId());
     }
 
     /**

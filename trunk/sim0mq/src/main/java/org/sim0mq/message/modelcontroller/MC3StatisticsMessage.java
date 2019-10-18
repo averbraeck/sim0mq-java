@@ -3,9 +3,7 @@ package org.sim0mq.message.modelcontroller;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * StatisticsMessage, MC.3. The Model sends this message as a response to RequestStatistics messages sent by the Federation
@@ -54,7 +52,7 @@ public class MC3StatisticsMessage extends Sim0MQMessage
             final long messageId, final String variableName, final Object variableValue)
             throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
         Throw.whenNull(variableName, "variableName cannot be null");
         Throw.whenNull(variableValue, "variableValue cannot be null");
         this.variableName = variableName;
@@ -97,15 +95,15 @@ public class MC3StatisticsMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.variableName, this.variableValue};
+                getMessageId(), getNumberOfPayloadFields(), this.variableName, this.variableValue};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.variableName, this.variableValue);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), this.variableName, this.variableValue);
     }
 
     /**
@@ -119,8 +117,8 @@ public class MC3StatisticsMessage extends Sim0MQMessage
             throws Sim0MQException
     {
         check(fields, 2, MESSAGETYPE, intendedReceiverId);
-        return new MC3StatisticsMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8].toString(),
-                fields[9]);
+        return new MC3StatisticsMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[7].toString(),
+                fields[8]);
     }
 
     /**

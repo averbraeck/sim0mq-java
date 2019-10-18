@@ -555,18 +555,11 @@
   <dependencies>
 
     <dependency>
-
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
       <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>dsol</groupId>
-      <artifactId>dsol-base</artifactId>
-      <version>${dsol.version}</version>
     </dependency>
 
     <dependency>

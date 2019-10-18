@@ -3,9 +3,7 @@ package org.sim0mq.message.federationmanager;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * SetParameter, FM.3. Message sent by the FederateManager to the Model for setting the parameter values. Parameters are set one
@@ -49,7 +47,7 @@ public class FM3SetParameterMessage extends Sim0MQMessage
             final long messageId, final String parameterName, final Object parameterValue)
             throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
         Throw.whenNull(parameterName, "parameterName cannot be null");
         Throw.whenNull(parameterValue, "parameterValue cannot be null");
         this.parameterName = parameterName;
@@ -92,15 +90,15 @@ public class FM3SetParameterMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.parameterName, this.parameterValue};
+                getMessageId(), getNumberOfPayloadFields(), this.parameterName, this.parameterValue};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.parameterName, this.parameterValue);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), this.parameterName, this.parameterValue);
     }
 
     /**
@@ -114,8 +112,8 @@ public class FM3SetParameterMessage extends Sim0MQMessage
             throws Sim0MQException
     {
         check(fields, 2, MESSAGETYPE, intendedReceiverId);
-        return new FM3SetParameterMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[8].toString(),
-                fields[9]);
+        return new FM3SetParameterMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[7].toString(),
+                fields[8]);
     }
 
     /**

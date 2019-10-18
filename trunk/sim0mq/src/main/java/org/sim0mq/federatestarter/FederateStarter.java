@@ -18,8 +18,7 @@ import java.util.UUID;
 import org.djutils.io.URLResource;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
-import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.federatestarter.FS2FederateStartedMessage;
 import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
 import org.zeromq.SocketType;
@@ -108,11 +107,11 @@ public class FederateStarter
                 this.fsSocket.recvStr();
 
                 byte[] request = this.fsSocket.recv(0);
-                Object[] fields = SimulationMessage.decode(request);
+                Object[] fields = Sim0MQMessage.decode(request);
                 String messageTypeId = fields[4].toString();
                 String receiverId = fields[3].toString();
 
-                System.out.println("Received " + SimulationMessage.print(fields));
+                System.out.println("Received " + Sim0MQMessage.print(fields));
 
                 if (receiverId.equals("FS"))
                 {
@@ -146,7 +145,7 @@ public class FederateStarter
                 System.err.println(e.getMessage());
             }
         }
-        
+
         try
         {
             this.fsSocket.close();
@@ -363,18 +362,18 @@ public class FederateStarter
         boolean started = false;
         while (ok && !started)
         {
-            byte[] fs1Message = SimulationMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.1", ++this.messageCount,
-                    MessageStatus.NEW);
+            byte[] fs1Message = Sim0MQMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.1", ++this.messageCount);
             modelSocket.send(fs1Message, 0);
 
             byte[] reply = modelSocket.recv(0);
-            Object[] replyMessage = SimulationMessage.decode(reply);
-            System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+            Object[] replyMessage = Sim0MQMessage.decode(reply);
+            System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-            if (replyMessage[4].toString().equals("MC.1") && !replyMessage[9].toString().equals("error")
-                    && !replyMessage[9].toString().equals("ended") && ((Long) replyMessage[8]).longValue() == this.messageCount)
+            // Synchronous and single-threaded, so the messageCount cannot change between send and receive 
+            if (replyMessage[4].toString().equals("MC.1") && !replyMessage[8].toString().equals("error")
+                    && !replyMessage[8].toString().equals("ended") && ((Long) replyMessage[7]).longValue() == this.messageCount)
             {
-                if (replyMessage[9].toString().equals("started"))
+                if (replyMessage[8].toString().equals("started"))
                 {
                     started = true;
                 }
@@ -394,9 +393,9 @@ public class FederateStarter
             else
             {
                 ok = false;
-                error = replyMessage[10].toString();
-                System.err.println("Simulation start error -- status = " + replyMessage[9]);
-                System.err.println("Error message = " + replyMessage[10]);
+                error = replyMessage[9].toString();
+                System.err.println("Simulation start error -- status = " + replyMessage[8]);
+                System.err.println("Error message = " + replyMessage[9]);
             }
         }
 
@@ -424,7 +423,7 @@ public class FederateStarter
         Object federationRunId = fields[1];
         String senderId = fields[2].toString();
 
-        String modelId = fields[8].toString();
+        String modelId = fields[7].toString();
         if (!this.modelPortMap.containsKey(modelId))
         {
             status = false;
@@ -443,8 +442,7 @@ public class FederateStarter
                     modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
                     modelSocket.connect("tcp://127.0.0.1:" + modelPort);
 
-                    byte[] fs3Message = SimulationMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.3",
-                            ++this.messageCount, MessageStatus.NEW);
+                    byte[] fs3Message = Sim0MQMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.3", ++this.messageCount);
                     modelSocket.send(fs3Message, 0);
 
                     modelSocket.close();
@@ -502,8 +500,8 @@ public class FederateStarter
                 error = exception.getMessage();
             }
 
-            byte[] fs4Message = SimulationMessage.encodeUTF8(federationRunId, "FS", senderId, "FS.4", ++this.messageCount,
-                    MessageStatus.NEW, modelId, status, error);
+            byte[] fs4Message = Sim0MQMessage.encodeUTF8(federationRunId, "FS", senderId, "FS.4", ++this.messageCount, modelId,
+                    status, error);
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
             this.fsSocket.send(fs4Message, 0);

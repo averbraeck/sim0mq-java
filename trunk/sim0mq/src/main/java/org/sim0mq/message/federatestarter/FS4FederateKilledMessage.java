@@ -3,9 +3,7 @@ package org.sim0mq.message.federatestarter;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * FederateKilled, FS.4. Message sent by the Federate Starter to the Federation Manager in response to message FM.8.
@@ -54,7 +52,7 @@ public class FS4FederateKilledMessage extends Sim0MQMessage
             final long messageId, final String instanceId, final boolean status, final String error)
             throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
 
         Throw.whenNull(instanceId, "instanceId cannot be null");
         Throw.whenNull(status, "status cannot be null");
@@ -109,15 +107,15 @@ public class FS4FederateKilledMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.instanceId, this.status, this.error};
+                getMessageId(), getNumberOfPayloadFields(), this.instanceId, this.status, this.error};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.instanceId, this.status, this.error);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), this.instanceId, this.status, this.error);
     }
 
     /**
@@ -132,7 +130,7 @@ public class FS4FederateKilledMessage extends Sim0MQMessage
     {
         check(fields, 3, MESSAGETYPE, intendedReceiverId);
         return new FS4FederateKilledMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[8].toString(), (boolean) fields[9], fields[10].toString());
+                fields[7].toString(), (boolean) fields[8], fields[9].toString());
     }
 
     /**

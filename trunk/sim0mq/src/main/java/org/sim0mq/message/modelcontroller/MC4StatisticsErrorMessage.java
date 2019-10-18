@@ -3,9 +3,7 @@ package org.sim0mq.message.modelcontroller;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * StatisticsError, MC.4. The Model sends this message as a response to RequestStatistics messages sent by the Federation
@@ -48,7 +46,7 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
     public MC4StatisticsErrorMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final String variableName, final String error) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
         Throw.whenNull(variableName, "variableName cannot be null");
         Throw.whenNull(error, "errorValue cannot be null");
         this.variableName = variableName;
@@ -91,15 +89,15 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.variableName, this.error};
+                getMessageId(), getNumberOfPayloadFields(), this.variableName, this.error};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.variableName, this.error);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), this.variableName, this.error);
     }
 
     /**
@@ -114,7 +112,7 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
     {
         check(fields, 2, MESSAGETYPE, intendedReceiverId);
         return new MC4StatisticsErrorMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[8].toString(), fields[9].toString());
+                fields[7].toString(), fields[8].toString());
     }
 
     /**

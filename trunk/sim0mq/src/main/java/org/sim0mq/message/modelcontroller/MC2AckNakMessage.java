@@ -3,9 +3,8 @@ package org.sim0mq.message.modelcontroller;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
+import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.Sim0MQReply;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * AckNak, MC.2. Message sent by the Model to acknowledge the reception and implementation of a message sent by the Federation
@@ -49,7 +48,7 @@ public class MC2AckNakMessage extends Sim0MQReply
     public MC2AckNakMessage(final Object simulationRunId, final Object senderId, final Object receiverId, final long messageId,
             final long uniqueId, final boolean status, final String error) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW, uniqueId);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, uniqueId);
         Throw.whenNull(error, "error cannot be null");
         this.status = status;
         this.error = error;
@@ -91,15 +90,15 @@ public class MC2AckNakMessage extends Sim0MQReply
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), getReplyToId(), this.status, this.error};
+                getMessageId(), getNumberOfPayloadFields(), getReplyToId(), this.status, this.error};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getReplyToId(), this.status, this.error);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), getReplyToId(), this.status, this.error);
     }
 
     /**
@@ -113,7 +112,7 @@ public class MC2AckNakMessage extends Sim0MQReply
     {
         check(fields, 3, MESSAGETYPE, intendedReceiverId);
         return new MC2AckNakMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                ((Long) fields[8]).longValue(), (boolean) fields[9], fields[10].toString());
+                ((Long) fields[7]).longValue(), (boolean) fields[8], fields[9].toString());
     }
 
     /**

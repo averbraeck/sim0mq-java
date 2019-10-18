@@ -1,24 +1,24 @@
-package org.sim0mq.message.federationmanager;
+package org.sim0mq.message.heartbeat;
 
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.Sim0MQMessage;
 
 /**
- * SimReset, FM.7. Reset the model to its initial state.
+ * Heartbeat, HB.1. Request to test if other party is still alive. From FM to FS, LB and MC, or from FS to MC.
  * <p>
  * Copyright (c) 2019-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
  */
-public class FM7SimResetMessage extends Sim0MQMessage
+public class HB1HeartbeatMessage extends Sim0MQMessage
 {
     /** the unique message id. */
-    private static final String MESSAGETYPE = "FM.7";
+    private static final String MESSAGETYPE = "HB.1";
 
     /** */
-    private static final long serialVersionUID = 20190712L;
+    private static final long serialVersionUID = 20190714L;
 
     /**
      * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
@@ -33,7 +33,7 @@ public class FM7SimResetMessage extends Sim0MQMessage
      * @throws NullPointerException when one of the parameters is null
      */
     @SuppressWarnings("checkstyle:parameternumber")
-    public FM7SimResetMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
+    public HB1HeartbeatMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId) throws Sim0MQException, NullPointerException
     {
         super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
@@ -77,15 +77,15 @@ public class FM7SimResetMessage extends Sim0MQMessage
      * @return a Sim0MQ message
      * @throws Sim0MQException when number of fields is not correct
      */
-    public static FM7SimResetMessage createMessage(final Object[] fields, final Object intendedReceiverId)
+    public static HB1HeartbeatMessage createMessage(final Object[] fields, final Object intendedReceiverId)
             throws Sim0MQException
     {
         check(fields, 0, MESSAGETYPE, intendedReceiverId);
-        return new FM7SimResetMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());
+        return new HB1HeartbeatMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue());
     }
 
     /**
-     * Builder for the SimReset Message. Can string setters together, and call build() at the end to build the actual message.
+     * Builder for the Heartbeat Message. Can string setters together, and call build() at the end to build the actual message.
      * <p>
      * Copyright (c) 2019-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
      * <br>
@@ -93,7 +93,7 @@ public class FM7SimResetMessage extends Sim0MQMessage
      * </p>
      * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
      */
-    public static class Builder extends Sim0MQMessage.Builder<FM7SimResetMessage.Builder>
+    public static class Builder extends Sim0MQMessage.Builder<HB1HeartbeatMessage.Builder>
     {
         /**
          * Empty constructor.
@@ -105,9 +105,9 @@ public class FM7SimResetMessage extends Sim0MQMessage
 
         /** {@inheritDoc} */
         @Override
-        public FM7SimResetMessage build() throws Sim0MQException, NullPointerException
+        public HB1HeartbeatMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FM7SimResetMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
+            return new HB1HeartbeatMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId);
         }
 
     }

@@ -2,6 +2,28 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="2.00.00" date="2019-07-14" description="V2 of Sim0MQ with heartbeat and load balancer">
+      <action dev="averbraeck" type="add">
+        Added Heartbeat messages HB.1 (Heartbeat) and HB.2 (Alive). 
+      </action>
+      <action dev="averbraeck" type="add">
+        Added reference implementation for processing Heartbeat messages. In order to allow to send/receive heartbeat 
+        messages between the other messages, the way that answers are received in the Java code had to be changed.
+        The state machine of the different federates now has to allow for HB-messages to be sent and received
+        between all other messages.    
+      </action>
+      <action dev="averbraeck" type="add">
+        Added reference implementation for the state machine of a Federation Manager.     
+      </action>
+      <action dev="averbraeck" type="add">
+        Added reference implementation for the state machine of a Model Controller.     
+      </action>
+      <action dev="averbraeck" type="add">
+        Changed the MM1FederationManager20 example in sim0mq-demo to work with an arbitrary folder that
+        contains the model on the server where the FederateStarter is present.     
+      </action>
+    </release>
+    
     <release version="1.01.01" date="2019-07-12" description="First version of FederateStarter unit test">
       <action dev="averbraeck" type="add">
         A first unit test for the reference implementation of the FederateStarter has been added. This test 

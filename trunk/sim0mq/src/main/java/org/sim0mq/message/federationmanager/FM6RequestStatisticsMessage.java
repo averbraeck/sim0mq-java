@@ -3,9 +3,7 @@ package org.sim0mq.message.federationmanager;
 import org.djutils.exceptions.Throw;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
 import org.sim0mq.message.Sim0MQMessage;
-import org.sim0mq.message.SimulationMessage;
 
 /**
  * RequestStatistics, FM.6. Message sent by the Federation Manager to collect the output.
@@ -50,7 +48,7 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
     public FM6RequestStatisticsMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
             final long messageId, final String variableName) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, MessageStatus.NEW);
+        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
         Throw.whenNull(variableName, "variableName cannot be null");
         this.variableName = variableName;
     }
@@ -83,15 +81,15 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
     public Object[] createObjectArray()
     {
         return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), getNumberOfPayloadFields(), this.variableName};
+                getMessageId(), getNumberOfPayloadFields(), this.variableName};
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] createByteArray() throws Sim0MQException, SerializationException
     {
-        return SimulationMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getMessageStatus(), this.variableName);
+        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
+                getMessageId(), this.variableName);
     }
 
     /**
@@ -106,7 +104,7 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
     {
         check(fields, 1, MESSAGETYPE, intendedReceiverId);
         return new FM6RequestStatisticsMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[8].toString());
+                fields[7].toString());
     }
 
     /**

@@ -14,8 +14,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.federatestarter.FederateStarter;
-import org.sim0mq.message.MessageStatus;
-import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.Sim0MQMessage;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -34,7 +33,7 @@ public class TestFederateStarter
     /** the state of the started model. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
     int state;
-    
+
     /** the ready state of the started model. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
     static boolean ready = false;
@@ -47,15 +46,15 @@ public class TestFederateStarter
 
     /** message count. */
     private long messageCount = 0;
-    
+
     /** the error to report. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
     String error = "";
-    
+
     /** temporary folder for out / err files. */
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-    
+
     /**
      * Test Federation Starter functions.
      * @throws Sim0MQException on encoding error
@@ -182,9 +181,9 @@ public class TestFederateStarter
                     break;
             }
         }
-        
+
         fsThread.interrupt();
-        
+
         if (this.error.length() > 0)
         {
             fail(this.error);
@@ -207,27 +206,27 @@ public class TestFederateStarter
         String temp = this.folder.getRoot().getAbsolutePath();
         System.out.println(temp);
         byte[] fm1Message;
-        fm1Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, MessageStatus.NEW,
-                "MM1.1", "java8+", "-version", temp, "", temp, "", "out.txt", "err.txt", false, false, false);
+        fm1Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, "MM1.1", "java8+",
+                "-version", temp, "", temp, "", "out.txt", "err.txt", false, false, false);
         this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
         this.fsSocket.send(fm1Message);
 
         byte[] reply = this.fsSocket.recv(0);
-        Object[] replyMessage = SimulationMessage.decode(reply);
-        System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-        if (replyMessage[4].toString().equals("FS.2") && replyMessage[9].toString().equals("started")
-                && replyMessage[8].toString().equals("MM1.1"))
+        if (replyMessage[4].toString().equals("FS.2") && replyMessage[8].toString().equals("started")
+                && replyMessage[7].toString().equals("MM1.1"))
         {
             this.state = 1;
-            System.err.println("Model started correctly -- state = " + replyMessage[9]);
+            System.out.println("Model started correctly -- state = " + replyMessage[8] + "\n");
         }
         else
         {
             this.state = -1;
-            System.err.println("Model not started correctly -- state = " + replyMessage[9]);
-            System.err.println("Started model = " + replyMessage[8]);
-            System.err.println("Error message = " + replyMessage[10]);
+            System.err.println("Model not started correctly -- state = " + replyMessage[8]);
+            System.err.println("Started model = " + replyMessage[7] + " on port " + replyMessage[9]);
+            System.err.println("Error message = " + replyMessage[10] + "\n");
         }
     }
 
@@ -240,16 +239,15 @@ public class TestFederateStarter
     void killFederate(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm8Message;
-        fm8Message = SimulationMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, MessageStatus.NEW,
-                "MM1.1");
+        fm8Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, "MM1.1");
         this.fsSocket.send(fm8Message);
 
         byte[] reply = this.fsSocket.recv(0);
-        Object[] replyMessage = SimulationMessage.decode(reply);
-        System.out.println("Received\n" + SimulationMessage.print(replyMessage));
+        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-        if (replyMessage[4].toString().equals("FS.4") && (boolean) replyMessage[9]
-                && replyMessage[8].toString().equals("MM1.1"))
+        if (replyMessage[4].toString().equals("FS.4") && (boolean) replyMessage[8]
+                && replyMessage[7].toString().equals("MM1.1"))
         {
             this.state = 2;
         }
