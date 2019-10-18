@@ -2,8 +2,8 @@ package org.sim0mq.demo;
 
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.MessageStatus;
-import org.sim0mq.message.SimulationMessage;
+import org.sim0mq.message.Sim0MQMessage;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -33,19 +33,19 @@ public final class Server
         ZContext context = new ZContext(1);
 
         // Socket to talk to clients
-        ZMQ.Socket responder = context.createSocket(ZMQ.REP);
+        ZMQ.Socket responder = context.createSocket(SocketType.REP);
         responder.bind("tcp://*:5556");
 
         while (!Thread.currentThread().isInterrupted())
         {
             // Wait for next request from the client
             byte[] request = responder.recv(0);
-            Object[] message = SimulationMessage.decode(request);
-            System.out.println("Received " + SimulationMessage.print(message));
+            Object[] message = Sim0MQMessage.decode(request);
+            System.out.println("Received " + Sim0MQMessage.print(message));
 
             // send a reply
             Object[] reply = new Object[] { true, -28.2, 77000, "Bangladesh" };
-            responder.send(SimulationMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, MessageStatus.NEW, reply),
+            responder.send(Sim0MQMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, reply),
                     0);
         }
         responder.close();

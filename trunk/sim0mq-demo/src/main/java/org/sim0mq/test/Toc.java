@@ -1,6 +1,7 @@
 package org.sim0mq.test;
 
 import org.sim0mq.Sim0MQException;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -29,7 +30,7 @@ public final class Toc
         try (ZContext context = new ZContext(1))
         {
             // Socket to talk to clients
-            ZMQ.Socket responder = context.createSocket(ZMQ.REP);
+            ZMQ.Socket responder = context.createSocket(SocketType.REP);
             responder.bind("tcp://*:5556");
 
             while (true)
