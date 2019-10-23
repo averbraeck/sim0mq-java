@@ -1,7 +1,5 @@
 package org.sim0mq.message.federationmanager;
 
-import org.djutils.exceptions.Throw;
-import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.Sim0MQMessage;
 
@@ -17,7 +15,7 @@ import org.sim0mq.message.Sim0MQMessage;
 public class FM8KillFederateMessage extends Sim0MQMessage
 {
     /** Id to identify the federate instance that has to be killed. */
-    private final String instanceId;
+    private final Object instanceId;
 
     /** the unique message id. */
     private static final String MESSAGETYPE = "FM.8";
@@ -26,9 +24,9 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     private static final long serialVersionUID = 20190712L;
 
     /**
-     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
-     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
-     *            int with a simulation run number.
+     * @param federationId the federation id can be coded using different types. Examples are two 64-bit longs indicating a
+     *            UUID, or a String with a UUID number, a String with meaningful identification, or a short or an int with a
+     *            simulation run number.
      * @param senderId The sender id can be used to send back a message to the sender at some later time.
      * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
      *            error can be sent if we receive a message not meant for us).
@@ -38,67 +36,30 @@ public class FM8KillFederateMessage extends Sim0MQMessage
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    @SuppressWarnings("checkstyle:parameternumber")
-    public FM8KillFederateMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final long messageId, final String instanceId) throws Sim0MQException, NullPointerException
+    public FM8KillFederateMessage(final Object federationId, final Object senderId, final Object receiverId,
+            final Object messageId, final Object instanceId) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
-        Throw.whenNull(instanceId, "instanceId cannot be null");
+        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {instanceId});
         this.instanceId = instanceId;
+    }
+
+    /**
+     * @param objectArray Object[]; Full message object array
+     * @throws Sim0MQException on unknown data type
+     * @throws NullPointerException when one of the parameters is null
+     */
+    public FM8KillFederateMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
+    {
+        super(objectArray, 1);
+        this.instanceId = objectArray[8];
     }
 
     /**
      * @return instanceId
      */
-    public String getInstanceId()
+    public Object getInstanceId()
     {
         return this.instanceId;
-    }
-
-    /**
-     * @return messagetype
-     */
-    public static final String getMessageType()
-    {
-        return MESSAGETYPE;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public short getNumberOfPayloadFields()
-    {
-        return 1;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object[] createObjectArray()
-    {
-        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getNumberOfPayloadFields(), this.instanceId};
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public byte[] createByteArray() throws Sim0MQException, SerializationException
-    {
-        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), this.instanceId);
-    }
-
-    /**
-     * Build a message from an Object[] that was received.
-     * @param fields Object[]; the fields in the message
-     * @param intendedReceiverId id of the intended receiver
-     * @return a Sim0MQ message
-     * @throws Sim0MQException when number of fields is not correct
-     */
-    public static FM8KillFederateMessage createMessage(final Object[] fields, final Object intendedReceiverId)
-            throws Sim0MQException
-    {
-        check(fields, 1, MESSAGETYPE, intendedReceiverId);
-        return new FM8KillFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[7].toString());
     }
 
     /**
@@ -138,7 +99,7 @@ public class FM8KillFederateMessage extends Sim0MQMessage
         @Override
         public FM8KillFederateMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FM8KillFederateMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+            return new FM8KillFederateMessage(this.federationId, this.senderId, this.receiverId, this.messageId,
                     this.instanceId);
         }
 

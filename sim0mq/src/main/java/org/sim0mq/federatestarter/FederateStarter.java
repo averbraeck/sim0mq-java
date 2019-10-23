@@ -20,7 +20,10 @@ import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.federatestarter.FS2FederateStartedMessage;
+import org.sim0mq.message.federatestarter.FS4FederateKilledMessage;
 import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
+import org.sim0mq.message.federationmanager.FM8KillFederateMessage;
+import org.sim0mq.message.modelcontroller.MC1StatusMessage;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -50,13 +53,13 @@ public class FederateStarter
 
     /** the running programs this FederateStarter started. The String identifies the process (e.g., a UUID or a model id). */
     @SuppressWarnings("checkstyle:visibilitymodifier")
-    protected Map<String, Process> runningProcessMap = Collections.synchronizedMap(new LinkedHashMap<>());
+    protected Map<Object, Process> runningProcessMap = Collections.synchronizedMap(new LinkedHashMap<>());
 
     /** the ports where the models listen. The String identifies the process (e.g., a UUID or a model id). */
-    private Map<String, Integer> modelPortMap = Collections.synchronizedMap(new LinkedHashMap<>());
+    private Map<Object, Integer> modelPortMap = Collections.synchronizedMap(new LinkedHashMap<>());
 
     /** the StartFederate messages. */
-    private Map<String, FM1StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new LinkedHashMap<>());
+    private Map<Object, FM1StartFederateMessage> startFederateMessages = Collections.synchronizedMap(new LinkedHashMap<>());
 
     /** the software properties. */
     @SuppressWarnings("checkstyle:visibilitymodifier")
@@ -107,22 +110,22 @@ public class FederateStarter
                 this.fsSocket.recvStr();
 
                 byte[] request = this.fsSocket.recv(0);
-                Object[] fields = Sim0MQMessage.decode(request);
-                String messageTypeId = fields[4].toString();
-                String receiverId = fields[3].toString();
+                Sim0MQMessage message = Sim0MQMessage.decode(request);
+                String messageTypeId = message.getMessageTypeId().toString();
+                String receiverId = message.getReceiverId().toString();
 
-                System.out.println("Received " + Sim0MQMessage.print(fields));
+                System.out.println("Received " + Sim0MQMessage.print(message.createObjectArray()));
 
                 if (receiverId.equals("FS"))
                 {
                     switch (messageTypeId)
                     {
                         case "FM.1":
-                            processStartFederate(identity, fields);
+                            processStartFederate(identity, message);
                             break;
 
                         case "FM.8":
-                            processKillFederate(identity, fields);
+                            processKillFederate(identity, message);
                             break;
 
                         case "FM.9":
@@ -160,14 +163,14 @@ public class FederateStarter
     /**
      * Process FM.2 message and send MC.2 message back.
      * @param identity reply id for REQ-ROUTER pattern
-     * @param fields the message
+     * @param message Message; the message
      * @throws Sim0MQException on error
      * @throws SerializationException on error
      */
-    private void processStartFederate(final String identity, final Object[] fields)
+    private void processStartFederate(final String identity, final Sim0MQMessage message)
             throws Sim0MQException, SerializationException
     {
-        FM1StartFederateMessage startFederateMessage = FM1StartFederateMessage.createMessage(fields, "FS");
+        FM1StartFederateMessage startFederateMessage = new FM1StartFederateMessage(message.createObjectArray());
         String error = "";
 
         int modelPort = findFreePortNumber();
@@ -258,7 +261,7 @@ public class FederateStarter
                     System.out.println("modelController : " + this.modelController);
                     if (this.modelController)
                     {
-                        error = waitForModelStarted(startFederateMessage.getSimulationRunId(),
+                        error = waitForModelStarted(startFederateMessage.getFederationId(),
                                 startFederateMessage.getInstanceId(), modelPort);
                     }
                 }
@@ -277,7 +280,7 @@ public class FederateStarter
         this.fsSocket.sendMore("");
         //@formatter:off
         byte[] fs2Message = new FS2FederateStartedMessage.Builder()
-                .setSimulationRunId(startFederateMessage.getSimulationRunId())
+                .setSimulationRunId(startFederateMessage.getFederationId())
                 .setInstanceId(startFederateMessage.getInstanceId())
                 .setSenderId("FS")
                 .setReceiverId(startFederateMessage.getSenderId())
@@ -340,7 +343,7 @@ public class FederateStarter
      * @throws Sim0MQException on error
      * @throws SerializationException on error
      */
-    private String waitForModelStarted(final Object federationRunId, final String modelId, final int modelPort)
+    private String waitForModelStarted(final Object federationRunId, final Object modelId, final int modelPort)
             throws Sim0MQException, SerializationException
     {
         boolean ok = true;
@@ -362,18 +365,19 @@ public class FederateStarter
         boolean started = false;
         while (ok && !started)
         {
-            byte[] fs1Message = Sim0MQMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.1", ++this.messageCount);
+            byte[] fs1Message = Sim0MQMessage.encodeUTF8(true, federationRunId, "FS", modelId, "FS.1", ++this.messageCount);
             modelSocket.send(fs1Message, 0);
 
             byte[] reply = modelSocket.recv(0);
-            Object[] replyMessage = Sim0MQMessage.decode(reply);
-            System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
+            Object[] objectArray = Sim0MQMessage.decodeToArray(reply);
+            System.out.println("Received\n" + Sim0MQMessage.print(objectArray));
+            MC1StatusMessage replyMessage = new MC1StatusMessage(objectArray);
 
-            // Synchronous and single-threaded, so the messageCount cannot change between send and receive 
-            if (replyMessage[4].toString().equals("MC.1") && !replyMessage[8].toString().equals("error")
-                    && !replyMessage[8].toString().equals("ended") && ((Long) replyMessage[7]).longValue() == this.messageCount)
+            // Synchronous and single-threaded, so the messageCount cannot change between send and receive
+            if (!replyMessage.getStatus().equals("error") && !replyMessage.getStatus().equals("ended")
+                    && ((Long) replyMessage.getReplyToId()).longValue() == this.messageCount)
             {
-                if (replyMessage[8].toString().equals("started"))
+                if (replyMessage.getStatus().equals("started"))
                 {
                     started = true;
                 }
@@ -393,9 +397,9 @@ public class FederateStarter
             else
             {
                 ok = false;
-                error = replyMessage[9].toString();
-                System.err.println("Simulation start error -- status = " + replyMessage[8]);
-                System.err.println("Error message = " + replyMessage[9]);
+                error = replyMessage.getError();
+                System.err.println("Simulation start error -- status = " + replyMessage.getStatus());
+                System.err.println("Error message = " + error);
             }
         }
 
@@ -410,20 +414,21 @@ public class FederateStarter
     /**
      * Process FM.8 message and send FS.4 message back.
      * @param identity reply id for REQ-ROUTER pattern
-     * @param fields the message
+     * @param message the message
      * @throws Sim0MQException on error
      * @throws SerializationException on error
      */
-    private void processKillFederate(final String identity, final Object[] fields)
+    private void processKillFederate(final String identity, final Sim0MQMessage message)
             throws Sim0MQException, SerializationException
     {
         boolean status = true;
         String error = "";
 
-        Object federationRunId = fields[1];
-        String senderId = fields[2].toString();
+        Object federationRunId = message.getFederationId();
+        Object senderId = message.getSenderId();
 
-        String modelId = fields[7].toString();
+        FM8KillFederateMessage killMessage = new FM8KillFederateMessage(message.createObjectArray());
+        Object modelId = killMessage.getInstanceId();
         if (!this.modelPortMap.containsKey(modelId))
         {
             status = false;
@@ -442,7 +447,8 @@ public class FederateStarter
                     modelSocket.setIdentity(UUID.randomUUID().toString().getBytes());
                     modelSocket.connect("tcp://127.0.0.1:" + modelPort);
 
-                    byte[] fs3Message = Sim0MQMessage.encodeUTF8(federationRunId, "FS", modelId, "FS.3", ++this.messageCount);
+                    byte[] fs3Message =
+                            Sim0MQMessage.encodeUTF8(true, federationRunId, "FS", modelId, "FS.3", ++this.messageCount);
                     modelSocket.send(fs3Message, 0);
 
                     modelSocket.close();
@@ -500,8 +506,9 @@ public class FederateStarter
                 error = exception.getMessage();
             }
 
-            byte[] fs4Message = Sim0MQMessage.encodeUTF8(federationRunId, "FS", senderId, "FS.4", ++this.messageCount, modelId,
-                    status, error);
+            byte[] fs4Message =
+                    new FS4FederateKilledMessage(federationRunId, "FS", senderId, ++this.messageCount, modelId, status, error)
+                            .createByteArray();
             this.fsSocket.sendMore(identity);
             this.fsSocket.sendMore("");
             this.fsSocket.send(fs4Message, 0);

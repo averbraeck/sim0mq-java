@@ -1,7 +1,6 @@
 package org.sim0mq.message.federationmanager;
 
 import org.djutils.exceptions.Throw;
-import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.Sim0MQMessage;
 
@@ -24,7 +23,7 @@ public class FM1StartFederateMessage extends Sim0MQMessage
      * Id to identify the callback to know which model instance has been started, e.g. "IDVV.14". The model instance will use
      * this as its sender id.
      */
-    private final String instanceId;
+    private final Object instanceId;
 
     /**
      * Code for the software to run, will be looked up in a table on the local computer to determine the path to start the
@@ -101,9 +100,9 @@ public class FM1StartFederateMessage extends Sim0MQMessage
     private static final long serialVersionUID = 20170422L;
 
     /**
-     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
-     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
-     *            int with a simulation run number.
+     * @param federationId the federation id can be coded using different types. Examples are two 64-bit longs indicating a
+     *            UUID, or a String with a UUID number, a String with meaningful identification, or a short or an int with a
+     *            simulation run number.
      * @param senderId The sender id can be used to send back a message to the sender at some later time.
      * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
      *            error can be sent if we receive a message not meant for us).
@@ -143,22 +142,16 @@ public class FM1StartFederateMessage extends Sim0MQMessage
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public FM1StartFederateMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final long messageId, final String instanceId, final String softwareCode, final String argsBefore,
+    @SuppressWarnings("checkstyle:parameternumber")
+    public FM1StartFederateMessage(final Object federationId, final Object senderId, final Object receiverId,
+            final Object messageId, final String instanceId, final String softwareCode, final String argsBefore,
             final String modelPath, final String argsAfter, final String workingDirectory, final String redirectStdin,
             final String redirectStdout, final String redirectStderr, final boolean deleteWorkingDirectory,
             final boolean deleteStdout, final boolean deleteStderr) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
-        Throw.whenNull(instanceId, "instanceId cannot be null");
-        Throw.whenNull(softwareCode, "softwareCode cannot be null");
-        Throw.whenNull(argsBefore, "argsBefore cannot be null");
-        Throw.whenNull(modelPath, "modelPath cannot be null");
-        Throw.whenNull(argsAfter, "argsAfter cannot be null");
-        Throw.whenNull(workingDirectory, "workingDirectory cannot be null");
-        Throw.whenNull(redirectStdin, "redirectStdin cannot be null");
-        Throw.whenNull(redirectStdout, "redirectStdout cannot be null");
-        Throw.whenNull(redirectStderr, "redirectStderr cannot be null");
+        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId,
+                new Object[] {instanceId, softwareCode, argsBefore, modelPath, argsAfter, workingDirectory, redirectStdin,
+                        redirectStdout, redirectStderr, deleteWorkingDirectory, deleteStdout, deleteStderr});
 
         Throw.when(instanceId.isEmpty(), Sim0MQException.class, "instanceId cannot be empty");
         Throw.when(softwareCode.isEmpty(), Sim0MQException.class, "softwareCode cannot be empty");
@@ -182,9 +175,47 @@ public class FM1StartFederateMessage extends Sim0MQMessage
     }
 
     /**
+     * @param objectArray Object[]; the fields that constitute the message
+     * @throws Sim0MQException on unknown data type
+     * @throws NullPointerException when one of the parameters is null
+     */
+    public FM1StartFederateMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
+    {
+        super(objectArray, 12);
+        this.instanceId = objectArray[8];
+        Throw.when(!(objectArray[9] instanceof String), Sim0MQException.class, "softwareCode (field 9) should be a String");
+        this.softwareCode = objectArray[9].toString();
+        Throw.when(!(objectArray[10] instanceof String), Sim0MQException.class, "argsBefore (field 10) should be a String");
+        this.argsBefore = objectArray[10].toString();
+        Throw.when(!(objectArray[11] instanceof String), Sim0MQException.class, "modelPath (field 11) should be a String");
+        this.modelPath = objectArray[11].toString();
+        Throw.when(!(objectArray[12] instanceof String), Sim0MQException.class, "argsAfter (field 12) should be a String");
+        this.argsAfter = objectArray[12].toString();
+        Throw.when(!(objectArray[13] instanceof String), Sim0MQException.class,
+                "workingDirectory (field 13) should be a String");
+        this.workingDirectory = objectArray[13].toString();
+        Throw.when(!(objectArray[14] instanceof String), Sim0MQException.class, "redirectStdin (field 14) should be a String");
+        this.redirectStdin = objectArray[14].toString();
+        Throw.when(!(objectArray[15] instanceof String), Sim0MQException.class,
+                "redirectStdout (field 15) should be a String");
+        this.redirectStdout = objectArray[15].toString();
+        Throw.when(!(objectArray[16] instanceof String), Sim0MQException.class, "redirectStdin (field 16) should be a String");
+        this.redirectStderr = objectArray[16].toString();
+        Throw.when(!(objectArray[17] instanceof Boolean), Sim0MQException.class,
+                "redirectStdin (field 17) should be a Boolean");
+        this.deleteWorkingDirectory = ((Boolean) objectArray[17]).booleanValue();
+        Throw.when(!(objectArray[18] instanceof Boolean), Sim0MQException.class,
+                "redirectStdout (field 18) should be a Boolean");
+        this.deleteStdout = ((Boolean) objectArray[18]).booleanValue();
+        Throw.when(!(objectArray[19] instanceof Boolean), Sim0MQException.class,
+                "redirectStderr (field 19) should be a Boolean");
+        this.deleteStderr = ((Boolean) objectArray[19]).booleanValue();
+    }
+
+    /**
      * @return instanceId
      */
-    public final String getInstanceId()
+    public final Object getInstanceId()
     {
         return this.instanceId;
     }
@@ -275,58 +306,6 @@ public class FM1StartFederateMessage extends Sim0MQMessage
     public final boolean isDeleteStderr()
     {
         return this.deleteStderr;
-    }
-
-    /**
-     * @return messagetype
-     */
-    public static final String getMessageType()
-    {
-        return MESSAGETYPE;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public short getNumberOfPayloadFields()
-    {
-        return 12;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object[] createObjectArray()
-    {
-        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getNumberOfPayloadFields(), this.instanceId, this.softwareCode,
-                this.argsBefore, this.modelPath, this.argsAfter, this.workingDirectory, this.redirectStdin, this.redirectStdout,
-                this.redirectStderr, this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr};
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public byte[] createByteArray() throws Sim0MQException, SerializationException
-    {
-        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), this.instanceId, this.softwareCode, this.argsBefore, this.modelPath,
-                this.argsAfter, this.workingDirectory, this.redirectStdin, this.redirectStdout, this.redirectStderr,
-                this.deleteWorkingDirectory, this.deleteStdout, this.deleteStderr);
-    }
-
-    /**
-     * Build a message from an Object[] that was received.
-     * @param fields Object[]; the fields in the message
-     * @param intendedReceiverId id of the intended receiver
-     * @return a Sim0MQ message
-     * @throws Sim0MQException when number of fields is not correct
-     */
-    public static FM1StartFederateMessage createMessage(final Object[] fields, final Object intendedReceiverId)
-            throws Sim0MQException
-    {
-        check(fields, 12, MESSAGETYPE, intendedReceiverId);
-        return new FM1StartFederateMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                fields[7].toString(), fields[8].toString(), fields[9].toString(), fields[10].toString(), fields[11].toString(),
-                fields[12].toString(), fields[13].toString(), fields[14].toString(), fields[15].toString(),
-                (Boolean) fields[16], (Boolean) fields[17], (Boolean) fields[18]);
     }
 
     /**
@@ -548,7 +527,7 @@ public class FM1StartFederateMessage extends Sim0MQMessage
         @Override
         public FM1StartFederateMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FM1StartFederateMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+            return new FM1StartFederateMessage(this.federationId, this.senderId, this.receiverId, this.messageId,
                     this.instanceId, this.softwareCode, this.argsBefore, this.modelPath, this.argsAfter, this.workingDirectory,
                     this.redirectStdin, this.redirectStdout, this.redirectStderr, this.deleteWorkingDirectory,
                     this.deleteStdout, this.deleteStderr);

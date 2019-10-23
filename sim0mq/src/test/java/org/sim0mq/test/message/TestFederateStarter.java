@@ -15,6 +15,8 @@ import org.junit.rules.TemporaryFolder;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.federatestarter.FederateStarter;
 import org.sim0mq.message.Sim0MQMessage;
+import org.sim0mq.message.federatestarter.FS2FederateStartedMessage;
+import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -205,28 +207,46 @@ public class TestFederateStarter
     {
         String temp = this.folder.getRoot().getAbsolutePath();
         System.out.println(temp);
-        byte[] fm1Message;
-        fm1Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.1", ++this.messageCount, "MM1.1", "java8+",
-                "-version", temp, "", temp, "", "out.txt", "err.txt", false, false, false);
+        //@formatter:off
+        byte[] fm1Message = new FM1StartFederateMessage.Builder()
+            .setSimulationRunId(federationName)
+            .setSenderId("FM")
+            .setReceiverId("FS")
+            .setMessageId(++this.messageCount)
+            .setInstanceId("MM1.1")
+            .setSoftwareCode("java8+")
+            .setArgsBefore("-version")
+            .setModelPath(temp)
+            .setArgsAfter("")
+            .setWorkingDirectory(temp)
+            .setRedirectStdin("")
+            .setRedirectStdout("out.txt")
+            .setRedirectStderr("err.txt")
+            .setDeleteWorkingDirectory(false)
+            .setDeleteStdout(false)
+            .setDeleteStderr(false)
+            .build()
+            .createByteArray();
+        //@formatter:on
+
         this.fsSocket.connect("tcp://127.0.0.1:" + fsPort);
         this.fsSocket.send(fm1Message);
 
         byte[] reply = this.fsSocket.recv(0);
-        Object[] replyMessage = Sim0MQMessage.decode(reply);
-        System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
-
-        if (replyMessage[4].toString().equals("FS.2") && replyMessage[8].toString().equals("started")
-                && replyMessage[7].toString().equals("MM1.1"))
+        Object[] replyArray = Sim0MQMessage.decodeToArray(reply);
+        System.out.println("Received\n" + Sim0MQMessage.print(replyArray));
+        FS2FederateStartedMessage replyMessage = new FS2FederateStartedMessage(replyArray);
+        if (replyMessage.getStatus().equals("started") && replyMessage.getInstanceId().toString().equals("MM1.1"))
         {
             this.state = 1;
-            System.out.println("Model started correctly -- state = " + replyMessage[8] + "\n");
+            System.out.println("Model started correctly -- state = " + replyMessage.getStatus() + "\n");
         }
         else
         {
             this.state = -1;
-            System.err.println("Model not started correctly -- state = " + replyMessage[8]);
-            System.err.println("Started model = " + replyMessage[7] + " on port " + replyMessage[9]);
-            System.err.println("Error message = " + replyMessage[10] + "\n");
+            System.err.println("Model not started correctly -- state = " + replyMessage.getStatus());
+            System.err.println("Started model = " + replyMessage.getInstanceId() + " on port " + replyMessage.getModelPort());
+            System.err.println("Error message = " + replyMessage.getError() + "\n");
         }
     }
 
@@ -239,15 +259,15 @@ public class TestFederateStarter
     void killFederate(final String federationName) throws Sim0MQException, SerializationException
     {
         byte[] fm8Message;
-        fm8Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", ++this.messageCount, "MM1.1");
+        fm8Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", "FS", "FM.8", ++this.messageCount, "MM1.1");
         this.fsSocket.send(fm8Message);
 
         byte[] reply = this.fsSocket.recv(0);
-        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        Object[] replyMessage = Sim0MQMessage.decodeToArray(reply);
         System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
-        if (replyMessage[4].toString().equals("FS.4") && (boolean) replyMessage[8]
-                && replyMessage[7].toString().equals("MM1.1"))
+        if (replyMessage[5].toString().equals("FS.4") && (boolean) replyMessage[9]
+                && replyMessage[8].toString().equals("MM1.1"))
         {
             this.state = 2;
         }

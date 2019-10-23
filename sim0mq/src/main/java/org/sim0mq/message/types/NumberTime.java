@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.djunits.value.vdouble.scalar.Time;
 import org.djunits.value.vfloat.scalar.FloatTime;
+import org.sim0mq.Sim0MQException;
 
 /**
  * Wrapper for a Number or float/double with Unit of type Time. Store it internally as a Number <b>or</b> as a DoubleScalar,
@@ -63,6 +64,32 @@ public class NumberTime extends Number implements Serializable
         this.floatScalar = time;
     }
 
+    /**
+     * Instantiate a NumberTime based on a value.
+     * @param value the value that can be Time, FloatTime, or Number
+     * @return an instantiation of NumberTime
+     * @throws Sim0MQException if the value is neither Time, FloatTime, nor Number
+     */
+    public static NumberTime instantiate(final Object value) throws Sim0MQException
+    {
+        if (value instanceof Time)
+        {
+            return new NumberTime((Time) value);
+        }
+        else if (value instanceof FloatTime)
+        {
+            return new NumberTime((FloatTime) value);
+        }
+        else if (value instanceof Number)
+        {
+            return new NumberTime((Number) value);
+        }
+        else
+        {
+            throw new Sim0MQException("value should be Number, Time or FloatTime");
+        }
+    }
+  
     /** {@inheritDoc} */
     @Override
     public int intValue()
@@ -147,7 +174,7 @@ public class NumberTime extends Number implements Serializable
     {
         if (this.time != null)
         {
-            return Time.createSI(this.time.doubleValue());
+            return Time.instantiateSI(this.time.doubleValue());
         }
         else if (this.doubleScalar != null)
         {
@@ -155,7 +182,7 @@ public class NumberTime extends Number implements Serializable
         }
         else if (this.floatScalar != null)
         {
-            return new Time(this.floatScalar.getInUnit(), this.floatScalar.getUnit());
+            return new Time(this.floatScalar.getInUnit(), this.floatScalar.getDisplayUnit());
         }
         else
         {
@@ -171,11 +198,11 @@ public class NumberTime extends Number implements Serializable
     {
         if (this.time != null)
         {
-            return FloatTime.createSI(this.time.floatValue());
+            return FloatTime.instantiateSI(this.time.floatValue());
         }
         else if (this.doubleScalar != null)
         {
-            return new FloatTime((float) this.doubleScalar.getInUnit(), this.doubleScalar.getUnit());
+            return new FloatTime((float) this.doubleScalar.getInUnit(), this.doubleScalar.getDisplayUnit());
         }
         else if (this.floatScalar != null)
         {
