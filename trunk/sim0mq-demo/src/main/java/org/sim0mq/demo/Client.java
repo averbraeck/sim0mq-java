@@ -42,11 +42,11 @@ public final class Client
 
         // send a reply
         Object[] request = new Object[] { "test message", new Double(14.2), new Float(-28.4), new Short((short) 10) };
-        requester.send(Sim0MQMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, request),
+        requester.send(Sim0MQMessage.encodeUTF8(true, "IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, request),
                 0);
 
         byte[] reply = requester.recv(0);
-        Object[] replyMessage = Sim0MQMessage.decode(reply);
+        Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
         System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
         requester.close();

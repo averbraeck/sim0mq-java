@@ -40,12 +40,12 @@ public final class Server
         {
             // Wait for next request from the client
             byte[] request = responder.recv(0);
-            Object[] message = Sim0MQMessage.decode(request);
+            Object[] message = Sim0MQMessage.decode(request).createObjectArray();
             System.out.println("Received " + Sim0MQMessage.print(message));
 
             // send a reply
             Object[] reply = new Object[] { true, -28.2, 77000, "Bangladesh" };
-            responder.send(Sim0MQMessage.encodeUTF8("IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, reply),
+            responder.send(Sim0MQMessage.encodeUTF8(true, "IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, reply),
                     0);
         }
         responder.close();

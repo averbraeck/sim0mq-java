@@ -95,13 +95,13 @@ public class Rep
                 {
                     // Wait for next request from the client
                     byte[] request = socket.recv(0);
-                    Object[] message = Sim0MQMessage.decode(request);
+                    Object[] message = Sim0MQMessage.decode(request).createObjectArray();
 
                     if (message[4].toString().equals("STOP"))
                     {
                         // send a reply
                         Object[] reply = new Object[] { "STOPPED" };
-                        socket.send(Sim0MQMessage.encodeUTF8(message[1], senderId, receiverId, "STOPPED", messagenr,
+                        socket.send(Sim0MQMessage.encodeUTF8(true, message[1], senderId, receiverId, "STOPPED", messagenr,
                                 reply), 0);
                         break;
                     }
@@ -127,7 +127,7 @@ public class Rep
 
                     // send a reply
                     Object[] reply = new Object[] { message[8], message[9] };
-                    socket.send(Sim0MQMessage.encodeUTF8(message[1], senderId, receiverId, "REPLY", messagenr,
+                    socket.send(Sim0MQMessage.encodeUTF8(true, message[1], senderId, receiverId, "REPLY", messagenr,
                             reply), 0);
                 }
                 catch (Sim0MQException | SerializationException exception)
