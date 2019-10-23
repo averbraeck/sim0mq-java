@@ -15,7 +15,7 @@ public enum ModelState
     /** Model has not yet been started. */
     NOT_STARTED,
 
-    /** Model has been started, e.g. bij a FederateStarter. */
+    /** Model has been started, e.g. by a FederateStarter. */
     STARTED,
 
     /** SimRunControl has been sent. */
