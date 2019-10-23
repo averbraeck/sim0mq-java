@@ -126,7 +126,7 @@ public class Req
                 try
                 {
                     byte[] message =
-                            Sim0MQMessage.encodeUTF8(runId, senderId, receiverId, "TEST", i, request);
+                            Sim0MQMessage.encodeUTF8(true, runId, senderId, receiverId, "TEST", i, request);
                     boolean ok = socket.send(message, 0);
                     if (!ok)
                     {
@@ -139,7 +139,7 @@ public class Req
                         System.err.println("receive message " + i + " for port " + this.port + " returned NULL");
                     }
 
-                    Object[] replyMessage = Sim0MQMessage.decode(reply);
+                    Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
                     if (!replyMessage[3].toString().equals(senderId))
                     {
                         System.err.println(Sim0MQMessage.print(replyMessage));
@@ -168,7 +168,7 @@ public class Req
             // send stop message to REP client
             try
             {
-                byte[] message = Sim0MQMessage.encodeUTF8(runId, senderId, receiverId, "STOP", -1,
+                byte[] message = Sim0MQMessage.encodeUTF8(true, runId, senderId, receiverId, "STOP", -1,
                         new Object[] {});
                 boolean ok = socket.send(message, 0);
                 if (!ok)

@@ -277,7 +277,7 @@ public final class MM1FederationManager20
                 final String mm1ModelFolder) throws Sim0MQException, SerializationException
         {
             // Start model mmm1.jar
-            byte[] fm1Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.1",
+            byte[] fm1Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", "FS", "FM.1",
                     this.messageCount.getAndIncrement(), this.modelName, "java8+", "-jar", mm1ModelFolder + "/mm1.jar",
                     this.modelName + " %PORT%", mm1ModelFolder, "", mm1ModelFolder + "/out_" + this.modelName + ".txt",
                     mm1ModelFolder + "/err_" + this.modelName + ".txt", false, true, true);
@@ -285,7 +285,7 @@ public final class MM1FederationManager20
             this.fsSocket.send(fm1Message);
 
             byte[] reply = this.fsSocket.recv(0);
-            Object[] replyMessage = Sim0MQMessage.decode(reply);
+            Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
             System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
             if (replyMessage[4].toString().equals("FS.2") && replyMessage[8].toString().equals("started")
@@ -314,12 +314,12 @@ public final class MM1FederationManager20
         {
             long messageNumber = this.messageCount.get();
             byte[] fm2Message;
-            fm2Message = Sim0MQMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.2",
+            fm2Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", this.modelName, "FM.2",
                     this.messageCount.getAndIncrement(), 100.0, 0.0, 0.0, Double.POSITIVE_INFINITY, 1, 0);
             this.modelSocket.send(fm2Message);
 
             byte[] reply = this.modelSocket.recv(0);
-            Object[] replyMessage = Sim0MQMessage.decode(reply);
+            Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
             System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
             if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[8]
@@ -354,12 +354,12 @@ public final class MM1FederationManager20
                 {
                     long messageNumber = this.messageCount.get();
                     byte[] fm3Message;
-                    fm3Message = Sim0MQMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.3",
+                    fm3Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", this.modelName, "FM.3",
                             this.messageCount.getAndIncrement(), parameterName, parameters.get(parameterName));
                     this.modelSocket.send(fm3Message);
 
                     byte[] reply = this.modelSocket.recv(0);
-                    Object[] replyMessage = Sim0MQMessage.decode(reply);
+                    Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
                     System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
                     if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[8]
@@ -391,12 +391,12 @@ public final class MM1FederationManager20
         {
             long messageNumber = this.messageCount.get();
             byte[] fm4Message;
-            fm4Message =
-                    Sim0MQMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.4", this.messageCount.getAndIncrement());
+            fm4Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", this.modelName, "FM.4",
+                    this.messageCount.getAndIncrement());
             this.modelSocket.send(fm4Message);
 
             byte[] reply = this.modelSocket.recv(0);
-            Object[] replyMessage = Sim0MQMessage.decode(reply);
+            Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
             System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
             if (replyMessage[4].toString().equals("MC.2") && (boolean) replyMessage[8]
@@ -424,12 +424,12 @@ public final class MM1FederationManager20
             {
                 long messageNumber = this.messageCount.get();
                 byte[] fm5Message;
-                fm5Message = Sim0MQMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.5",
+                fm5Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", this.modelName, "FM.5",
                         this.messageCount.getAndIncrement());
                 this.modelSocket.send(fm5Message);
 
                 byte[] reply = this.modelSocket.recv(0);
-                Object[] replyMessage = Sim0MQMessage.decode(reply);
+                Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
                 System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
                 if (replyMessage[4].toString().equals("MC.1") && !replyMessage[8].toString().equals("error")
@@ -480,12 +480,12 @@ public final class MM1FederationManager20
                 if (!this.state.isError())
                 {
                     byte[] fm6Message;
-                    fm6Message = Sim0MQMessage.encodeUTF8(federationName, "FM", this.modelName, "FM.6",
+                    fm6Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", this.modelName, "FM.6",
                             this.messageCount.getAndIncrement(), statName);
                     this.modelSocket.send(fm6Message);
 
                     byte[] reply = this.modelSocket.recv(0);
-                    Object[] replyMessage = Sim0MQMessage.decode(reply);
+                    Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
                     System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
                     if (replyMessage[4].toString().equals("MC.3"))
@@ -530,12 +530,12 @@ public final class MM1FederationManager20
         private void killFederate(final String federationName) throws Sim0MQException, SerializationException
         {
             byte[] fm8Message;
-            fm8Message = Sim0MQMessage.encodeUTF8(federationName, "FM", "FS", "FM.8", this.messageCount.getAndIncrement(),
+            fm8Message = Sim0MQMessage.encodeUTF8(true, federationName, "FM", "FS", "FM.8", this.messageCount.getAndIncrement(),
                     this.modelName);
             this.fsSocket.send(fm8Message);
 
             byte[] reply = this.fsSocket.recv(0);
-            Object[] replyMessage = Sim0MQMessage.decode(reply);
+            Object[] replyMessage = Sim0MQMessage.decode(reply).createObjectArray();
             System.out.println("Received\n" + Sim0MQMessage.print(replyMessage));
 
             if (replyMessage[4].toString().equals("FS.4") && (boolean) replyMessage[8]
