@@ -1,5 +1,6 @@
 package org.sim0mq.message;
 
+import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
 
 /**
@@ -18,13 +19,15 @@ public abstract class Sim0MQReply extends Sim0MQMessage
     private static final long serialVersionUID = 20170422L;
 
     /** The unique message id (Frame 5) of the sender for which this is the reply. */
-    private final long replyToId;
+    private final Object replyToId;
 
     /**
      * Encode the object array into a message.
-     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
-     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
-     *            int with a simulation run number.
+     * @param bigEndian boolean; Indicates whether this message using little endian or big endian encoding. Big endian is
+     *            encoded as true, and little endian as false.
+     * @param federationId the federation id can be coded using different types. Examples are two 64-bit longs indicating a
+     *            UUID, or a String with a UUID number, a String with meaningful identification, or a short or an int with a
+     *            simulation run number.
      * @param senderId The sender id can be used to send back a message to the sender at some later time.
      * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
      *            error can be sent if we receive a message not meant for us).
@@ -32,21 +35,48 @@ public abstract class Sim0MQReply extends Sim0MQMessage
      *            Examples are a String with a meaningful identification, or a short or an int with a message type number.
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
-     * @param replyToId The unique message id (Frame 5) of the sender for which this is the reply.
+     * @param payload Object[]; Payload as an Object array
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public Sim0MQReply(final Object simulationRunId, final Object senderId, final Object receiverId, final Object messageTypeId,
-            final long messageId, final long replyToId) throws Sim0MQException, NullPointerException
+    public Sim0MQReply(final boolean bigEndian, final Object federationId, final Object senderId, final Object receiverId,
+            final Object messageTypeId, final Object messageId, final Object[] payload)
+            throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, messageTypeId, messageId);
-        this.replyToId = replyToId;
+        super(bigEndian, federationId, senderId, receiverId, messageTypeId, messageId, payload);
+        Throw.when(payload.length < 1, Sim0MQException.class, "payload for a reply should start with the replyToId");
+        this.replyToId = payload[0];
+    }
+
+    /**
+     * Encode the object array into a message. <br>
+     * 0 = magic number, equal to the String "SIM##" where ## stands for the version number of the protocol.<br>
+     * 1 = endianness, boolean indicating the endianness for the message. True is Big Endian, false is Little Endian.<br>
+     * 2 = federation id, could be String, int, Object, ...<br>
+     * 3 = sender id, could be String, int, Object, ...<br>
+     * 4 = receiver id, could be String, int, Object, ...<br>
+     * 5 = message type id, could be String, int, Object, ...<br>
+     * 6 = message id, could be long, Object, String, ....<br>
+     * 7 = number of fields that follow, as a Number (byte, short, int, long).<br>
+     * 8-n = payload, where the number of fields was defined by message[7]. The first payload field should be the replyToId.
+     * @param objectArray Object[]; Full message object array
+     * @param expectedNumberOfPayloadFields int; the expected number of fields in the message (field 8 and further). The payload
+     *            fields should include the replyToId, so the number should be 1 or higher.
+     * @throws Sim0MQException on unknown data type
+     * @throws NullPointerException when one of the parameters is null
+     */
+    public Sim0MQReply(final Object[] objectArray, final int expectedNumberOfPayloadFields)
+            throws Sim0MQException, NullPointerException
+    {
+        super(objectArray, expectedNumberOfPayloadFields);
+        Throw.when(objectArray.length < 9, Sim0MQException.class, "payload for a reply should start with the replyToId");
+        this.replyToId = objectArray[8];
     }
 
     /**
      * @return replyToId
      */
-    public final long getReplyToId()
+    public final Object getReplyToId()
     {
         return this.replyToId;
     }
@@ -67,7 +97,7 @@ public abstract class Sim0MQReply extends Sim0MQMessage
     {
         /** The unique message id (Frame 5) of the sender for which this is the reply. */
         @SuppressWarnings("checkstyle:visibilitymodifier")
-        protected long replyToId;
+        protected Object replyToId;
 
         /**
          * Empty constructor.
@@ -82,7 +112,7 @@ public abstract class Sim0MQReply extends Sim0MQMessage
          * @return the original object for chaining
          */
         @SuppressWarnings("unchecked")
-        public final B setReplyToId(final long newReplyToId)
+        public final B setReplyToId(final Object newReplyToId)
         {
             this.replyToId = newReplyToId;
             return (B) this;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.djunits.value.vdouble.scalar.Duration;
 import org.djunits.value.vfloat.scalar.FloatDuration;
+import org.sim0mq.Sim0MQException;
 
 /**
  * Wrapper for a Number or float/double with Unit of type Duration. Store it internally as a Number <b>or</b> as a DoubleScalar,
@@ -63,6 +64,32 @@ public class NumberDuration extends Number implements Serializable
         this.floatScalar = duration;
     }
 
+    /**
+     * Instantiate a NumberDuration based on a value.
+     * @param value the value that can be Duration, FloatDuration, or Number
+     * @return an instantiation of NumberDuration
+     * @throws Sim0MQException if the value is neither Duration, FloatDuration, nor Number
+     */
+    public static NumberDuration instantiate(final Object value) throws Sim0MQException
+    {
+        if (value instanceof Duration)
+        {
+            return new NumberDuration((Duration) value);
+        }
+        else if (value instanceof FloatDuration)
+        {
+            return new NumberDuration((FloatDuration) value);
+        }
+        else if (value instanceof Number)
+        {
+            return new NumberDuration((Number) value);
+        }
+        else
+        {
+            throw new Sim0MQException("value should be Number, Duration or FloatDuration");
+        }
+    }
+    
     /** {@inheritDoc} */
     @Override
     public int intValue()
@@ -147,7 +174,7 @@ public class NumberDuration extends Number implements Serializable
     {
         if (this.duration != null)
         {
-            return Duration.createSI(this.duration.doubleValue());
+            return Duration.instantiateSI(this.duration.doubleValue());
         }
         else if (this.doubleScalar != null)
         {
@@ -155,7 +182,7 @@ public class NumberDuration extends Number implements Serializable
         }
         else if (this.floatScalar != null)
         {
-            return new Duration(this.floatScalar.getInUnit(), this.floatScalar.getUnit());
+            return new Duration(this.floatScalar.getInUnit(), this.floatScalar.getDisplayUnit());
         }
         else
         {
@@ -171,11 +198,11 @@ public class NumberDuration extends Number implements Serializable
     {
         if (this.duration != null)
         {
-            return FloatDuration.createSI(this.duration.floatValue());
+            return FloatDuration.instantiateSI(this.duration.floatValue());
         }
         else if (this.doubleScalar != null)
         {
-            return new FloatDuration((float) this.doubleScalar.getInUnit(), this.doubleScalar.getUnit());
+            return new FloatDuration((float) this.doubleScalar.getInUnit(), this.doubleScalar.getDisplayUnit());
         }
         else if (this.floatScalar != null)
         {

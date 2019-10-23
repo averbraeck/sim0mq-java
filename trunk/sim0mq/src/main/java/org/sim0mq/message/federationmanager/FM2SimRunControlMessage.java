@@ -8,7 +8,6 @@ import org.djunits.value.vdouble.scalar.Time;
 import org.djunits.value.vfloat.scalar.FloatDuration;
 import org.djunits.value.vfloat.scalar.FloatTime;
 import org.djutils.exceptions.Throw;
-import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.types.NumberDuration;
@@ -61,9 +60,9 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
     private static final long serialVersionUID = 20170424L;
 
     /**
-     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
-     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
-     *            int with a simulation run number.
+     * @param federationId the federation id can be coded using different types. Examples are two 64-bit longs indicating a
+     *            UUID, or a String with a UUID number, a String with meaningful identification, or a short or an int with a
+     *            simulation run number.
      * @param senderId The sender id can be used to send back a message to the sender at some later time.
      * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
      *            error can be sent if we receive a message not meant for us).
@@ -83,78 +82,110 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
      * @throws NullPointerException when one of the parameters is null
      */
     @SuppressWarnings("checkstyle:parameternumber")
-    public FM2SimRunControlMessage(final Object simulationRunId, final Object senderId, final Object receiverId,
-            final long messageId, final Object runDuration, final Object warmupDuration, final Object offsetTime,
+    public FM2SimRunControlMessage(final Object federationId, final Object senderId, final Object receiverId,
+            final Object messageId, final Object runDuration, final Object warmupDuration, final Object offsetTime,
             final double speed, final int numberReplications, final int numberRandomStreams, final Map<Object, Long> streamMap)
             throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId);
-        Throw.whenNull(runDuration, "runDuration cannot be null");
-        Throw.whenNull(warmupDuration, "warmupDuration cannot be null");
-        Throw.whenNull(offsetTime, "offsetTime cannot be null");
-        Throw.whenNull(streamMap, "streamMap cannot be null");
+        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, createPayloadArray(runDuration, warmupDuration,
+                offsetTime, speed, numberReplications, numberRandomStreams, streamMap));
 
-        if (runDuration instanceof Duration)
-        {
-            this.runDuration = new NumberDuration((Duration) runDuration);
-        }
-        else if (runDuration instanceof FloatDuration)
-        {
-            this.runDuration = new NumberDuration((FloatDuration) runDuration);
-        }
-        else if (runDuration instanceof Number)
-        {
-            this.runDuration = new NumberDuration((Number) runDuration);
-        }
-        else
-        {
-            throw new Sim0MQException("runDuration should be Number, Duration or FloatDuration");
-        }
-
-        if (warmupDuration instanceof Duration)
-        {
-            this.warmupDuration = new NumberDuration((Duration) warmupDuration);
-        }
-        else if (warmupDuration instanceof FloatDuration)
-        {
-            this.warmupDuration = new NumberDuration((FloatDuration) warmupDuration);
-        }
-        else if (warmupDuration instanceof Number)
-        {
-            this.warmupDuration = new NumberDuration((Number) warmupDuration);
-        }
-        else
-        {
-            throw new Sim0MQException("warmupDuration should be Number, Duration or FloatDuration");
-        }
-
-        if (offsetTime instanceof Time)
-        {
-            this.offsetTime = new NumberTime((Time) offsetTime);
-        }
-        else if (offsetTime instanceof FloatTime)
-        {
-            this.offsetTime = new NumberTime((FloatTime) offsetTime);
-        }
-        else if (offsetTime instanceof Number)
-        {
-            this.offsetTime = new NumberTime((Number) offsetTime);
-        }
-        else
-        {
-            throw new Sim0MQException("offsetTime should be Number, Time or FloatTime");
-        }
-
+        this.runDuration = NumberDuration.instantiate(runDuration);
+        this.warmupDuration = NumberDuration.instantiate(warmupDuration);
+        this.offsetTime = NumberTime.instantiate(offsetTime);
         this.speed = speed;
-
         Throw.when(numberReplications <= 0, Sim0MQException.class, "numberReplications should be > 0");
         this.numberReplications = numberReplications;
-
         Throw.when(numberRandomStreams < 0, Sim0MQException.class, "numberRandomStreams should be >= 0");
         Throw.when(numberRandomStreams != streamMap.size(), Sim0MQException.class,
                 "numberRandomStreams as given and in map are different");
         this.numberRandomStreams = numberRandomStreams;
         this.streamMap.putAll(streamMap);
+    }
+
+    /**
+     * @param objectArray Object[]; Full message object array
+     * @throws Sim0MQException on unknown data type
+     * @throws NullPointerException when one of the parameters is null
+     */
+    public FM2SimRunControlMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
+    {
+        super(objectArray, calcPayloadFields(objectArray));
+
+        this.runDuration = NumberDuration.instantiate(objectArray[8]);
+        this.warmupDuration = NumberDuration.instantiate(objectArray[9]);
+        this.offsetTime = NumberTime.instantiate(objectArray[10]);
+        Throw.when(!(objectArray[11] instanceof Double), Sim0MQException.class, "speed (field 11) should be double");
+        this.speed = ((Double) objectArray[11]).doubleValue();
+        Throw.when(!(objectArray[12] instanceof Integer), Sim0MQException.class, "numberReplications (field 12) should be int");
+        this.numberReplications = ((Integer) objectArray[12]).intValue();
+        Throw.when(this.numberReplications <= 0, Sim0MQException.class, "numberReplications should be > 0");
+        Throw.when(!(objectArray[13] instanceof Integer), Sim0MQException.class,
+                "numberRandomStreams (field 13) should be int");
+        this.numberRandomStreams = ((Integer) objectArray[13]).intValue();
+        for (int i = 0; i < this.numberRandomStreams; i += 2)
+        {
+            Object id = objectArray[14 + i];
+            Throw.when(!(objectArray[15 + i] instanceof Long), Sim0MQException.class,
+                    "Seed (field " + (15 + i) + ") should be int");
+            Long seed = (Long) objectArray[15 + i];
+            this.streamMap.put(id, seed);
+        }
+        Throw.when(this.numberRandomStreams != this.streamMap.size(), Sim0MQException.class,
+                "numberRandomStreams as given and in map are different");
+    }
+
+    /**
+     * Check and make the payload for this message.
+     * @param runDuration Duration of the run of a single replication, including the warmup time, if present. The type is any
+     *            numeric type (1-5) or Float or Double with Unit (25, 26) of type Duration (25).
+     * @param warmupDuration Warmup time of the model in time units that the model uses. The type is any numeric type (1-5) or
+     *            Float or Double with Unit (25, 26) of type Duration (25).
+     * @param offsetTime Offset of the time (e.g., a model time of 0 is the year 2016, or 1-1-2015). The type is any numeric
+     *            type (1-5) or Float or Double with Unit (25, 26) of type Time (26).
+     * @param speed Speed as the number of times real-time the model should run; Double.INFINITY means as fast as possible.
+     * @param numberReplications Number of replications for stochastic uncertainties in the model.
+     * @param numberRandomStreams Number of random streams that follow.
+     * @param streamMap Random streams and seeds.
+     * @return the object array for the payload
+     * @throws NullPointerException when one of the parameters is null
+     */
+    private static Object[] createPayloadArray(final Object runDuration, final Object warmupDuration, final Object offsetTime,
+            final double speed, final int numberReplications, final int numberRandomStreams, final Map<Object, Long> streamMap)
+            throws NullPointerException
+    {
+        Throw.whenNull(runDuration, "runDuration cannot be null");
+        Throw.whenNull(warmupDuration, "warmupDuration cannot be null");
+        Throw.whenNull(offsetTime, "offsetTime cannot be null");
+        Throw.whenNull(streamMap, "streamMap cannot be null");
+
+        Object[] array = new Object[6 + 2 * streamMap.size()];
+        array[0] = runDuration;
+        array[1] = warmupDuration;
+        array[2] = offsetTime;
+        array[3] = speed;
+        array[4] = numberReplications;
+        array[5] = numberRandomStreams;
+        int i = 6;
+        for (Object key : streamMap.keySet())
+        {
+            array[i++] = key;
+            array[i++] = streamMap.get(key);
+        }
+        return array;
+    }
+
+    /**
+     * @param objectArray Object[]; Full message object array
+     * @return the number of payload fields
+     * @throws Sim0MQException when the
+     */
+    private static int calcPayloadFields(final Object[] objectArray) throws Sim0MQException
+    {
+        Throw.when(objectArray.length < 14, Sim0MQException.class, "objectArray too short -- length < 14");
+        int numberRandomStreams = ((Integer) objectArray[13]).intValue();
+        Throw.when(numberRandomStreams < 0, Sim0MQException.class, "numberRandomStreams should be >= 0");
+        return 6 + 2 * numberRandomStreams;
     }
 
     /**
@@ -211,93 +242,6 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
     public final Map<Object, Long> getStreamMap()
     {
         return this.streamMap;
-    }
-
-    /**
-     * @return messagetype
-     */
-    public static final String getMessageType()
-    {
-        return MESSAGETYPE;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public short getNumberOfPayloadFields()
-    {
-        return (short) (6 + 2 * this.numberRandomStreams);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object[] createObjectArray()
-    {
-        Object[] array = new Object[7 + getNumberOfPayloadFields()];
-        array[0] = getMagicNumber();
-        array[1] = getSimulationRunId();
-        array[2] = getSenderId();
-        array[3] = getReceiverId();
-        array[4] = getMessageTypeId();
-        array[5] = getMessageId();
-        array[6] = getNumberOfPayloadFields();
-        array[7] = this.runDuration.getObject();
-        array[8] = this.warmupDuration.getObject();
-        array[9] = this.offsetTime.getObject();
-        array[10] = this.speed;
-        array[11] = this.numberReplications;
-        array[12] = this.numberRandomStreams;
-        int i = 13;
-        for (Object key : this.streamMap.keySet())
-        {
-            array[i++] = key;
-            array[i++] = this.streamMap.get(key);
-        }
-        return array;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public byte[] createByteArray() throws Sim0MQException, SerializationException
-    {
-        Object[] array = new Object[getNumberOfPayloadFields()];
-        array[0] = this.runDuration.getObject();
-        array[1] = this.warmupDuration.getObject();
-        array[2] = this.offsetTime.getObject();
-        array[3] = this.speed;
-        array[4] = this.numberReplications;
-        array[5] = this.numberRandomStreams;
-        int i = 6;
-        for (Object key : this.streamMap.keySet())
-        {
-            array[i++] = key;
-            array[i++] = this.streamMap.get(key);
-        }
-        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), array);
-    }
-
-    /**
-     * Build a message from an Object[] that was received.
-     * @param fields Object[]; the fields in the message
-     * @param intendedReceiverId id of the intended receiver
-     * @return a Sim0MQ message
-     * @throws Sim0MQException when number of fields is not correct
-     */
-    public static FM2SimRunControlMessage createMessage(final Object[] fields, final Object intendedReceiverId)
-            throws Sim0MQException
-    {
-        Map<Object, Long> streams = new LinkedHashMap<>();
-        int numberStreams = ((Integer) fields[12]).intValue();
-        check(fields, 6 + 2 * numberStreams, MESSAGETYPE, intendedReceiverId);
-        for (int i = 13; i < 13 + 2 * numberStreams; i += 2)
-        {
-            Object streamId = fields[i];
-            Long seed = ((Long) fields[i + 1]).longValue();
-            streams.put(streamId, seed);
-        }
-        return new FM2SimRunControlMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(), fields[7],
-                fields[8], fields[9], ((Double) fields[10]).doubleValue(), ((Integer) fields[11]).intValue(), numberStreams,
-                streams);
     }
 
     /**
@@ -471,7 +415,7 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
         @Override
         public FM2SimRunControlMessage build() throws Sim0MQException, NullPointerException
         {
-            return new FM2SimRunControlMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId,
+            return new FM2SimRunControlMessage(this.federationId, this.senderId, this.receiverId, this.messageId,
                     this.runDuration, this.warmupDuration, this.offsetTime, this.speed, this.numberReplications,
                     this.streamMap.size(), this.streamMap);
         }

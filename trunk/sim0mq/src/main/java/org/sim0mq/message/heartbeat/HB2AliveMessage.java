@@ -1,8 +1,6 @@
 package org.sim0mq.message.heartbeat;
 
-import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
-import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.Sim0MQReply;
 
 /**
@@ -23,9 +21,9 @@ public class HB2AliveMessage extends Sim0MQReply
     private static final long serialVersionUID = 20190713L;
 
     /**
-     * @param simulationRunId the Simulation run ids can be provided in different types. Examples are two 64-bit longs
-     *            indicating a UUID, or a String with a UUID number, a String with meaningful identification, or a short or an
-     *            int with a simulation run number.
+     * @param federationId the federation id can be coded using different types. Examples are two 64-bit longs indicating a
+     *            UUID, or a String with a UUID number, a String with meaningful identification, or a short or an int with a
+     *            simulation run number.
      * @param senderId The sender id can be used to send back a message to the sender at some later time.
      * @param receiverId The receiver id can be used to check whether the message is meant for us, or should be discarded (or an
      *            error can be sent if we receive a message not meant for us).
@@ -35,10 +33,20 @@ public class HB2AliveMessage extends Sim0MQReply
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public HB2AliveMessage(final Object simulationRunId, final Object senderId, final Object receiverId, final long messageId,
-            final long uniqueId) throws Sim0MQException, NullPointerException
+    public HB2AliveMessage(final Object federationId, final Object senderId, final Object receiverId, final Object messageId,
+            final Object uniqueId) throws Sim0MQException, NullPointerException
     {
-        super(simulationRunId, senderId, receiverId, MESSAGETYPE, messageId, uniqueId);
+        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {uniqueId});
+    }
+
+    /**
+     * @param objectArray Object[]; Full message object array
+     * @throws Sim0MQException on unknown data type
+     * @throws NullPointerException when one of the parameters is null
+     */
+    public HB2AliveMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
+    {
+        super(objectArray, 1);
     }
 
     /**
@@ -47,43 +55,6 @@ public class HB2AliveMessage extends Sim0MQReply
     public static final String getMessageType()
     {
         return MESSAGETYPE;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public short getNumberOfPayloadFields()
-    {
-        return 1;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object[] createObjectArray()
-    {
-        return new Object[] {getMagicNumber(), getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getNumberOfPayloadFields(), getReplyToId()};
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public byte[] createByteArray() throws Sim0MQException, SerializationException
-    {
-        return Sim0MQMessage.encodeUTF8(getSimulationRunId(), getSenderId(), getReceiverId(), getMessageTypeId(),
-                getMessageId(), getReplyToId());
-    }
-
-    /**
-     * Build a message from an Object[] that was received.
-     * @param fields Object[]; the fields in the message
-     * @param intendedReceiverId id of the intended receiver
-     * @return a Sim0MQ message
-     * @throws Sim0MQException when number of fields is not correct
-     */
-    public static HB2AliveMessage createMessage(final Object[] fields, final Object intendedReceiverId) throws Sim0MQException
-    {
-        check(fields, 1, MESSAGETYPE, intendedReceiverId);
-        return new HB2AliveMessage(fields[1], fields[2], fields[3], ((Long) fields[5]).longValue(),
-                ((Long) fields[7]).longValue());
     }
 
     /**
@@ -109,7 +80,7 @@ public class HB2AliveMessage extends Sim0MQReply
         @Override
         public HB2AliveMessage build() throws Sim0MQException, NullPointerException
         {
-            return new HB2AliveMessage(this.simulationRunId, this.senderId, this.receiverId, this.messageId, this.replyToId);
+            return new HB2AliveMessage(this.federationId, this.senderId, this.receiverId, this.messageId, this.replyToId);
         }
 
     }

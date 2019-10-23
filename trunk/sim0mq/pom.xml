@@ -24,9 +24,9 @@
     <sonar.scm.disabled>true</sonar.scm.disabled>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>3.01.04</djunits.version>
-    <djutils.version>1.01.03</djutils.version>
-    <dsol.version>3.03.09</dsol.version>
+    <djunits.version>4.00.04</djunits.version>
+    <djutils.version>1.03.00</djutils.version>
+    <dsol.version>3.03.10</dsol.version>
     <jeromq.version>0.5.1</jeromq.version>
     <junit.version>4.12</junit.version>
 

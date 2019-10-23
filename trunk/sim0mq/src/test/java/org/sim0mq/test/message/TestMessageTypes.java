@@ -55,13 +55,13 @@ public class TestMessageTypes
     @SuppressWarnings({"javadoc", "checkstyle:javadocvariable", "checkstyle:visibilitymodifier"})
     class Header
     {
-        public String simulationRunId = "TESTFED.12";
+        public String federationId = "TESTFED.12";
 
         public String senderId;
 
         public String receiverId;
 
-        public long messageId = 1270L;
+        public Object messageId = 1270L;
     }
 
     /**
@@ -80,14 +80,13 @@ public class TestMessageTypes
         fmmc.senderId = "FM.1";
         fmmc.receiverId = "MODEL.12";
 
-        FM1StartFederateMessage fm1 = new FM1StartFederateMessage(fmfs.simulationRunId, fmfs.senderId, fmfs.receiverId,
+        FM1StartFederateMessage fm1 = new FM1StartFederateMessage(fmfs.federationId, fmfs.senderId, fmfs.receiverId,
                 fmfs.messageId, "IDVV.14", "java8+", "-Xmx500M -jar", "C:/models/MM1/mm1.jar", "./model.properties",
                 "C:/models/MM1", "", "out.txt", "err.txt", false, true, true);
         Object[] fm1o = fm1.createObjectArray();
-        FM1StartFederateMessage fm1c = FM1StartFederateMessage.createMessage(fm1o, fmfs.receiverId);
         //@formatter:off
         FM1StartFederateMessage fm1d = new FM1StartFederateMessage.Builder()
-                .setSimulationRunId(fmfs.simulationRunId)
+                .setSimulationRunId(fmfs.federationId)
                 .setSenderId(fmfs.senderId)
                 .setReceiverId(fmfs.receiverId)
                 .setMessageId(fmfs.messageId)
@@ -105,7 +104,7 @@ public class TestMessageTypes
                 .setDeleteStderr(true)
                 .build();
         //@formatter:on
-        testMessage(fm1, fm1o, fm1c, fm1d, fmfs, "FM.1");
+        testMessage(fm1, fm1o, fm1d, fmfs, "FM.1");
         assertEquals("IDVV.14", fm1.getInstanceId());
         assertEquals("java8+", fm1.getSoftwareCode());
         assertEquals("-Xmx500M -jar", fm1.getArgsBefore());
@@ -123,69 +122,62 @@ public class TestMessageTypes
         streamMap.put("default", 1L);
         streamMap.put("generator", 2L);
         testFM2(new Duration(1.0, DurationUnit.DAY), new Duration(4.0, DurationUnit.HOUR),
-                new Time(0.0, TimeUnit.EPOCH_J2000_1), streamMap);
+                new Time(0.0, TimeUnit.EPOCH_J2000_SECOND), streamMap);
         testFM2(new FloatDuration(1.0f, DurationUnit.DAY), new FloatDuration(4.0f, DurationUnit.HOUR),
-                new FloatTime(0.0f, TimeUnit.EPOCH_J2000_1), streamMap);
+                new FloatTime(0.0f, TimeUnit.EPOCH_J2000_SECOND), streamMap);
         testFM2(24.0f, 4.0d, 48, new LinkedHashMap<>());
 
-        FM3SetParameterMessage fm3 = new FM3SetParameterMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId,
+        FM3SetParameterMessage fm3 = new FM3SetParameterMessage(fmmc.federationId, fmmc.senderId, fmmc.receiverId,
                 fmmc.messageId, "EnergyParam", new Energy(1.67, EnergyUnit.GIGAWATT_HOUR));
         Object[] fm3o = fm3.createObjectArray();
-        FM3SetParameterMessage fm3c = FM3SetParameterMessage.createMessage(fm3o, fmmc.receiverId);
-        FM3SetParameterMessage fm3d = new FM3SetParameterMessage.Builder().setSimulationRunId(fmmc.simulationRunId)
+        FM3SetParameterMessage fm3d = new FM3SetParameterMessage.Builder().setSimulationRunId(fmmc.federationId)
                 .setSenderId(fmmc.senderId).setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId)
                 .setParameterName("EnergyParam").setParameterValue(new Energy(1.67, EnergyUnit.GIGAWATT_HOUR)).build();
-        testMessage(fm3, fm3o, fm3c, fm3d, fmmc, "FM.3");
+        testMessage(fm3, fm3o, fm3d, fmmc, "FM.3");
         assertEquals("EnergyParam", fm3.getParameterName());
         assertEquals(new Energy(1.67, EnergyUnit.GIGAWATT_HOUR), fm3.getParameterValue());
 
-        FM4SimStartMessage fm4 = new FM4SimStartMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
+        FM4SimStartMessage fm4 = new FM4SimStartMessage(fmmc.federationId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
         Object[] fm4o = fm4.createObjectArray();
-        FM4SimStartMessage fm4c = FM4SimStartMessage.createMessage(fm4o, fmmc.receiverId);
-        FM4SimStartMessage fm4d = new FM4SimStartMessage.Builder().setSimulationRunId(fmmc.simulationRunId)
+        FM4SimStartMessage fm4d = new FM4SimStartMessage.Builder().setSimulationRunId(fmmc.federationId)
                 .setSenderId(fmmc.senderId).setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).build();
-        testMessage(fm4, fm4o, fm4c, fm4d, fmmc, "FM.4");
+        testMessage(fm4, fm4o, fm4d, fmmc, "FM.4");
 
-        FM5RequestStatus fm5 = new FM5RequestStatus(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
+        FM5RequestStatus fm5 = new FM5RequestStatus(fmmc.federationId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
         Object[] fm5o = fm5.createObjectArray();
-        FM5RequestStatus fm5c = FM5RequestStatus.createMessage(fm5o, fmmc.receiverId);
-        FM5RequestStatus fm5d = new FM5RequestStatus.Builder().setSimulationRunId(fmmc.simulationRunId)
-                .setSenderId(fmmc.senderId).setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).build();
-        testMessage(fm5, fm5o, fm5c, fm5d, fmmc, "FM.5");
+        FM5RequestStatus fm5d = new FM5RequestStatus.Builder().setSimulationRunId(fmmc.federationId).setSenderId(fmmc.senderId)
+                .setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).build();
+        testMessage(fm5, fm5o, fm5d, fmmc, "FM.5");
 
-        FM6RequestStatisticsMessage fm6 = new FM6RequestStatisticsMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId,
+        FM6RequestStatisticsMessage fm6 = new FM6RequestStatisticsMessage(fmmc.federationId, fmmc.senderId, fmmc.receiverId,
                 fmmc.messageId, "WaitingTimeAvg");
         Object[] fm6o = fm6.createObjectArray();
-        FM6RequestStatisticsMessage fm6c = FM6RequestStatisticsMessage.createMessage(fm6o, fmmc.receiverId);
         FM6RequestStatisticsMessage fm6d =
-                new FM6RequestStatisticsMessage.Builder().setSimulationRunId(fmmc.simulationRunId).setSenderId(fmmc.senderId)
+                new FM6RequestStatisticsMessage.Builder().setSimulationRunId(fmmc.federationId).setSenderId(fmmc.senderId)
                         .setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).setVariableName("WaitingTimeAvg").build();
-        testMessage(fm6, fm6o, fm6c, fm6d, fmmc, "FM.6");
+        testMessage(fm6, fm6o, fm6d, fmmc, "FM.6");
         assertEquals("WaitingTimeAvg", fm6.getVariableName());
 
-        FM7SimResetMessage fm7 = new FM7SimResetMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
+        FM7SimResetMessage fm7 = new FM7SimResetMessage(fmmc.federationId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
         Object[] fm7o = fm7.createObjectArray();
-        FM7SimResetMessage fm7c = FM7SimResetMessage.createMessage(fm7o, fmmc.receiverId);
-        FM7SimResetMessage fm7d = new FM7SimResetMessage.Builder().setSimulationRunId(fmmc.simulationRunId)
+        FM7SimResetMessage fm7d = new FM7SimResetMessage.Builder().setSimulationRunId(fmmc.federationId)
                 .setSenderId(fmmc.senderId).setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).build();
-        testMessage(fm7, fm7o, fm7c, fm7d, fmmc, "FM.7");
+        testMessage(fm7, fm7o, fm7d, fmmc, "FM.7");
 
         FM8KillFederateMessage fm8 =
-                new FM8KillFederateMessage(fmfs.simulationRunId, fmfs.senderId, fmfs.receiverId, fmfs.messageId, "IDVV.28");
+                new FM8KillFederateMessage(fmfs.federationId, fmfs.senderId, fmfs.receiverId, fmfs.messageId, "IDVV.28");
         Object[] fm8o = fm8.createObjectArray();
-        FM8KillFederateMessage fm8c = FM8KillFederateMessage.createMessage(fm8o, fmfs.receiverId);
         FM8KillFederateMessage fm8d =
-                new FM8KillFederateMessage.Builder().setSimulationRunId(fmfs.simulationRunId).setSenderId(fmfs.senderId)
+                new FM8KillFederateMessage.Builder().setSimulationRunId(fmfs.federationId).setSenderId(fmfs.senderId)
                         .setReceiverId(fmfs.receiverId).setMessageId(fmfs.messageId).setInstanceId("IDVV.28").build();
-        testMessage(fm8, fm8o, fm8c, fm8d, fmfs, "FM.8");
+        testMessage(fm8, fm8o, fm8d, fmfs, "FM.8");
         assertEquals("IDVV.28", fm8.getInstanceId());
 
-        FM9KillAllMessage fm9 = new FM9KillAllMessage(fmfs.simulationRunId, fmfs.senderId, fmfs.receiverId, fmfs.messageId);
+        FM9KillAllMessage fm9 = new FM9KillAllMessage(fmfs.federationId, fmfs.senderId, fmfs.receiverId, fmfs.messageId);
         Object[] fm9o = fm9.createObjectArray();
-        FM9KillAllMessage fm9c = FM9KillAllMessage.createMessage(fm9o, fmfs.receiverId);
-        FM9KillAllMessage fm9d = new FM9KillAllMessage.Builder().setSimulationRunId(fmfs.simulationRunId)
+        FM9KillAllMessage fm9d = new FM9KillAllMessage.Builder().setSimulationRunId(fmfs.federationId)
                 .setSenderId(fmfs.senderId).setReceiverId(fmfs.receiverId).setMessageId(fmfs.messageId).build();
-        testMessage(fm9, fm9o, fm9c, fm9d, fmfs, "FM.9");
+        testMessage(fm9, fm9o, fm9d, fmfs, "FM.9");
     }
 
     /**
@@ -205,53 +197,48 @@ public class TestMessageTypes
         fsmc.receiverId = "MODEL.12";
 
         FS1RequestStatusMessage fs1 =
-                new FS1RequestStatusMessage(fsmc.simulationRunId, fsmc.senderId, fsmc.receiverId, fsmc.messageId);
+                new FS1RequestStatusMessage(fsmc.federationId, fsmc.senderId, fsmc.receiverId, fsmc.messageId);
         Object[] fs1o = fs1.createObjectArray();
-        FS1RequestStatusMessage fs1c = FS1RequestStatusMessage.createMessage(fs1o, fsmc.receiverId);
-        FS1RequestStatusMessage fs1d = new FS1RequestStatusMessage.Builder().setSimulationRunId(fsmc.simulationRunId)
+        FS1RequestStatusMessage fs1d = new FS1RequestStatusMessage.Builder().setSimulationRunId(fsmc.federationId)
                 .setSenderId(fsmc.senderId).setReceiverId(fsmc.receiverId).setMessageId(fsmc.messageId).build();
-        testMessage(fs1, fs1o, fs1c, fs1d, fsmc, "FS.1");
+        testMessage(fs1, fs1o, fs1d, fsmc, "FS.1");
 
-        FS2FederateStartedMessage fs2 = new FS2FederateStartedMessage(fsfm.simulationRunId, fsfm.senderId, fsfm.receiverId,
+        FS2FederateStartedMessage fs2 = new FS2FederateStartedMessage(fsfm.federationId, fsfm.senderId, fsfm.receiverId,
                 fsfm.messageId, "IDVV.12", "started", (short) 5012, "");
         Object[] fs2o = fs2.createObjectArray();
-        FS2FederateStartedMessage fs2c = FS2FederateStartedMessage.createMessage(fs2o, fsfm.receiverId);
-        FS2FederateStartedMessage fs2d = new FS2FederateStartedMessage.Builder().setSimulationRunId(fsfm.simulationRunId)
+        FS2FederateStartedMessage fs2d = new FS2FederateStartedMessage.Builder().setSimulationRunId(fsfm.federationId)
                 .setSenderId(fsfm.senderId).setReceiverId(fsfm.receiverId).setMessageId(fsfm.messageId).setInstanceId("IDVV.12")
                 .setStatus("started").setModelPort(5012).setError("").build();
-        testMessage(fs2, fs2o, fs2c, fs2d, fsfm, "FS.2");
+        testMessage(fs2, fs2o, fs2d, fsfm, "FS.2");
         assertEquals("IDVV.12", fs2.getInstanceId());
         assertEquals("started", fs2.getStatus());
         assertEquals((short) 5012, fs2.getModelPort());
         assertEquals("", fs2.getError());
 
-        FS3KillModelMessage fs3 = new FS3KillModelMessage(fsmc.simulationRunId, fsmc.senderId, fsmc.receiverId, fsmc.messageId);
+        FS3KillModelMessage fs3 = new FS3KillModelMessage(fsmc.federationId, fsmc.senderId, fsmc.receiverId, fsmc.messageId);
         Object[] fs3o = fs3.createObjectArray();
-        FS3KillModelMessage fs3c = FS3KillModelMessage.createMessage(fs3o, fsmc.receiverId);
-        FS3KillModelMessage fs3d = new FS3KillModelMessage.Builder().setSimulationRunId(fsmc.simulationRunId)
+        FS3KillModelMessage fs3d = new FS3KillModelMessage.Builder().setSimulationRunId(fsmc.federationId)
                 .setSenderId(fsmc.senderId).setReceiverId(fsmc.receiverId).setMessageId(fsmc.messageId).build();
-        testMessage(fs3, fs3o, fs3c, fs3d, fsmc, "FS.3");
+        testMessage(fs3, fs3o, fs3d, fsmc, "FS.3");
 
-        FS4FederateKilledMessage fs4 = new FS4FederateKilledMessage(fsfm.simulationRunId, fsfm.senderId, fsfm.receiverId,
+        FS4FederateKilledMessage fs4 = new FS4FederateKilledMessage(fsfm.federationId, fsfm.senderId, fsfm.receiverId,
                 fsfm.messageId, "IDVV.12", true, "Model not found");
         Object[] fs4o = fs4.createObjectArray();
-        FS4FederateKilledMessage fs4c = FS4FederateKilledMessage.createMessage(fs4o, fsfm.receiverId);
-        FS4FederateKilledMessage fs4d = new FS4FederateKilledMessage.Builder().setSimulationRunId(fsfm.simulationRunId)
+        FS4FederateKilledMessage fs4d = new FS4FederateKilledMessage.Builder().setSimulationRunId(fsfm.federationId)
                 .setSenderId(fsfm.senderId).setReceiverId(fsfm.receiverId).setMessageId(fsfm.messageId).setInstanceId("IDVV.12")
                 .setStatus(true).setError("Model not found").build();
-        testMessage(fs4, fs4o, fs4c, fs4d, fsfm, "FS.4");
+        testMessage(fs4, fs4o, fs4d, fsfm, "FS.4");
         assertEquals("IDVV.12", fs4.getInstanceId());
         assertEquals(true, fs4.isStatus());
         assertEquals("Model not found", fs4.getError());
 
         FS5FederatesKilledMessage fs5 =
-                new FS5FederatesKilledMessage(fsfm.simulationRunId, fsfm.senderId, fsfm.receiverId, fsfm.messageId, false, "");
+                new FS5FederatesKilledMessage(fsfm.federationId, fsfm.senderId, fsfm.receiverId, fsfm.messageId, false, "");
         Object[] fs5o = fs5.createObjectArray();
-        FS5FederatesKilledMessage fs5c = FS5FederatesKilledMessage.createMessage(fs5o, fsfm.receiverId);
         FS5FederatesKilledMessage fs5d =
-                new FS5FederatesKilledMessage.Builder().setSimulationRunId(fsfm.simulationRunId).setSenderId(fsfm.senderId)
+                new FS5FederatesKilledMessage.Builder().setSimulationRunId(fsfm.federationId).setSenderId(fsfm.senderId)
                         .setReceiverId(fsfm.receiverId).setMessageId(fsfm.messageId).setStatus(false).setError("").build();
-        testMessage(fs5, fs5o, fs5c, fs5d, fsfm, "FS.5");
+        testMessage(fs5, fs5o, fs5d, fsfm, "FS.5");
         assertEquals(false, fs5.isStatus());
         assertEquals("", fs5.getError());
     }
@@ -273,48 +260,44 @@ public class TestMessageTypes
         mcfs.receiverId = "FS.2";
 
         MC1StatusMessage mc1 =
-                new MC1StatusMessage(mcfs.simulationRunId, mcfs.senderId, mcfs.receiverId, mcfs.messageId, 802L, "running", "");
+                new MC1StatusMessage(mcfs.federationId, mcfs.senderId, mcfs.receiverId, mcfs.messageId, 802L, "running", "");
         Object[] mc1o = mc1.createObjectArray();
-        MC1StatusMessage mc1c = MC1StatusMessage.createMessage(mc1o, mcfs.receiverId);
-        MC1StatusMessage mc1d = new MC1StatusMessage.Builder().setSimulationRunId(mcfs.simulationRunId)
-                .setSenderId(mcfs.senderId).setReceiverId(mcfs.receiverId).setMessageId(mcfs.messageId).setReplyToId(802L)
-                .setStatus("running").setError("").build();
-        testMessage(mc1, mc1o, mc1c, mc1d, mcfs, "MC.1");
+        MC1StatusMessage mc1d = new MC1StatusMessage.Builder().setSimulationRunId(mcfs.federationId).setSenderId(mcfs.senderId)
+                .setReceiverId(mcfs.receiverId).setMessageId(mcfs.messageId).setReplyToId(802L).setStatus("running")
+                .setError("").build();
+        testMessage(mc1, mc1o, mc1d, mcfs, "MC.1");
         assertEquals(802L, mc1.getReplyToId());
         assertEquals("running", mc1.getStatus());
         assertEquals("", mc1.getError());
 
-        MC2AckNakMessage mc2 = new MC2AckNakMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, 802L,
+        MC2AckNakMessage mc2 = new MC2AckNakMessage(mcfm.federationId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, 802L,
                 false, "Simulation model crashed");
         Object[] mc2o = mc2.createObjectArray();
-        MC2AckNakMessage mc2c = MC2AckNakMessage.createMessage(mc2o, mcfm.receiverId);
-        MC2AckNakMessage mc2d = new MC2AckNakMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
-                .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyToId(802L)
-                .setStatus(false).setError("Simulation model crashed").build();
-        testMessage(mc2, mc2o, mc2c, mc2d, mcfm, "MC.2");
+        MC2AckNakMessage mc2d = new MC2AckNakMessage.Builder().setSimulationRunId(mcfm.federationId).setSenderId(mcfm.senderId)
+                .setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyToId(802L).setStatus(false)
+                .setError("Simulation model crashed").build();
+        testMessage(mc2, mc2o, mc2d, mcfm, "MC.2");
         assertEquals(802L, mc2.getReplyToId());
         assertEquals(false, mc2.getStatus());
         assertEquals("Simulation model crashed", mc2.getError());
 
-        MC3StatisticsMessage mc3 = new MC3StatisticsMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId,
-                mcfm.messageId, "ThroughputAvg", 80.56d);
+        MC3StatisticsMessage mc3 = new MC3StatisticsMessage(mcfm.federationId, mcfm.senderId, mcfm.receiverId, mcfm.messageId,
+                "ThroughputAvg", 80.56d);
         Object[] mc3o = mc3.createObjectArray();
-        MC3StatisticsMessage mc3c = MC3StatisticsMessage.createMessage(mc3o, mcfm.receiverId);
-        MC3StatisticsMessage mc3d = new MC3StatisticsMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
+        MC3StatisticsMessage mc3d = new MC3StatisticsMessage.Builder().setSimulationRunId(mcfm.federationId)
                 .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId)
                 .setVariableName("ThroughputAvg").setVariableValue(80.56d).build();
-        testMessage(mc3, mc3o, mc3c, mc3d, mcfm, "MC.3");
+        testMessage(mc3, mc3o, mc3d, mcfm, "MC.3");
         assertEquals("ThroughputAvg", mc3.getVariableName());
         assertEquals(80.56d, mc3.getVariableValue());
 
-        MC4StatisticsErrorMessage mc4 = new MC4StatisticsErrorMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId,
+        MC4StatisticsErrorMessage mc4 = new MC4StatisticsErrorMessage(mcfm.federationId, mcfm.senderId, mcfm.receiverId,
                 mcfm.messageId, "ThroughputAvg", "ThroughputAvg not known in the model");
         Object[] mc4o = mc4.createObjectArray();
-        MC4StatisticsErrorMessage mc4c = MC4StatisticsErrorMessage.createMessage(mc4o, mcfm.receiverId);
-        MC4StatisticsErrorMessage mc4d = new MC4StatisticsErrorMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
+        MC4StatisticsErrorMessage mc4d = new MC4StatisticsErrorMessage.Builder().setSimulationRunId(mcfm.federationId)
                 .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId)
                 .setVariableName("ThroughputAvg").setError("ThroughputAvg not known in the model").build();
-        testMessage(mc4, mc4o, mc4c, mc4d, mcfm, "MC.4");
+        testMessage(mc4, mc4o, mc4d, mcfm, "MC.4");
         assertEquals("ThroughputAvg", mc4.getVariableName());
         assertEquals("ThroughputAvg not known in the model", mc4.getError());
 
@@ -336,28 +319,25 @@ public class TestMessageTypes
         mcfm.senderId = "MODEL.14";
         mcfm.receiverId = "FM.1";
 
-        HB1HeartbeatMessage hb1 = new HB1HeartbeatMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
+        HB1HeartbeatMessage hb1 = new HB1HeartbeatMessage(fmmc.federationId, fmmc.senderId, fmmc.receiverId, fmmc.messageId);
         Object[] hb1o = hb1.createObjectArray();
-        HB1HeartbeatMessage hb1c = HB1HeartbeatMessage.createMessage(hb1o, fmmc.receiverId);
-        HB1HeartbeatMessage hb1d = new HB1HeartbeatMessage.Builder().setSimulationRunId(fmmc.simulationRunId)
+        HB1HeartbeatMessage hb1d = new HB1HeartbeatMessage.Builder().setSimulationRunId(fmmc.federationId)
                 .setSenderId(fmmc.senderId).setReceiverId(fmmc.receiverId).setMessageId(fmmc.messageId).build();
-        testMessage(hb1, hb1o, hb1c, hb1d, fmmc, "HB.1");
+        testMessage(hb1, hb1o, hb1d, fmmc, "HB.1");
 
-        HB2AliveMessage hb2 = new HB2AliveMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, 1806L);
+        HB2AliveMessage hb2 = new HB2AliveMessage(mcfm.federationId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, 1806L);
         Object[] hb2o = hb2.createObjectArray();
-        HB2AliveMessage hb2c = HB2AliveMessage.createMessage(hb2o, mcfm.receiverId);
-        HB2AliveMessage hb2d = new HB2AliveMessage.Builder().setSimulationRunId(mcfm.simulationRunId).setSenderId(mcfm.senderId)
+        HB2AliveMessage hb2d = new HB2AliveMessage.Builder().setSimulationRunId(mcfm.federationId).setSenderId(mcfm.senderId)
                 .setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyToId(1806L).build();
-        testMessage(hb2, hb2o, hb2c, hb2d, mcfm, "HB.2");
+        testMessage(hb2, hb2o, hb2d, mcfm, "HB.2");
         assertEquals(1806L, hb2.getReplyToId());
 
         HB2AliveMessage ahb2 =
-                new HB2AliveMessage(mcfm.simulationRunId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, hb1.getMessageId());
+                new HB2AliveMessage(mcfm.federationId, mcfm.senderId, mcfm.receiverId, mcfm.messageId, hb1.getMessageId());
         Object[] ahb2o = ahb2.createObjectArray();
-        HB2AliveMessage ahb2c = HB2AliveMessage.createMessage(ahb2o, mcfm.receiverId);
-        HB2AliveMessage ahb2d = new HB2AliveMessage.Builder().setSimulationRunId(mcfm.simulationRunId)
-                .setSenderId(mcfm.senderId).setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyTo(hb1).build();
-        testMessage(ahb2, ahb2o, ahb2c, ahb2d, mcfm, "HB.2");
+        HB2AliveMessage ahb2d = new HB2AliveMessage.Builder().setSimulationRunId(mcfm.federationId).setSenderId(mcfm.senderId)
+                .setReceiverId(mcfm.receiverId).setMessageId(mcfm.messageId).setReplyTo(hb1).build();
+        testMessage(ahb2, ahb2o, ahb2d, mcfm, "HB.2");
         assertEquals(hb1.getMessageId(), ahb2.getReplyToId());
     }
 
@@ -378,13 +358,12 @@ public class TestMessageTypes
         Header fmmc = new Header();
         fmmc.senderId = "FM.1";
         fmmc.receiverId = "MODEL.12";
-        FM2SimRunControlMessage fm2 = new FM2SimRunControlMessage(fmmc.simulationRunId, fmmc.senderId, fmmc.receiverId,
+        FM2SimRunControlMessage fm2 = new FM2SimRunControlMessage(fmmc.federationId, fmmc.senderId, fmmc.receiverId,
                 fmmc.messageId, runDuration, warmupDuration, offsetTime, 0.5d, 10, streamMap.size(), streamMap);
         Object[] fm2o = fm2.createObjectArray();
-        FM2SimRunControlMessage fm2c = FM2SimRunControlMessage.createMessage(fm2o, fmmc.receiverId);
         //@formatter:off
         FM2SimRunControlMessage.Builder builder = new FM2SimRunControlMessage.Builder()
-            .setSimulationRunId(fmmc.simulationRunId)
+            .setSimulationRunId(fmmc.federationId)
             .setSenderId(fmmc.senderId)
             .setReceiverId(fmmc.receiverId)
             .setMessageId(fmmc.messageId)
@@ -412,7 +391,7 @@ public class TestMessageTypes
             builder.setOffsetTimeNumber((Number) offsetTime);
 
         FM2SimRunControlMessage fm2d = builder.build();
-        testMessage(fm2, fm2o, fm2c, fm2d, fmmc, "FM.2");
+        testMessage(fm2, fm2o, fm2d, fmmc, "FM.2");
 
         assertEquals(runDuration, fm2.getRunDuration().getObject());
         assertEquals(warmupDuration, fm2.getWarmupDuration().getObject());
@@ -428,40 +407,35 @@ public class TestMessageTypes
     /**
      * @param message original message
      * @param objectArray object array from the message
-     * @param messageCoded recoded message
-     * @param messageBuild built message
+     * @param messageBuilt built message
      * @param headers expected headers
      * @param messageType message type
      * @throws Sim0MQException on error
      * @throws SerializationException on error
      */
-    private void testMessage(final Sim0MQMessage message, final Object[] objectArray, final Sim0MQMessage messageCoded,
-            final Sim0MQMessage messageBuild, final Header headers, final String messageType)
-            throws Sim0MQException, SerializationException
+    private void testMessage(final Sim0MQMessage message, final Object[] objectArray, final Sim0MQMessage messageBuilt,
+            final Header headers, final String messageType) throws Sim0MQException, SerializationException
     {
         testStandardFields(message, headers, messageType);
         byte[] bytes = message.createByteArray();
-        assertEquals(7 + message.getNumberOfPayloadFields(), objectArray.length);
-        testStandardFields(messageCoded, headers, messageType);
-        Object[] codedObjects = messageCoded.createObjectArray();
-        compareFields(objectArray, codedObjects);
-        testStandardFields(messageBuild, headers, messageType);
-        Object[] buildObjects = messageBuild.createObjectArray();
+        assertEquals(8 + message.getNumberOfPayloadFields(), objectArray.length);
+        testStandardFields(messageBuilt, headers, messageType);
+        Object[] buildObjects = messageBuilt.createObjectArray();
         compareFields(objectArray, buildObjects);
-        Object[] decodedObjects = Sim0MQMessage.decode(bytes);
+        Object[] decodedObjects = Sim0MQMessage.decodeToArray(bytes);
         compareFields(objectArray, decodedObjects);
 
         assertEquals("SIM02", message.getMagicNumber());
         assertEquals(headers.senderId, message.getSenderId());
         assertEquals(headers.messageId, message.getMessageId());
         assertEquals(headers.receiverId, message.getReceiverId());
-        assertEquals(headers.simulationRunId, message.getSimulationRunId());
+        assertEquals(headers.federationId, message.getFederationId());
         assertEquals(messageType, message.getMessageTypeId());
 
         // test if the class has a (static) method getMessageType() that returns the right value
         try
         {
-            Method staticMtId = message.getClass().getMethod("getMessageType", new Class<?>[] {});
+            Method staticMtId = message.getClass().getMethod("getMessageTypeId", new Class<?>[] {});
             assertEquals(messageType, staticMtId.invoke(message, new Object[] {}));
         }
         catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
@@ -479,7 +453,7 @@ public class TestMessageTypes
      */
     private void testStandardFields(final Sim0MQMessage message, final Header fm, final String messageType)
     {
-        assertEquals(fm.simulationRunId, message.getSimulationRunId());
+        assertEquals(fm.federationId, message.getFederationId());
         assertEquals(fm.senderId, message.getSenderId());
         assertEquals(fm.receiverId, message.getReceiverId());
         assertEquals(fm.messageId, message.getMessageId());
