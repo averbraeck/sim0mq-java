@@ -448,13 +448,6 @@
         </configuration>
       </plugin>
 
-      <!-- Cobertura test coverage report -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>${maven.cobertura.version}</version>
-      </plugin>
-
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
