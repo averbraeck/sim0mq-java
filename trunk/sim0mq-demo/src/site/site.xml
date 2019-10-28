@@ -31,7 +31,6 @@
       <item name="FindBugs" href="findbugs.html" />
       <item name="CPD" href="cpd.html" />
       <item name="PMD" href="pmd.html" />
-      <item name="JDepend" href="jdepend-report.html" />
     </menu>
       
     <menu name="PROJECT INFO">
