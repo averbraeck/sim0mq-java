@@ -36,7 +36,7 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
      *            error can be sent if we receive a message not meant for us).
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
-     * @param variableName The name of the output variable whose value is requested. That should match with the name in the
+     * @param variableName The name of the output variable whose value was requested. That should match with the name in the
      *            model.
      * @param error String; Error retrieving the model output value.
      * @throws Sim0MQException on unknown data type
@@ -45,9 +45,8 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
     public MC4StatisticsErrorMessage(final Object federationId, final Object senderId, final Object receiverId,
             final Object messageId, final String variableName, final String error) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {variableName, error});
-        this.variableName = variableName;
-        this.error = error;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 2,
+                variableName, error});
     }
 
     /**
@@ -57,7 +56,7 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
      */
     public MC4StatisticsErrorMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 2);
+        super(objectArray, 2, MESSAGETYPE);
         Throw.when(!(objectArray[8] instanceof String), Sim0MQException.class, "variableName (field 8) should be String");
         this.variableName = objectArray[8].toString();
         Throw.when(!(objectArray[9] instanceof String), Sim0MQException.class, "error (field 9) should be String");

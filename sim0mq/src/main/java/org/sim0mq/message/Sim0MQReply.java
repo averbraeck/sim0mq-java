@@ -62,13 +62,14 @@ public abstract class Sim0MQReply extends Sim0MQMessage
      * @param objectArray Object[]; Full message object array
      * @param expectedNumberOfPayloadFields int; the expected number of fields in the message (field 8 and further). The payload
      *            fields should include the replyToId, so the number should be 1 or higher.
+     * @param expectedMessageTypeId the expected message type id
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public Sim0MQReply(final Object[] objectArray, final int expectedNumberOfPayloadFields)
+    public Sim0MQReply(final Object[] objectArray, final int expectedNumberOfPayloadFields, final Object expectedMessageTypeId)
             throws Sim0MQException, NullPointerException
     {
-        super(objectArray, expectedNumberOfPayloadFields);
+        super(objectArray, expectedNumberOfPayloadFields, expectedMessageTypeId);
         Throw.when(objectArray.length < 9, Sim0MQException.class, "payload for a reply should start with the replyToId");
         this.replyToId = objectArray[8];
     }

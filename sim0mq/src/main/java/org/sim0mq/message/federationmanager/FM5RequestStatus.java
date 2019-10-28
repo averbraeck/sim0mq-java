@@ -47,7 +47,7 @@ public class FM5RequestStatus extends Sim0MQMessage
      */
     public FM5RequestStatus(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 0);
+        super(objectArray, 0, MESSAGETYPE);
     }
 
     /**

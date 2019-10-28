@@ -44,7 +44,7 @@ public class FM7SimResetMessage extends Sim0MQMessage
      */
     public FM7SimResetMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 0);
+        super(objectArray, 0, MESSAGETYPE);
     }
 
     /**

@@ -39,8 +39,8 @@ public class FM8KillFederateMessage extends Sim0MQMessage
     public FM8KillFederateMessage(final Object federationId, final Object senderId, final Object receiverId,
             final Object messageId, final Object instanceId) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {instanceId});
-        this.instanceId = instanceId;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 1,
+                instanceId});
     }
 
     /**
@@ -50,7 +50,7 @@ public class FM8KillFederateMessage extends Sim0MQMessage
      */
     public FM8KillFederateMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 1);
+        super(objectArray, 1, MESSAGETYPE);
         this.instanceId = objectArray[8];
     }
 

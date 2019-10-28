@@ -110,7 +110,7 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
      */
     public FM2SimRunControlMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, calcPayloadFields(objectArray));
+        super(objectArray, calcPayloadFields(objectArray), MESSAGETYPE);
 
         this.runDuration = NumberDuration.instantiate(objectArray[8]);
         this.warmupDuration = NumberDuration.instantiate(objectArray[9]);

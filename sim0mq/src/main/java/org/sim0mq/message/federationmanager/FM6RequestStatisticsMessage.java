@@ -47,8 +47,8 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
     public FM6RequestStatisticsMessage(final Object federationId, final Object senderId, final Object receiverId,
             final Object messageId, final String variableName) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {variableName});
-        this.variableName = variableName;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 1,
+                variableName});
     }
 
     /**
@@ -58,7 +58,7 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
      */
     public FM6RequestStatisticsMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 1);
+        super(objectArray, 1, MESSAGETYPE);
         Throw.when(!(objectArray[8] instanceof String), Sim0MQException.class, "variableName (field 8) should be String");
         this.variableName = objectArray[8].toString();
     }

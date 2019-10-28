@@ -2,6 +2,7 @@ package org.sim0mq.message.modelcontroller;
 
 import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
+import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.Sim0MQReply;
 
 /**
@@ -45,14 +46,8 @@ public class MC1StatusMessage extends Sim0MQReply
     public MC1StatusMessage(final Object federationId, final Object senderId, final Object receiverId, final Object messageId,
             final Object uniqueId, final String status, final String error) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {uniqueId, status, error});
-
-        Throw.when(status.isEmpty(), Sim0MQException.class, "status cannot be empty");
-        Throw.when(!status.equals("started") && !status.equals("running") && !status.equals("ended") && !status.equals("error"),
-                Sim0MQException.class, "status should be one of 'started', 'running', 'ended', 'error'");
-
-        this.status = status;
-        this.error = error;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 3, uniqueId,
+                status, error});
     }
 
     /**
@@ -62,7 +57,7 @@ public class MC1StatusMessage extends Sim0MQReply
      */
     public MC1StatusMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 3);
+        super(objectArray, 3, MESSAGETYPE);
         Throw.when(!(objectArray[9] instanceof String), Sim0MQException.class, "status (field 9) should be String");
         this.status = objectArray[9].toString();
         Throw.when(!(objectArray[10] instanceof String), Sim0MQException.class, "error (field 10) should be String");

@@ -1,6 +1,7 @@
 package org.sim0mq.message.heartbeat;
 
 import org.sim0mq.Sim0MQException;
+import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.Sim0MQReply;
 
 /**
@@ -36,7 +37,8 @@ public class HB2AliveMessage extends Sim0MQReply
     public HB2AliveMessage(final Object federationId, final Object senderId, final Object receiverId, final Object messageId,
             final Object uniqueId) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {uniqueId});
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 1,
+                uniqueId});
     }
 
     /**
@@ -46,7 +48,7 @@ public class HB2AliveMessage extends Sim0MQReply
      */
     public HB2AliveMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 1);
+        super(objectArray, 1, MESSAGETYPE);
     }
 
     /**

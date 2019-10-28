@@ -38,8 +38,8 @@ public class FS4FederateKilledMessage extends Sim0MQMessage
      *            error can be sent if we receive a message not meant for us).
      * @param messageId The unique message number is meant to confirm with a callback that the message has been received
      *            correctly. The number is unique for the sender, so not globally within the federation.
-     * @param instanceId The sender id of the model that was started or had an error while starting. This is exactly the same as
-     *            the instanceId sent by the Federation Manager in the StartFederate message.
+     * @param instanceId The sender id of the model that was killed or had an error while killing. This is exactly the same as
+     *            the instanceId sent by the Federation Manager in the KillFederate message.
      * @param status Did the termination of the model succeed?
      * @param error If there was an error with the model termination, the error message is sent as well. Otherwise this field is
      *            an empty string.
@@ -50,11 +50,8 @@ public class FS4FederateKilledMessage extends Sim0MQMessage
             final Object messageId, final Object instanceId, final boolean status, final String error)
             throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {instanceId, status, error});
-
-        this.instanceId = instanceId;
-        this.status = status;
-        this.error = error;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 3,
+                instanceId, status, error});
     }
 
     /**
@@ -64,7 +61,7 @@ public class FS4FederateKilledMessage extends Sim0MQMessage
      */
     public FS4FederateKilledMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 3);
+        super(objectArray, 3, MESSAGETYPE);
         this.instanceId = objectArray[8];
         Throw.when(!(objectArray[9] instanceof Boolean), Sim0MQException.class, "status (field 9) should be a Boolean");
         this.status = ((Boolean) objectArray[9]).booleanValue();

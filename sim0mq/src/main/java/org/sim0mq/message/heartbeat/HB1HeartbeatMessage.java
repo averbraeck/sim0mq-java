@@ -45,7 +45,7 @@ public class HB1HeartbeatMessage extends Sim0MQMessage
      */
     public HB1HeartbeatMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 0);
+        super(objectArray, 0, MESSAGETYPE);
     }
 
     /**

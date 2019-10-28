@@ -57,18 +57,8 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
             final Object messageId, final Object instanceId, final String status, final int modelPort, final String error)
             throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId,
-                new Object[] {instanceId, status, modelPort, error});
-
-        Throw.when(status.isEmpty(), Sim0MQException.class, "status cannot be empty");
-        Throw.when(!status.equals("started") && !status.equals("running") && !status.equals("ended") && !status.equals("error"),
-                Sim0MQException.class, "status should be one of 'started', 'running', 'ended', 'error'");
-        Throw.when(modelPort < 0 || modelPort > 65535, Sim0MQException.class, "modelPort should be between 0 and 65535");
-
-        this.instanceId = instanceId;
-        this.status = status;
-        this.modelPort = modelPort;
-        this.error = error;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 4,
+                instanceId, status, modelPort, error});
     }
 
     /**
@@ -78,7 +68,7 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
      */
     public FS2FederateStartedMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 4);
+        super(objectArray, 4, MESSAGETYPE);
 
         this.instanceId = objectArray[8];
         Throw.when(!(objectArray[9] instanceof String), Sim0MQException.class, "status (field 9) should be a String");

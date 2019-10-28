@@ -46,7 +46,7 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
      */
     public FS1RequestStatusMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 0);
+        super(objectArray, 0, MESSAGETYPE);
     }
 
     /**
