@@ -31,17 +31,16 @@
     <junit.version>4.12</junit.version>
 
     <maven.compiler.version>3.8.1</maven.compiler.version>
-    <maven.site.version>3.7.1</maven.site.version>
+    <maven.site.version>3.8.2</maven.site.version>
     <maven.deploy.version>3.0.0-M1</maven.deploy.version>
     <maven.install.version>3.0.0-M1</maven.install.version>
     <maven.source.version>3.1.0</maven.source.version>
-    <maven.javadoc.version>3.1.0</maven.javadoc.version>
+    <maven.javadoc.version>3.1.1</maven.javadoc.version>
     <maven.checkstyle.version>3.1.0</maven.checkstyle.version>
-    <maven.surefire.version>2.18.1</maven.surefire.version>
-    <maven.surefire-report.version>2.22.0</maven.surefire-report.version>
-    <maven.failsafe.version>2.22.0</maven.failsafe.version>
-    <maven.cobertura.version>2.7</maven.cobertura.version>
-    <maven.jacoco.version>0.8.4</maven.jacoco.version>
+    <maven.surefire.version>3.0.0-M3</maven.surefire.version>
+    <maven.surefire-report.version>3.0.0-M3</maven.surefire-report.version>
+    <maven.failsafe.version>3.0.0-M3</maven.failsafe.version>
+    <maven.jacoco.version>0.8.5</maven.jacoco.version>
     <maven.findbugs.version>3.0.5</maven.findbugs.version>
     <maven.project-info-reports.version>3.0.0</maven.project-info-reports.version>
     <maven.jxr.version>3.0.0</maven.jxr.version>
