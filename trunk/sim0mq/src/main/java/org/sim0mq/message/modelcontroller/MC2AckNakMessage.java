@@ -2,6 +2,7 @@ package org.sim0mq.message.modelcontroller;
 
 import org.djutils.exceptions.Throw;
 import org.sim0mq.Sim0MQException;
+import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.Sim0MQReply;
 
 /**
@@ -46,9 +47,8 @@ public class MC2AckNakMessage extends Sim0MQReply
     public MC2AckNakMessage(final Object federationId, final Object senderId, final Object receiverId, final Object messageId,
             final Object uniqueId, final boolean status, final String error) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {uniqueId, status, error});
-        this.status = status;
-        this.error = error;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 3, uniqueId,
+                status, error});
     }
 
     /**
@@ -58,7 +58,7 @@ public class MC2AckNakMessage extends Sim0MQReply
      */
     public MC2AckNakMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 3);
+        super(objectArray, 3, MESSAGETYPE);
         Throw.when(!(objectArray[9] instanceof Boolean), Sim0MQException.class, "status (field 9) should be Boolean");
         this.status = ((Boolean) objectArray[9]).booleanValue();
         Throw.when(!(objectArray[10] instanceof String), Sim0MQException.class, "error (field 10) should be String");

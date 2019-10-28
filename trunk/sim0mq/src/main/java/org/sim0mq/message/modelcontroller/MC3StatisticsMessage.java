@@ -51,9 +51,8 @@ public class MC3StatisticsMessage extends Sim0MQMessage
             final Object messageId, final String variableName, final Object variableValue)
             throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {variableName, variableValue});
-        this.variableName = variableName;
-        this.variableValue = variableValue;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 2,
+                variableName, variableValue});
     }
 
     /**
@@ -63,7 +62,7 @@ public class MC3StatisticsMessage extends Sim0MQMessage
      */
     public MC3StatisticsMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 2);
+        super(objectArray, 2, MESSAGETYPE);
         Throw.when(!(objectArray[8] instanceof String), Sim0MQException.class, "variableName (field 8) should be String");
         this.variableName = objectArray[8].toString();
         this.variableValue = objectArray[9];

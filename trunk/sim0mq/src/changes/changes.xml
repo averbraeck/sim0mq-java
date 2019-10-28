@@ -2,7 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="2.00.00" date="2019-07-14" description="V2 of Sim0MQ with heartbeat and load balancer">
+    <release version="2.00.00" date="2019-10-28" description="V2 of Sim0MQ with message classes and heartbeat">
+      <action dev="averbraeck" type="add">
+        Added separate classes for each message to make construction and information gathering more straightforward.. 
+      </action>
+      <action dev="averbraeck" type="fix">
+        Fixed numerous small errors in FederateServer and demo classes after tightening the checks. 
+      </action>
       <action dev="averbraeck" type="add">
         Added Heartbeat messages HB.1 (Heartbeat) and HB.2 (Alive). 
       </action>

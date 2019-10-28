@@ -45,11 +45,10 @@ public class FM3SetParameterMessage extends Sim0MQMessage
             final Object messageId, final String parameterName, final Object parameterValue)
             throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {parameterName, parameterValue});
-        this.parameterName = parameterName;
-        this.parameterValue = parameterValue;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 2,
+                parameterName, parameterValue});
     }
-    
+
     /**
      * @param objectArray Object[]; Full message object array
      * @throws Sim0MQException on unknown data type
@@ -57,7 +56,7 @@ public class FM3SetParameterMessage extends Sim0MQMessage
      */
     public FM3SetParameterMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 2);
+        super(objectArray, 2, MESSAGETYPE);
         Throw.when(!(objectArray[8] instanceof String), Sim0MQException.class, "parameterName (field 8) should be String");
         this.parameterName = objectArray[8].toString();
         this.parameterValue = objectArray[9];

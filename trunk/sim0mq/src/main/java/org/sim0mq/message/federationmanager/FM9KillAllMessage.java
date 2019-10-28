@@ -44,7 +44,7 @@ public class FM9KillAllMessage extends Sim0MQMessage
      */
     public FM9KillAllMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 0);
+        super(objectArray, 0, MESSAGETYPE);
     }
 
     /**

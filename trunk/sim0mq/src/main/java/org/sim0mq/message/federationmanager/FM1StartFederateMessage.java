@@ -149,29 +149,9 @@ public class FM1StartFederateMessage extends Sim0MQMessage
             final String redirectStdout, final String redirectStderr, final boolean deleteWorkingDirectory,
             final boolean deleteStdout, final boolean deleteStderr) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId,
-                new Object[] {instanceId, softwareCode, argsBefore, modelPath, argsAfter, workingDirectory, redirectStdin,
-                        redirectStdout, redirectStderr, deleteWorkingDirectory, deleteStdout, deleteStderr});
-
-        Throw.when(instanceId.isEmpty(), Sim0MQException.class, "instanceId cannot be empty");
-        Throw.when(softwareCode.isEmpty(), Sim0MQException.class, "softwareCode cannot be empty");
-        Throw.when(modelPath.isEmpty(), Sim0MQException.class, "modelPath cannot be empty");
-        Throw.when(workingDirectory.isEmpty(), Sim0MQException.class, "workingDirectory cannot be empty");
-        Throw.when(redirectStdout.isEmpty(), Sim0MQException.class, "redirectStdout cannot be empty");
-        Throw.when(redirectStderr.isEmpty(), Sim0MQException.class, "redirectStderr cannot be empty");
-
-        this.instanceId = instanceId;
-        this.softwareCode = softwareCode;
-        this.argsBefore = argsBefore;
-        this.modelPath = modelPath;
-        this.argsAfter = argsAfter;
-        this.workingDirectory = workingDirectory;
-        this.redirectStdin = redirectStdin;
-        this.redirectStdout = redirectStdout;
-        this.redirectStderr = redirectStderr;
-        this.deleteWorkingDirectory = deleteWorkingDirectory;
-        this.deleteStdout = deleteStdout;
-        this.deleteStderr = deleteStderr;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 12,
+                instanceId, softwareCode, argsBefore, modelPath, argsAfter, workingDirectory, redirectStdin, redirectStdout,
+                redirectStderr, deleteWorkingDirectory, deleteStdout, deleteStderr});
     }
 
     /**
@@ -181,7 +161,7 @@ public class FM1StartFederateMessage extends Sim0MQMessage
      */
     public FM1StartFederateMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 12);
+        super(objectArray, 12, MESSAGETYPE);
         this.instanceId = objectArray[8];
         Throw.when(!(objectArray[9] instanceof String), Sim0MQException.class, "softwareCode (field 9) should be a String");
         this.softwareCode = objectArray[9].toString();
@@ -196,8 +176,7 @@ public class FM1StartFederateMessage extends Sim0MQMessage
         this.workingDirectory = objectArray[13].toString();
         Throw.when(!(objectArray[14] instanceof String), Sim0MQException.class, "redirectStdin (field 14) should be a String");
         this.redirectStdin = objectArray[14].toString();
-        Throw.when(!(objectArray[15] instanceof String), Sim0MQException.class,
-                "redirectStdout (field 15) should be a String");
+        Throw.when(!(objectArray[15] instanceof String), Sim0MQException.class, "redirectStdout (field 15) should be a String");
         this.redirectStdout = objectArray[15].toString();
         Throw.when(!(objectArray[16] instanceof String), Sim0MQException.class, "redirectStdin (field 16) should be a String");
         this.redirectStderr = objectArray[16].toString();

@@ -44,7 +44,7 @@ public class FS3KillModelMessage extends Sim0MQMessage
      */
     public FS3KillModelMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 0);
+        super(objectArray, 0, MESSAGETYPE);
     }
 
     /**

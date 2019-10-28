@@ -150,11 +150,12 @@ public class Sim0MQMessage implements Serializable
      * 8-n = payload, where the number of fields was defined by message[7].
      * @param objectArray Object[]; Full message object array
      * @param expectedNumberOfPayloadFields int; the expected number of fields in the message (field 8 and further)
+     * @param expectedMessageTypeId the expected message type id
      * @throws Sim0MQException on unknown data type
      * @throws NullPointerException when one of the parameters is null
      */
-    public Sim0MQMessage(final Object[] objectArray, final int expectedNumberOfPayloadFields)
-            throws Sim0MQException, NullPointerException
+    public Sim0MQMessage(final Object[] objectArray, final int expectedNumberOfPayloadFields,
+            final Object expectedMessageTypeId) throws Sim0MQException, NullPointerException
     {
         Throw.whenNull(objectArray, "objectArray cannot be null");
         Throw.when(objectArray.length != 8 + expectedNumberOfPayloadFields, Sim0MQException.class,
@@ -165,6 +166,8 @@ public class Sim0MQMessage implements Serializable
             Throw.whenNull(objectArray[i], "objectArray[" + i + "] cannot be null");
         }
         Throw.when(!objectArray[0].equals(VERSION), Sim0MQException.class, "objectArray.version != " + VERSION);
+        Throw.when(!objectArray[5].equals(expectedMessageTypeId), Sim0MQException.class,
+                "objectArray.messageTypeId != " + expectedMessageTypeId);
         Throw.when(!(objectArray[1] instanceof Boolean), Sim0MQException.class, "objectArray.bigEndian not boolean");
         this.bigEndian = ((Boolean) objectArray[1]).booleanValue();
         this.federationId = objectArray[2];
@@ -552,7 +555,7 @@ public class Sim0MQMessage implements Serializable
     public static Sim0MQMessage decode(final byte[] bytes) throws Sim0MQException, SerializationException
     {
         Object[] array = decodeToArray(bytes);
-        return new Sim0MQMessage(array, array.length - 8);
+        return new Sim0MQMessage(array, array.length - 8, array[5]);
     }
 
     /**

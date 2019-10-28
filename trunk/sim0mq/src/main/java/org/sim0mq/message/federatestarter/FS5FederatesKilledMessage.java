@@ -44,9 +44,8 @@ public class FS5FederatesKilledMessage extends Sim0MQMessage
     public FS5FederatesKilledMessage(final Object federationId, final Object senderId, final Object receiverId,
             final Object messageId, final boolean status, final String error) throws Sim0MQException, NullPointerException
     {
-        super(true, federationId, senderId, receiverId, MESSAGETYPE, messageId, new Object[] {status, error});
-        this.status = status;
-        this.error = error;
+        this(new Object[] {Sim0MQMessage.VERSION, true, federationId, senderId, receiverId, MESSAGETYPE, messageId, 2, status,
+                error});
     }
 
     /**
@@ -56,7 +55,7 @@ public class FS5FederatesKilledMessage extends Sim0MQMessage
      */
     public FS5FederatesKilledMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 2);
+        super(objectArray, 2, MESSAGETYPE);
         Throw.when(!(objectArray[8] instanceof Boolean), Sim0MQException.class, "status (field 8) should be a Boolean");
         this.status = ((Boolean) objectArray[8]).booleanValue();
         Throw.when(!(objectArray[9] instanceof String), Sim0MQException.class, "error (field 9) should be a String");

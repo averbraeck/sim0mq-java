@@ -44,7 +44,7 @@ public class FM4SimStartMessage extends Sim0MQMessage
      */
     public FM4SimStartMessage(final Object[] objectArray) throws Sim0MQException, NullPointerException
     {
-        super(objectArray, 0);
+        super(objectArray, 0, MESSAGETYPE);
     }
 
     /**

@@ -19,6 +19,7 @@ import org.djutils.io.URLResource;
 import org.djutils.serialization.SerializationException;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.Sim0MQMessage;
+import org.sim0mq.message.federatestarter.FS1RequestStatusMessage;
 import org.sim0mq.message.federatestarter.FS2FederateStartedMessage;
 import org.sim0mq.message.federatestarter.FS4FederateKilledMessage;
 import org.sim0mq.message.federationmanager.FM1StartFederateMessage;
@@ -365,8 +366,10 @@ public class FederateStarter
         boolean started = false;
         while (ok && !started)
         {
-            byte[] fs1Message = Sim0MQMessage.encodeUTF8(true, federationRunId, "FS", modelId, "FS.1", ++this.messageCount);
+            byte[] fs1Message =
+                    new FS1RequestStatusMessage(federationRunId, "FS", modelId, ++this.messageCount).createByteArray();
             modelSocket.send(fs1Message, 0);
+            System.out.println("Sent: FS.1 to " + modelId + ", waiting on MC1");
 
             byte[] reply = modelSocket.recv(0);
             Object[] objectArray = Sim0MQMessage.decodeToArray(reply);
