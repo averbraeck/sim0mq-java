@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <groupId>org.sim0mq</groupId>
   <artifactId>sim0mq-demo</artifactId>
   <version>2.00.00</version>
-  
+
   <name>Sim0MQ demo classes</name>
   <description>Demo classes for the Sim0MQ project</description>
   <url>https://www.sim0mq.org</url>
@@ -19,9 +19,9 @@
     <sonar.scm.disabled>true</sonar.scm.disabled>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>3.01.04</djunits.version>
-    <djutils.version>2.00.00</djutils.version>
-    <dsol.version>3.03.09</dsol.version>
+    <djunits.version>4.01.01</djunits.version>
+    <djutils.version>1.03.02</djutils.version>
+    <dsol.version>3.03.12</dsol.version>
     <jeromq.version>0.5.1</jeromq.version>
     <junit.version>4.12</junit.version>
 
@@ -37,6 +37,8 @@
     <maven.failsafe.version>3.0.0-M3</maven.failsafe.version>
     <maven.jacoco.version>0.8.5</maven.jacoco.version>
     <maven.findbugs.version>3.0.5</maven.findbugs.version>
+    <maven.spotbugs.version>3.1.12.2</maven.spotbugs.version>
+    <spotbugs.version>4.0.0-beta4</spotbugs.version>
     <maven.project-info-reports.version>3.0.0</maven.project-info-reports.version>
     <maven.jxr.version>3.0.0</maven.jxr.version>
     <maven.taglist.version>2.4</maven.taglist.version>
@@ -514,6 +516,21 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>${maven.findbugs.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${maven.spotbugs.version}</version>
+        <configuration>
+          <dependencies>
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs</artifactId>
+              <version>${spotbugs.version}</version>
+            </dependency>
+          </dependencies>
+        </configuration>
       </plugin>
 
       <plugin>
