@@ -28,7 +28,7 @@
       <item name="Surefire report" href="surefire-report.html" />
       <item name="JaCoCo" href="jacoco/index.html" target="_blank" />
       <item name="Tag List" href="taglist.html" />
-      <item name="FindBugs" href="findbugs.html" />
+      <item name="SpotBugs" href="spotbugs.html" />
       <item name="CPD" href="cpd.html" />
       <item name="PMD" href="pmd.html" />
     </menu>
@@ -44,6 +44,7 @@
 
     <menu name="RELATED" inherit="bottom">
       <item name="DSOL" href="https://simulation.tudelft.nl/dsol/3.0/dsol-core/index.html" target="_blank" />
+      <item name="DJUTILS manual" href="https://djutils.org" target="_blank" />
       <item name="DJUNITS manual" href="https://djunits.org" target="_blank" />
       <item name="OTS project" href="https://opentrafficsim.org" target="_blank" />
       <item name="Simulation@TU Delft" href="https://simulation.tudelft.nl" target="_blank" />
