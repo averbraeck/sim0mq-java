@@ -6,6 +6,9 @@
       <action dev="averbraeck" type="update">
         Changed versions of djunits, djutils and dsol to the latest version to be compatible with Java 9+. 
       </action>
+      <action dev="averbraeck" type="fix">
+        Ensured that "package-list" exists in apidocs for backward compatibility of javadoc linking.
+      </action>
     </release>
   
     <release version="2.00.00" date="2019-10-28" description="V2 of Sim0MQ with message classes and heartbeat">

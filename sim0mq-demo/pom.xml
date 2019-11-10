@@ -178,6 +178,7 @@
               <url>scp://sim0mq.org/home/web/sim0mq.org</url>
               <serverId>sim0mq-deployment</serverId>
               <commands>
+                <command>cp -f /home/web/sim0mq.org/docs/${project.version}/sim0mq-demo/apidocs/element-list /home/web/sim0mq.org/docs/${project.version}/sim0mq-demo/apidocs/package-list</command>
                 <command>rm -r -f /home/web/sim0mq.org/docs/current</command>
                 <command>mkdir -p /home/web/sim0mq.org/docs/current</command>
                 <command>cp -r -f /home/web/sim0mq.org/docs/${project.version}/. /home/web/sim0mq.org/docs/current</command>
@@ -216,6 +217,19 @@
           <source>8</source>
           <links>
             <link>https://docs.oracle.com/javase/8/docs/api/</link>
+            <link>https://download.java.net/media/java3d/javadoc/1.5.1/</link>
+            <link>https://tinylog.org/v1/javadoc/</link>
+            <link>https://djunits.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
+            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.1/</link>
+            <link>https://sim0mq.org/docs/current/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-base/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-naming/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-event/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-interpreter/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-introspection/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-core/apidocs/</link>
           </links>
           <additionalJOption>-J-Xmx1024m</additionalJOption>
           <detectJavaApiLink>true</detectJavaApiLink>
@@ -394,6 +408,22 @@
         <version>${maven.javadoc.version}</version>
         <configuration>
           <source>8</source>
+          <links>
+            <link>https://docs.oracle.com/javase/8/docs/api/</link>
+            <link>https://download.java.net/media/java3d/javadoc/1.5.1/</link>
+            <link>https://tinylog.org/v1/javadoc/</link>
+            <link>https://djunits.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
+            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.1/</link>
+            <link>https://sim0mq.org/docs/current/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-base/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-naming/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-event/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-interpreter/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-introspection/apidocs/</link>
+            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-core/apidocs/</link>
+          </links>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>true</detectOfflineLinks>
           <show>package</show>
