@@ -36,7 +36,6 @@
     <maven.surefire-report.version>3.0.0-M3</maven.surefire-report.version>
     <maven.failsafe.version>3.0.0-M3</maven.failsafe.version>
     <maven.jacoco.version>0.8.5</maven.jacoco.version>
-    <maven.findbugs.version>3.0.5</maven.findbugs.version>
     <maven.spotbugs.version>3.1.12.2</maven.spotbugs.version>
     <spotbugs.version>4.0.0-beta4</spotbugs.version>
     <maven.project-info-reports.version>3.0.0</maven.project-info-reports.version>
@@ -332,46 +331,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${maven.findbugs.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <failOnError>false</failOnError>
-        </configuration>
-      </plugin>
-
-      <plugin> <!-- to avoid BCEL compatibility issue with Java 1.8... -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>${maven.project-info-reports.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-shared-jar</artifactId>
-            <version>1.1</version>
-            <exclusions>
-              <exclusion>
-                <groupId>org.apache.bcel</groupId>
-                <artifactId>bcel</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>bcel-findbugs</artifactId>
-            <version>6.0</version>
-          </dependency>
-        </dependencies>
-      </plugin> <!-- end avoid BCEL compatibility issue with Java 1.8... -->
-
     </plugins>
 
   </build>
@@ -540,12 +499,6 @@
             </tagClasses>
           </tagListOptions>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${maven.findbugs.version}</version>
       </plugin>
 
       <plugin>
