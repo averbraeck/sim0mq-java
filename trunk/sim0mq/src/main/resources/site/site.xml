@@ -14,6 +14,24 @@
       <item name="sim0mq" href="http://sim0mq.org/docs/${version}/index.html" />
       <item name="sim0mq-demo" href="http://sim0mq.org/docs/${version}/sim0mq-demo/index.html" />
     </menu>
+
+    <menu name="API">
+      <item name="JavaDocs" href="apidocs/index.html" target="_blank" />
+    </menu>
+
+    <menu name="PROJECT REPORTS">
+      <item name="Reports" href="project-reports.html" />
+      <item name="Source Xref" href="xref/index.html" target="_blank" />
+      <item name="Test JavaDocs" href="test-apidocs/index.html" target="_blank" />
+      <item name="Test Xref" href="xref-test/index.html" target="_blank" />
+      <item name="Checkstyle" href="checkstyle.html" />
+      <item name="Surefire report" href="surefire-report.html" />
+      <item name="JaCoCo" href="jacoco/index.html" target="_blank" />
+      <item name="Tag List" href="taglist.html" />
+      <item name="SpotBugs" href="spotbugs.html" />
+      <item name="CPD" href="cpd.html" />
+      <item name="PMD" href="pmd.html" />
+    </menu>
      
     <menu name="PROJECT INFO">
       <item name="About" href="index.html" />
