@@ -9,7 +9,7 @@ import org.sim0mq.message.Sim0MQReply;
  * AckNak, MC.2. Message sent by the Model to acknowledge the reception and implementation of a message sent by the Federation
  * Manager.
  * <p>
- * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
+ * Copyright (c) 2016-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
@@ -85,7 +85,7 @@ public class MC2AckNakMessage extends Sim0MQReply
      * Builder for the StartFederate Message. Can string setters together, and call build() at the end to build the actual
      * message.
      * <p>
-     * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
+     * Copyright (c) 2016-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>
