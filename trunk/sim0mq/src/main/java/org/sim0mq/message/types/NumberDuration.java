@@ -10,7 +10,7 @@ import org.sim0mq.Sim0MQException;
  * Wrapper for a Number or float/double with Unit of type Duration. Store it internally as a Number <b>or</b> as a DoubleScalar,
  * <b>or</b> as a FloatScalar and have methods to retrieve it in different ways.
  * <p>
- * Copyright (c) 2016-2019 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
+ * Copyright (c) 2016-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * $LastChangedDate: 2015-07-24 02:58:59 +0200 (Fri, 24 Jul 2015) $, @version $Revision: 1147 $, by $Author: averbraeck $,
