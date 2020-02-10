@@ -19,10 +19,10 @@
     <sonar.scm.disabled>true</sonar.scm.disabled>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>4.01.04</djunits.version>
-    <djutils.version>1.04.03</djutils.version>
-    <dsol.version>3.03.12</dsol.version>
-    <jeromq.version>0.5.1</jeromq.version>
+    <djunits.version>4.01.05</djunits.version>
+    <djutils.version>1.04.09</djutils.version>
+    <dsol.version>3.04.02</dsol.version>
+    <jeromq.version>0.5.2</jeromq.version>
     <junit.version>4.12</junit.version>
 
     <maven.compiler.version>3.8.1</maven.compiler.version>

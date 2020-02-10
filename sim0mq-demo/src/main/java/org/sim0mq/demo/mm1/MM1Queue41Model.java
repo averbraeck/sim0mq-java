@@ -1,5 +1,6 @@
 package org.sim0mq.demo.mm1;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 
 import nl.tudelft.simulation.dsol.SimRuntimeException;
@@ -85,23 +86,23 @@ public class MM1Queue41Model extends AbstractDSOLModel.TimeDouble<DEVSSimulatorI
         StreamInterface defaultStream = new MersenneTwister(this.seed);
 
         // The Generator
-        Generator.TimeDouble generator = new Generator.TimeDouble(getSimulator(), Object.class, null);
+        Generator.TimeDouble generator = new Generator.TimeDouble("generator", getSimulator(), Object.class, null);
         generator.setInterval(new DistContinuousSimulationTime.TimeDouble(new DistExponential(defaultStream, this.iat)));
         generator.setStartTime(new DistContinuousSimTime.TimeDouble(new DistConstant(defaultStream, 0.0)));
         generator.setBatchSize(new DistDiscreteConstant(defaultStream, 1));
         generator.setMaxNumber(1000);
 
         // The queue, the resource and the release
-        Resource<Double, Double, SimTimeDouble> resource = new Resource<>(getSimulator(), 1.0);
+        Resource<Double, Double, SimTimeDouble> resource = new Resource<>(getSimulator(), "resource", 1.0);
 
         // created a resource
-        StationInterface.TimeDouble queue = new Seize.TimeDouble(getSimulator(), resource);
-        StationInterface.TimeDouble release = new Release.TimeDouble(getSimulator(), resource, 1.0);
+        StationInterface.TimeDouble queue = new Seize.TimeDouble("queue", getSimulator(), resource);
+        StationInterface.TimeDouble release = new Release.TimeDouble("release", getSimulator(), resource, 1.0);
 
         // The server
         DistContinuousSimulationTime.TimeDouble serviceTimeDistribution =
                 new DistContinuousSimulationTime.TimeDouble(new DistExponential(defaultStream, this.serviceTime));
-        StationInterface.TimeDouble server = new Delay.TimeDouble(getSimulator(), serviceTimeDistribution);
+        StationInterface.TimeDouble server = new Delay.TimeDouble("delay", getSimulator(), serviceTimeDistribution);
 
         // The flow
         generator.setDestination(queue);
@@ -119,6 +120,13 @@ public class MM1Queue41Model extends AbstractDSOLModel.TimeDouble<DEVSSimulatorI
         {
             exception.printStackTrace();
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Serializable getSourceId()
+    {
+        return "MM1Queue41Model";
     }
 
 }
