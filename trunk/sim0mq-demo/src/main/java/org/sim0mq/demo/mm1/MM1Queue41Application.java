@@ -82,7 +82,7 @@ public class MM1Queue41Application
     protected MM1Queue41Application(final String modelId, final int port)
             throws SimRuntimeException, RemoteException, NamingException, Sim0MQException, SerializationException
     {
-        this.simulator = new DEVSSimulator.TimeDouble();
+        this.simulator = new DEVSSimulator.TimeDouble(modelId + ".simulator");
         this.modelId = modelId.trim();
         this.model = new MM1Queue41Model(this.simulator);
         startListener(port);
