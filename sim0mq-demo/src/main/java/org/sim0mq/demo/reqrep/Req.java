@@ -100,7 +100,6 @@ public class Req
          */
         public ReqThread(final ZContext context, final int port, final long numcalls)
         {
-            super();
             this.context = context;
             this.port = port;
             this.numcalls = numcalls;

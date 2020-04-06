@@ -68,7 +68,6 @@ public class Rep
          */
         public RepThread(final ZContext context, final int port)
         {
-            super();
             this.context = context;
             this.port = port;
         }
