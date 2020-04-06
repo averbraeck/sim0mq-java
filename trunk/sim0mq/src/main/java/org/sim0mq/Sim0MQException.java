@@ -20,7 +20,6 @@ public class Sim0MQException extends Exception
      */
     public Sim0MQException()
     {
-        super();
     }
 
     /**
