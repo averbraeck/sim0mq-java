@@ -20,7 +20,6 @@ public class Sim0MQRuntimeException extends RuntimeException
      */
     public Sim0MQRuntimeException()
     {
-        super();
     }
 
     /**
