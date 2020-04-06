@@ -90,7 +90,6 @@ public class FederateStarter
     public FederateStarter(final int fsPort, final Properties softwareProperties, final int startPort, final int endPort,
             final boolean modelController) throws Sim0MQException, SerializationException
     {
-        super();
         this.softwareProperties = softwareProperties;
         this.fsPort = fsPort;
         this.startPort = startPort;
