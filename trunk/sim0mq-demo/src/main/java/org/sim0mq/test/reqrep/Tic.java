@@ -1,4 +1,4 @@
-package org.sim0mq.test;
+package org.sim0mq.test.reqrep;
 
 import java.util.Arrays;
 
@@ -31,6 +31,7 @@ public final class Tic
     {
         long time = System.currentTimeMillis();
         int nummessages = 100000;
+        System.out.println("Send/receive " + nummessages + " messages");
         try (ZContext context = new ZContext(1))
         {
             // Socket to talk to server
@@ -38,6 +39,7 @@ public final class Tic
 
             ZMQ.Socket requester = context.createSocket(SocketType.REQ);
             requester.connect("tcp://localhost:5556");
+            System.out.println("Tic - REQ socket ready");
 
             for (int i = 0; i < nummessages; i++)
             {

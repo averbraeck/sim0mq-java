@@ -1,4 +1,4 @@
-package org.sim0mq.demo;
+package org.sim0mq.test;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;

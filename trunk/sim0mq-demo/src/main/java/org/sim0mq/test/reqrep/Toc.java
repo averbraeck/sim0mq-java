@@ -1,4 +1,4 @@
-package org.sim0mq.test;
+package org.sim0mq.test.reqrep;
 
 import org.sim0mq.Sim0MQException;
 import org.zeromq.SocketType;
@@ -32,6 +32,8 @@ public final class Toc
             // Socket to talk to clients
             ZMQ.Socket responder = context.createSocket(SocketType.REP);
             responder.bind("tcp://*:5556");
+            int nummessages = 0;
+            System.out.println("Toc - REP socket ready");
 
             while (true)
             {
@@ -47,10 +49,13 @@ public final class Toc
                     System.err.println("Request was not TIC");
                 }
 
+                nummessages++;
+                
                 // send a reply
                 byte[] reply = Tic.string2byte("TOC");
                 responder.send(reply, 0);
             }
+            System.out.println("Sent/received " + nummessages + " messages");
             responder.close();
             context.destroy();
         }
