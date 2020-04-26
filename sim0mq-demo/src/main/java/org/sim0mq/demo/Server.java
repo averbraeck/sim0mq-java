@@ -18,11 +18,39 @@ import org.zeromq.ZMQ;
 public final class Server
 {
     /** */
-    private Server()
+    private ZContext context;
+
+    /** the socket. */
+    private ZMQ.Socket responder;
+
+    /** */
+    public Server()
     {
-        // Utility class
+        this.context = new ZContext(1);
+
+        // Socket to talk to clients
+        this.responder = this.context.createSocket(SocketType.REP);
+        this.responder.bind("tcp://*:5556");
+
+        new Worker(this).start();
     }
-    
+
+    /**
+     * @return context
+     */
+    public ZContext getContext()
+    {
+        return this.context;
+    }
+
+    /**
+     * @return responder
+     */
+    public ZMQ.Socket getResponder()
+    {
+        return this.responder;
+    }
+
     /**
      * @param args command line arguments
      * @throws Sim0MQException on error
@@ -30,26 +58,51 @@ public final class Server
      */
     public static void main(final String[] args) throws Sim0MQException, SerializationException
     {
-        ZContext context = new ZContext(1);
+        new Server();
+    }
 
-        // Socket to talk to clients
-        ZMQ.Socket responder = context.createSocket(SocketType.REP);
-        responder.bind("tcp://*:5556");
+    /** */
+    protected static class Worker extends Thread
+    {
+        /** */
+        private Server server;
 
-        while (!Thread.currentThread().isInterrupted())
+        /**
+         * Constructor.
+         * @param server the server
+         */
+        public Worker(final Server server)
         {
-            // Wait for next request from the client
-            byte[] request = responder.recv(0);
-            Object[] message = Sim0MQMessage.decode(request).createObjectArray();
-            System.out.println("Received " + Sim0MQMessage.print(message));
-
-            // send a reply
-            Object[] reply = new Object[] { true, -28.2, 77000, "Bangladesh" };
-            responder.send(Sim0MQMessage.encodeUTF8(true, "IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, reply),
-                    0);
+            this.server = server;
         }
-        responder.close();
-        context.destroy();
-        context.close();
+
+        /** {@inheritDoc} */
+        @Override
+        public void run()
+        {
+            while (!Thread.currentThread().isInterrupted())
+            {
+                try
+                {
+                    // Wait for next request from the client
+                    byte[] request = this.server.getResponder().recv(0);
+                    Object[] message = Sim0MQMessage.decode(request).createObjectArray();
+                    System.out.println("Received " + Sim0MQMessage.print(message));
+
+                    // send a reply
+                    Object[] reply = new Object[] {true, -28.2, 77000, "Bangladesh"};
+                    this.server.getResponder()
+                            .send(Sim0MQMessage.encodeUTF8(true, "IDVV14.2", "MC.1", "MM1.4", "TEST.2", 1201L, reply), 0);
+                }
+                catch (Sim0MQException | SerializationException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            this.server.getResponder().close();
+            this.server.getContext().destroy();
+            this.server.getContext().close();
+        }
+
     }
 }
