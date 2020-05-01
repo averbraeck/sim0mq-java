@@ -1,14 +1,17 @@
 package org.sim0mq.test.threads;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 /**
- * Play with three event producing threads that need to send their message over a shared socket to a receiving thread that is
+ * Play with three event producing threads that need to send their message via a shared method to a receiving thread that is
  * listening. The PUSH-PULL over the inproc protocol with a synchronized send method is used to implement this. Messages are
  * sent without waiting to not block the sending threads. Therefore, the HWM is set considerably higher to not lose any
- * messages.
+ * messages. A map of thread id to socket is used to create one socket per sending thread.
  * <p>
  * Copyright (c) 2013-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
@@ -19,11 +22,11 @@ import org.zeromq.ZMQ;
  */
 public class PushPullThreads
 {
-    /** the socket for sending. */
-    private ZMQ.Socket pushSocket;
-
     /** the context for this program. */
     private ZContext ctx;
+    
+    /** map of thread ids to inproc sockets. */
+    private Map<Long, ZMQ.Socket> socketMap = new LinkedHashMap<>(); 
 
     /**
      * @param args empty
@@ -39,9 +42,6 @@ public class PushPullThreads
     public PushPullThreads()
     {
         this.ctx = new ZContext(1);
-        this.pushSocket = this.ctx.createSocket(SocketType.PUSH);
-        this.pushSocket.setHWM(100000);
-        this.pushSocket.connect("inproc://bus");
         for (int i = 0; i < 3; i++)
         {
             new ProducerThread(this, i);
@@ -55,7 +55,17 @@ public class PushPullThreads
      */
     public synchronized void call(final String message)
     {
-        this.pushSocket.send(message, ZMQ.DONTWAIT); // don't block the sending thread
+        long threadId = Thread.currentThread().getId();
+        ZMQ.Socket pushSocket = this.socketMap.get(threadId);
+        if (pushSocket == null)
+        {
+            pushSocket = this.ctx.createSocket(SocketType.PUSH);
+            pushSocket.setHWM(100000);
+            pushSocket.connect("inproc://bus");
+            this.socketMap.put(threadId, pushSocket);
+            System.out.println("Socket added for thread " + threadId);
+        }
+        pushSocket.send(message, ZMQ.DONTWAIT); // don't block the sending thread
     }
 
     /** */
