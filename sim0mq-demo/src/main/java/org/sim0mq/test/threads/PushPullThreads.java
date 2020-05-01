@@ -27,6 +27,9 @@ public class PushPullThreads
     
     /** map of thread ids to inproc sockets. */
     private Map<Long, ZMQ.Socket> socketMap = new LinkedHashMap<>(); 
+    
+    /** Total number of push threads. */
+    private final int totalPushThreads;
 
     /**
      * @param args empty
@@ -41,8 +44,9 @@ public class PushPullThreads
      */
     public PushPullThreads()
     {
+        this.totalPushThreads = 1000;
         this.ctx = new ZContext(1);
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < this.totalPushThreads; i++)
         {
             new ProducerThread(this, i);
         }
@@ -69,7 +73,7 @@ public class PushPullThreads
     }
 
     /** */
-    static class ProducerThread extends Thread
+    class ProducerThread extends Thread
     {
         /** the thread number. */
         private int threadNr;
@@ -101,7 +105,7 @@ public class PushPullThreads
     }
 
     /** */
-    static class ConsumerThread extends Thread
+    class ConsumerThread extends Thread
     {
         /** the context. Should be the same for inproc messages. */
         private ZContext ctx;
@@ -129,7 +133,7 @@ public class PushPullThreads
                 if ("STOP".equals(msg))
                 {
                     stopCount++;
-                    if (stopCount == 3)
+                    if (stopCount == totalPushThreads)
                     {
                         break;
                     }
