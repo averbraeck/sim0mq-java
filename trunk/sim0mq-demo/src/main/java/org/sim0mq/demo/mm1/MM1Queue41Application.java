@@ -180,7 +180,7 @@ public class MM1Queue41Application
             this.federationRunId = message.getFederationId();
         }
         String status = "started";
-        if (this.simulator.isRunning())
+        if (this.simulator.isStartingOrRunning())
         {
             status = "running";
         }
@@ -376,7 +376,7 @@ public class MM1Queue41Application
                     break;
 
                 case "uN.average":
-                    variableValue = this.model.uN.getSampleMean();
+                    variableValue = this.model.uN.getWeightedSampleMean();
                     break;
 
                 case "qN.max":
@@ -441,7 +441,7 @@ public class MM1Queue41Application
     {
         System.out.println("average queue length = " + this.model.qN.getSampleMean());
         System.out.println("average queue wait   = " + this.model.dN.getSampleMean());
-        System.out.println("average utilization  = " + this.model.uN.getSampleMean());
+        System.out.println("average utilization  = " + this.model.uN.getWeightedSampleMean());
     }
 
     /**
