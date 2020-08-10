@@ -2,6 +2,17 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="2.00.03" date="2020-08-10" description="djutils, dsol update">
+      <action dev="averbraeck" type="update">
+        Changed djutils version to 1.05.03, and dsol version for the demos to 3.04.08.
+      </action>
+      <action dev="averbraeck" type="fix">
+        Compatibility with latest dsol version caused a few small changes in the sim0mq-demo project, e.g. the change
+        of Simulator.isRunning() to Simulator.isStartedOrRunning() and the WeightedSampleMean() method for time
+        weighted statistics.  
+      </action>
+    </release>
+  
     <release version="2.00.02" date="2020-02-10" description="djutils, dsol, jeromq update">
       <action dev="averbraeck" type="update">
         Changed versions of djunits, djutils, jeromq and dsol to the latest version. 
