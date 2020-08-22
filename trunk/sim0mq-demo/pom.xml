@@ -220,9 +220,9 @@
             <link>https://download.java.net/media/java3d/javadoc/1.5.1/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/current/apidocs/</link>
-            <link>https://djutils.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
-            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.1/</link>
+            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
             <link>https://sim0mq.org/docs/current/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-base/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-naming/apidocs/</link>
@@ -380,9 +380,9 @@
             <link>https://download.java.net/media/java3d/javadoc/1.5.1/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/current/apidocs/</link>
-            <link>https://djutils.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
-            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.1/</link>
+            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
             <link>https://sim0mq.org/docs/current/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-base/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-naming/apidocs/</link>
