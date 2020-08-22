@@ -222,11 +222,13 @@
             <link>https://djunits.org/docs/current/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-data/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-stats/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-cli/apidocs/</link>
             <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
             <link>https://sim0mq.org/docs/current/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-base/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-naming/apidocs/</link>
-            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-event/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-interpreter/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-introspection/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-core/apidocs/</link>
@@ -382,11 +384,13 @@
             <link>https://djunits.org/docs/current/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-data/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-stats/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils-cli/apidocs/</link>
             <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
             <link>https://sim0mq.org/docs/current/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-base/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-naming/apidocs/</link>
-            <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-event/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-interpreter/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-introspection/apidocs/</link>
             <link>https://sg-3.tbm.tudelft.nl/dsol/3.0/dsol-core/apidocs/</link>
