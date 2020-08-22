@@ -224,9 +224,9 @@
             <link>https://download.java.net/media/java3d/javadoc/1.5.1/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/current/apidocs/</link>
-            <link>https://djutils.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
-            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.1/</link>
+            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
           </links>
           <additionalJOption>-J-Xmx1024m</additionalJOption>
           <detectJavaApiLink>true</detectJavaApiLink>
@@ -377,9 +377,9 @@
             <link>https://download.java.net/media/java3d/javadoc/1.5.1/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/current/apidocs/</link>
-            <link>https://djutils.org/docs/current/apidocs/</link>
+            <link>https://djutils.org/docs/current/djutils/apidocs/</link>
             <link>https://djutils.org/docs/current/djutils-serialization/apidocs/</link>
-            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.1/</link>
+            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
           </links>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>true</detectOfflineLinks>
