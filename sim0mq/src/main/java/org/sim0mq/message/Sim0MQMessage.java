@@ -548,7 +548,7 @@ public class Sim0MQMessage implements Serializable
      * 7 = number of fields that follow, as a Number (byte, short, int, long).<br>
      * 8-n = payload, where the number of fields was defined by message[7].
      * @param bytes the ZeroMQ byte array to decode
-     * @return an array of objects of the right type
+     * @return Sim0MQMessage; a newly created Sim0MQMessage based on the decoded bytes
      * @throws Sim0MQException on unknown data type
      * @throws SerializationException when deserialization fails
      */
