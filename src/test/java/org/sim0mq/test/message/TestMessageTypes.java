@@ -52,15 +52,19 @@ import org.sim0mq.message.modelcontroller.MC4StatisticsErrorMessage;
 public class TestMessageTypes
 {
     /** */
-    @SuppressWarnings({"javadoc", "checkstyle:javadocvariable", "checkstyle:visibilitymodifier"})
+    @SuppressWarnings({"checkstyle:javadocvariable", "checkstyle:visibilitymodifier"})
     class Header
     {
+        /** */
         public String federationId = "TESTFED.12";
 
+        /** */
         public String senderId;
 
+        /** */
         public String receiverId;
 
+        /** */
         public Object messageId = 1270L;
     }
 

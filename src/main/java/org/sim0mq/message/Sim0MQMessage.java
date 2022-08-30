@@ -358,11 +358,11 @@ public class Sim0MQMessage implements Serializable
         simulationContent[6] = messageId;
         if (content.length < Short.MAX_VALUE)
         {
-            simulationContent[7] = new Short((short) content.length);
+            simulationContent[7] = Short.valueOf((short) content.length);
         }
         else
         {
-            simulationContent[7] = new Integer(content.length);
+            simulationContent[7] = Integer.valueOf(content.length);
         }
         for (int i = 0; i < content.length; i++)
         {
@@ -411,11 +411,11 @@ public class Sim0MQMessage implements Serializable
         simulationContent[8] = messageId;
         if (content.length < Short.MAX_VALUE)
         {
-            simulationContent[9] = new Short((short) content.length);
+            simulationContent[9] = Short.valueOf((short) content.length);
         }
         else
         {
-            simulationContent[9] = new Integer(content.length);
+            simulationContent[9] = Integer.valueOf(content.length);
         }
         for (int i = 0; i < content.length; i++)
         {
