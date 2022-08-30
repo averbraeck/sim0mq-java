@@ -1,0 +1,57 @@
+site_name: Sim0MQ Manual
+site_url: https://sim0mq.org/manual/
+site_favicon: images/favicon.png
+copyright: (c) 2017-2022 Delft University of Technology
+
+theme:
+  name: readthedocs
+  navigation_depth: 1
+    
+markdown_extensions:
+  - admonition
+
+extra_css: 
+  - css/custom.css
+  
+extra_javascript:
+  - js/collapse_menu.js
+    
+nav:
+  - Home: index.md
+  - Sim0MQ Project:
+    - Java source code: 1-project/source-code.md
+    - Java Maven use: 1-project/maven-use.md
+    - Java technical docs: https://sim0mq.org/docs/latest/index.html
+    - Java API docs: https://sim0mq.org/docs/latest/apidocs/index.html
+    - Python source code: 1-project/python-source-code.md
+    - C++ source code: 1-project/cpp-source-code.md
+  - Sim0MQ Components:
+    - Introduction: 2-components/introduction.md
+    - FM - Federation Manager: 2-components/federation-manager.md
+    - FS - Federate Starter: 2-components/federate-starter.md
+    - MC - Model Controller: 2-components/model-controller.md
+    - LB - Load Balancer (v2): 2-components/load-balancer.md
+    - HB - Heartbeat (v2): 2-components/heartbeat.md
+  - Sim0MQ Interaction:
+    - Model Control Interaction: 3-interaction/model-cotntrol-interaction.md
+    - 0MQ Interaction: 3-interaction/0mq-interaction.md
+  - Sim0MQ Messages:
+    - Message structure (v2): 4-messages/message-structure.md
+    - FM messages: 4-messages/fm-messages.md
+    - FS messages: 4-messages/fs-messages.md
+    - MC messages: 4-messages/mc-messages.md
+    - LB Messages (v2): 4-messages/lb-messages.md
+    - HB Messages (v2): 4-messages/hb-messages.md
+  - Message serialization:
+    - Introduction: 5-serialization/index.md
+    - Coding types: 5-serialization/coding-types.md
+    - 'Primitive types (#0 - #8)': 5-serialization/primitive-types.md
+    - 'String types (#9 - #10)': 5-serialization/string-types.md
+    - 'Array types (#11 - #17)': 5-serialization/array-types.md
+    - 'Matrix types (#18 - #24)': 5-serialization/matrix-types.md
+    - Coding of units: 5-serialization/coding-units.md
+    - Unit display types: 5-serialization/display-types.md
+    - 'Scalars with unit (#25 - #26)': 5-serialization/scalar-units.md 
+    - 'Vectors with unit (#27 - #28)': 5-serialization/vector-units.md 
+    - 'Matrices with unit (#29 - #32)': 5-serialization/matrix-units.md 
+   

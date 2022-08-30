@@ -1,0 +1,9 @@
+# Source code for Python
+
+The Python source code for Sim0MQ can be found at Github: 
+
+* The reference implementation for (de)coding the field types in the message structure can be found at: [https://github.com/quaquel/bangladesh_roadtransport/blob/master/simulation_model/message_v2.py](https://github.com/quaquel/bangladesh_roadtransport/blob/master/simulation_model/message_v2.py). Details about the field types can be found at [https://djutils.org/manual/djutils-serialization](https://djutils.org/manual/djutils-serialization).<br>
+
+* The reference implementation for controlling a model can be found at [https://github.com/quaquel/bangladesh_roadtransport/blob/master/simulation_model/simzmq.py](https://github.com/quaquel/bangladesh_roadtransport/blob/master/simulation_model/simzmq.py). This is module specifies a ModelStructureInterface for controlling a model via ZeroMQ. Therefore, the functions do not directly command a model (e.g. a java model), but sends corresponding messages to ZeroMQ.<br>
+
+* A reference implementation of the FederateStarter in Python can be found at: [https://github.com/quaquel/bangladesh_roadtransport/blob/master/simulation_model/federatestarter.py](https://github.com/quaquel/bangladesh_roadtransport/blob/master/simulation_model/federatestarter.py). This code is equivalent to the Java FederateStarter that is documented at [https://sim0mq.org/docs/latest/apidocs/org/sim0mq/federatestarter/FederateStarter.html](https://sim0mq.org/docs/latest/apidocs/org/sim0mq/federatestarter/FederateStarter.html), with code at [https://sim0mq.org/docs/latest/xref/org/sim0mq/federatestarter/FederateStarter.html#FederateStarter](https://sim0mq.org/docs/latest/xref/org/sim0mq/federatestarter/FederateStarter.html#FederateStarter).
