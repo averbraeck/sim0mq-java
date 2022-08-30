@@ -2,6 +2,21 @@
   xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="2.1.0" date="2022-08-30" description="project moved to github; docs integrated">
+      <action dev="averbraeck" type="update">
+        Moved the project to github.
+      </action>
+      <action dev="averbraeck" type="update">
+        Updated all Maven plugins and dependencies to latest version.
+      </action>
+      <action dev="averbraeck" type="update">
+        Documentation fully integrated in the repository.
+      </action>
+      <action dev="averbraeck" type="update">
+        The default Java version is 11, and the default compiler to use is OpenJDK-11.
+      </action>
+    </release>
+
     <release version="2.00.04" date="2020-08-22" description="djunits, djutils, dsol update">
       <action dev="averbraeck" type="update">
         Changed djutils version to 1.05.04, djunits to 4.01.06, and dsol version for the demos to 3.04.10.
