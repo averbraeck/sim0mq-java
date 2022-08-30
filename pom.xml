@@ -457,7 +457,7 @@
         <configuration>
           <source>11</source>
           <links>
-            <link>https://docs.oracle.com/javase/8/docs/api/</link>
+            <link>https://docs.oracle.com/javase/11/docs/api/</link>
             <link>https://download.java.net/media/java3d/javadoc/1.5.1/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/latest/apidocs/</link>
