@@ -3,6 +3,7 @@
 ## Messages from Federate Starter (FS)
 
 The Federate Starter that is responsible to start en stop processes on a local node sends the following messages:
+
 * <a href="#fs1">FS.1 RequestStatus</a> (to MC)
 * <a href="#fs2">FS.2 FederateStarted</a> (to FM, in response to FM.1)
 * <a href="#fs3">FS.3 KillModel</a> (to MC)

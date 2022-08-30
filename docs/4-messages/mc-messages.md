@@ -3,6 +3,7 @@
 ## Messages from Model (MC)
 
 The Model's control loop (MC) sends the following messages:
+
 * <a href="#mc1">MC.1 Status</a> (to FS, in response to FS.1; to FM in response to FM.5)
 * <a href="#mc2">MC.2 AckNak</a> (to FM, in response to FM.2, FM.3, FM.4, FM.7)
 * <a href="#mc3">MC.3 Statistics</a> (to FM, in response to FM.6)

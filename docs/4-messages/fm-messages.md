@@ -5,6 +5,7 @@ The following messages have been defined for version 1 of the Sim0MQ information
 ## Messages from Federate Manager (FM)
 
 The Federation Manager (e.g., EMA Workbench, Experiment Manager) sends the following messages:
+
 * <a href="#fm1">FM.1 StartFederate</a> (to FS)
 * <a href="#fm2">FM.2 SimRunControl</a> (to MC)
 * <a href="#fm3">FM.3 SetParameter</a> (to MC)
