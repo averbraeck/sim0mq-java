@@ -698,7 +698,7 @@
 
   <licenses>
     <license>
-      <name>BSD-style license</name>
+      <name>BSD-3 style license</name>
       <url>https://www.sim0mq.org/docs/license.html</url>
       <distribution>repo</distribution>
     </license>
