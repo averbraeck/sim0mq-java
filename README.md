@@ -1,5 +1,5 @@
 # sim0mq-java
-Sim0MQ Simulation Message Bus
+Sim0MQ - Simulation Message Bus in Java
 
 ## Introduction
 

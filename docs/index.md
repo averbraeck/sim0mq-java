@@ -1,4 +1,4 @@
-# DSOL - Distributed Simulation Object Library
+# SIM0MQ - Distributed Simulation Message Bus in Java
 
 ## Introduction
 
