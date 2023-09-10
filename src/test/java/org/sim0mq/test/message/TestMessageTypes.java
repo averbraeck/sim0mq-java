@@ -1,6 +1,6 @@
 package org.sim0mq.test.message;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,7 +17,7 @@ import org.djunits.value.vdouble.scalar.Time;
 import org.djunits.value.vfloat.scalar.FloatDuration;
 import org.djunits.value.vfloat.scalar.FloatTime;
 import org.djutils.serialization.SerializationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.message.Sim0MQMessage;
 import org.sim0mq.message.federatestarter.FS1RequestStatusMessage;
@@ -473,10 +473,10 @@ public class TestMessageTypes
         assertEquals(o1.length, o2.length);
         for (int i = 0; i < o1.length; i++)
         {
-            assertEquals("field " + i + ", expected class: " + o1[i].getClass() + ", actual class: " + o2[i].getClass(),
-                    o1[i].getClass(), o2[i].getClass());
-            assertEquals("field " + i + ", expected value: " + o1[i].toString() + ", actual value: " + o2[i].toString(), o1[i],
-                    o2[i]);
+            assertEquals(o1[i].getClass(),
+                    o2[i].getClass(), "field " + i + ", expected class: " + o1[i].getClass() + ", actual class: " + o2[i].getClass());
+            assertEquals(o1[i], o2[i],
+                    "field " + i + ", expected value: " + o1[i].toString() + ", actual value: " + o2[i].toString());
         }
     }
 }

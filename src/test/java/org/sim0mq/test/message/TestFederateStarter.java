@@ -1,17 +1,17 @@
 package org.sim0mq.test.message;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.djutils.io.URLResource;
 import org.djutils.serialization.SerializationException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.sim0mq.Sim0MQException;
 import org.sim0mq.federatestarter.FederateStarter;
 import org.sim0mq.message.Sim0MQMessage;
@@ -54,8 +54,8 @@ public class TestFederateStarter
     String error = "";
 
     /** temporary folder for out / err files. */
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    private Path folder;
 
     /**
      * Test Federation Starter functions.
@@ -205,7 +205,7 @@ public class TestFederateStarter
      */
     void startModel(final String federationName, final int fsPort) throws Sim0MQException, SerializationException
     {
-        String temp = this.folder.getRoot().getAbsolutePath();
+        String temp = this.folder.toString();
         System.out.println(temp);
         //@formatter:off
         byte[] fm1Message = new FM1StartFederateMessage.Builder()

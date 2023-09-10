@@ -1,8 +1,8 @@
 package org.sim0mq.test.message;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.djunits.value.vfloat.vector.data.FloatVectorDataDense;
 import org.djutils.serialization.EndianUtil;
 import org.djutils.serialization.SerializationException;
 import org.djutils.serialization.TypedMessage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.sim0mq.Sim0MQException;
 
 /**
@@ -810,22 +810,22 @@ public class TestFieldTypes
                     {
                         AbstractFloatVector<?, ?, ?> fv1 = (AbstractFloatVector<?, ?, ?>) test.content[j];
                         AbstractFloatVector<?, ?, ?> fv2 = (AbstractFloatVector<?, ?, ?>) decoded[j];
-                        assertEquals("testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
-                                + ", original value = " + test.content[j].toString() + ", decoded value = "
-                                + decoded[j].toString(), fv1.size(), fv2.size());
-                        assertTrue("testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
-                                + ", original value = " + test.content[j].toString() + ", decoded value = "
-                                + decoded[j].toString(), fv1.getDisplayUnit().equals(fv2.getDisplayUnit()));
-                        assertEquals("testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
-                                + ", original value = " + test.content[j].toString() + ", decoded value = "
-                                + decoded[j].toString(), fv1.getClass(), fv2.getClass());
+                        assertEquals(fv1.size(), fv2.size(), "testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
+                                        + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                        + decoded[j].toString());
+                        assertTrue(fv1.getDisplayUnit().equals(fv2.getDisplayUnit()), "testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
+                                        + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                        + decoded[j].toString());
+                        assertEquals(fv1.getClass(), fv2.getClass(), "testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
+                                        + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                        + decoded[j].toString());
                         for (int index = 0; index < fv1.size(); index++)
                         {
                             assertEquals(
-                                    "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
+                                    fv1.getSI(index),
+                                    fv2.getSI(index), 0.001, "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
                                             + test.content[0].getClass() + ", original value = " + test.content[j].toString()
-                                            + ", decoded value = " + decoded[j].toString(),
-                                    fv1.getSI(index), fv2.getSI(index), 0.001);
+                                            + ", decoded value = " + decoded[j].toString());
                         }
                     }
 
@@ -834,22 +834,22 @@ public class TestFieldTypes
 
                         AbstractDoubleVector<?, ?, ?> dv1 = (AbstractDoubleVector<?, ?, ?>) test.content[j];
                         AbstractDoubleVector<?, ?, ?> dv2 = (AbstractDoubleVector<?, ?, ?>) decoded[j];
-                        assertEquals("testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
-                                + ", original value = " + test.content[j].toString() + ", decoded value = "
-                                + decoded[j].toString(), dv1.size(), dv2.size());
-                        assertTrue("testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
-                                + ", original value = " + test.content[j].toString() + ", decoded value = "
-                                + decoded[j].toString(), dv1.getDisplayUnit().equals(dv2.getDisplayUnit()));
-                        assertEquals("testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
-                                + ", original value = " + test.content[j].toString() + ", decoded value = "
-                                + decoded[j].toString(), dv1.getClass(), dv2.getClass());
+                        assertEquals(dv1.size(), dv2.size(), "testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
+                                        + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                        + decoded[j].toString());
+                        assertTrue(dv1.getDisplayUnit().equals(dv2.getDisplayUnit()), "testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
+                                        + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                        + decoded[j].toString());
+                        assertEquals(dv1.getClass(), dv2.getClass(), "testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
+                                        + ", original value = " + test.content[j].toString() + ", decoded value = "
+                                        + decoded[j].toString());
                         for (int index = 0; index < dv1.size(); index++)
                         {
                             assertEquals(
-                                    "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
+                                    dv1.getSI(index),
+                                    dv2.getSI(index), 0.001, "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
                                             + test.content[0].getClass() + ", original value = " + test.content[j].toString()
-                                            + ", decoded value = " + decoded[j].toString(),
-                                    dv1.getSI(index), dv2.getSI(index), 0.001);
+                                            + ", decoded value = " + decoded[j].toString());
                         }
                     }
 
