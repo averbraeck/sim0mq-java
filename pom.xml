@@ -106,7 +106,7 @@
     <resources>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
-        <targetPath>${project.build.directory}/classes</targetPath>
+        <targetPath>${project.build.directory}/classes/resources</targetPath>
         <includes>
           <include>**/*</include>
         </includes>
@@ -115,14 +115,7 @@
     <testResources>
       <testResource>
         <directory>${basedir}/src/test/resources</directory>
-        <targetPath>${project.build.directory}/test-classes</targetPath>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </testResource>
-      <testResource>
-        <directory>${basedir}/src/main/resources</directory>
-        <targetPath>${project.build.directory}/test-classes</targetPath>
+        <targetPath>${project.build.directory}/test-classes/resources</targetPath>
         <includes>
           <include>**/*</include>
         </includes>
@@ -157,7 +150,7 @@
                   <directory>${basedir}/src/main/resources</directory>
                 </resource>
               </resources>
-              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <outputDirectory>${basedir}/target/classes/resources</outputDirectory>
             </configuration>
           </execution>
           <execution>
@@ -172,7 +165,7 @@
                   <directory>${basedir}/src/test/resources</directory>
                 </resource>
               </resources>
-              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+              <outputDirectory>${basedir}/target/test-classes/resources</outputDirectory>
             </configuration>
           </execution>
           <execution>
@@ -187,7 +180,7 @@
                   <directory>${basedir}/src/main/resources</directory>
                 </resource>
               </resources>
-              <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+              <outputDirectory>${basedir}/target/test-classes/resources</outputDirectory>
             </configuration>
           </execution>
         </executions>

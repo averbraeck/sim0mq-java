@@ -67,14 +67,14 @@ public class TestFederateStarter
     public void testFederateStarter() throws Sim0MQException, SerializationException
     {
         Properties softwareProperties = new Properties();
-        InputStream propertiesStream = URLResource.getResourceAsStream("/software.properties");
+        InputStream propertiesStream = URLResource.getResourceAsStream("/resources/software.properties");
         try
         {
             softwareProperties.load(propertiesStream);
         }
         catch (IOException | NullPointerException e)
         {
-            fail("Could not find or read software properties file /software.properties");
+            fail("Could not find or read software properties file /resources/software.properties");
         }
         Thread fsThread = new Thread(new Runnable()
         {
