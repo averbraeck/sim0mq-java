@@ -13,16 +13,16 @@ import org.djunits.value.ValueRuntimeException;
 import org.djunits.value.vdouble.matrix.DurationMatrix;
 import org.djunits.value.vdouble.matrix.data.DoubleMatrixDataDense;
 import org.djunits.value.vdouble.scalar.Length;
-import org.djunits.value.vdouble.scalar.base.AbstractDoubleScalar;
+import org.djunits.value.vdouble.scalar.base.DoubleScalar;
 import org.djunits.value.vdouble.vector.DurationVector;
-import org.djunits.value.vdouble.vector.base.AbstractDoubleVector;
+import org.djunits.value.vdouble.vector.base.DoubleVector;
 import org.djunits.value.vdouble.vector.data.DoubleVectorDataDense;
 import org.djunits.value.vfloat.matrix.FloatDurationMatrix;
 import org.djunits.value.vfloat.matrix.data.FloatMatrixDataDense;
 import org.djunits.value.vfloat.scalar.FloatLength;
-import org.djunits.value.vfloat.scalar.base.AbstractFloatScalar;
+import org.djunits.value.vfloat.scalar.base.FloatScalar;
 import org.djunits.value.vfloat.vector.FloatDurationVector;
-import org.djunits.value.vfloat.vector.base.AbstractFloatVector;
+import org.djunits.value.vfloat.vector.base.FloatVector;
 import org.djunits.value.vfloat.vector.data.FloatVectorDataDense;
 import org.djutils.serialization.EndianUtil;
 import org.djutils.serialization.SerializationException;
@@ -368,10 +368,9 @@ public class TestFieldTypes
                     29, new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 0x40, 0x00, 0x00, 0x00, 0x40, 0x20, 0x00, 0x00, 0x40, 0x00,
                             0x00, 0x00, 0x40, 0x20, 0x00, 0x00}));
 
-            testTypes.add(new TestType(
-                    new DurationMatrix(new DoubleMatrixDataDense(new double[][] {{20.0, 25.0}, {20.0, 25.0}}),
-                            DurationUnit.MINUTE),
-                    30,
+            testTypes
+                    .add(new TestType(new DurationMatrix(new DoubleMatrixDataDense(new double[][] {{20.0, 25.0}, {20.0, 25.0}}),
+                            DurationUnit.MINUTE), 30,
                     //@formatter:off
                     new int[] {0, 0, 0, 2, 0, 0, 0, 2, 25, 7, 
                             0x40, 0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -764,22 +763,22 @@ public class TestFieldTypes
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
                                     + ", original value = " + test.content[j].toString() + ", decoded value = "
                                     + decoded[j].toString());
-                        if (((AbstractFloatScalar<?, ?>) test.content[j]).si != ((AbstractFloatScalar<?, ?>) decoded[j]).si)
+                        if (((FloatScalar<?, ?>) test.content[j]).si != ((FloatScalar<?, ?>) decoded[j]).si)
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
-                                    + ", original si value = " + ((AbstractFloatScalar<?, ?>) test.content[j]).si
-                                    + ", decoded si value = " + ((AbstractFloatScalar<?, ?>) decoded[j]).si);
-                        if (!((AbstractFloatScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
-                                .equals(((AbstractFloatScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit()))
+                                    + ", original si value = " + ((FloatScalar<?, ?>) test.content[j]).si
+                                    + ", decoded si value = " + ((FloatScalar<?, ?>) decoded[j]).si);
+                        if (!((FloatScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
+                                .equals(((FloatScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit()))
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
                                     + ", original si-unit = "
-                                    + ((AbstractFloatScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
+                                    + ((FloatScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
                                     + ", decoded si-unit = "
-                                    + ((AbstractFloatScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit());
-                        if (!((AbstractFloatScalar<?, ?>) test.content[j]).getDisplayUnit()
-                                .equals(((AbstractFloatScalar<?, ?>) decoded[j]).getDisplayUnit()))
+                                    + ((FloatScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit());
+                        if (!((FloatScalar<?, ?>) test.content[j]).getDisplayUnit()
+                                .equals(((FloatScalar<?, ?>) decoded[j]).getDisplayUnit()))
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass() + ", original unit = "
-                                    + ((AbstractFloatScalar<?, ?>) test.content[j]).getDisplayUnit() + ", decoded unit = "
-                                    + ((AbstractFloatScalar<?, ?>) decoded[j]).getDisplayUnit());
+                                    + ((FloatScalar<?, ?>) test.content[j]).getDisplayUnit() + ", decoded unit = "
+                                    + ((FloatScalar<?, ?>) decoded[j]).getDisplayUnit());
                     }
 
                     else if (test.type == 26) // DoubleScalar types
@@ -788,42 +787,44 @@ public class TestFieldTypes
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
                                     + ", original value = " + test.content[j].toString() + ", decoded value = "
                                     + decoded[j].toString());
-                        if (((AbstractDoubleScalar<?, ?>) test.content[j]).si != ((AbstractDoubleScalar<?, ?>) decoded[j]).si)
+                        if (((DoubleScalar<?, ?>) test.content[j]).si != ((DoubleScalar<?, ?>) decoded[j]).si)
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
-                                    + ", original si value = " + ((AbstractDoubleScalar<?, ?>) test.content[j]).si
-                                    + ", decoded si value = " + ((AbstractDoubleScalar<?, ?>) decoded[j]).si);
-                        if (!((AbstractDoubleScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
-                                .equals(((AbstractDoubleScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit()))
+                                    + ", original si value = " + ((DoubleScalar<?, ?>) test.content[j]).si
+                                    + ", decoded si value = " + ((DoubleScalar<?, ?>) decoded[j]).si);
+                        if (!((DoubleScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
+                                .equals(((DoubleScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit()))
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass()
                                     + ", original si-unit = "
-                                    + ((AbstractDoubleScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
+                                    + ((DoubleScalar<?, ?>) test.content[j]).getDisplayUnit().getStandardUnit()
                                     + ", decoded si-unit = "
-                                    + ((AbstractDoubleScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit());
-                        if (!((AbstractDoubleScalar<?, ?>) test.content[j]).getDisplayUnit()
-                                .equals(((AbstractDoubleScalar<?, ?>) decoded[j]).getDisplayUnit()))
+                                    + ((DoubleScalar<?, ?>) decoded[j]).getDisplayUnit().getStandardUnit());
+                        if (!((DoubleScalar<?, ?>) test.content[j]).getDisplayUnit()
+                                .equals(((DoubleScalar<?, ?>) decoded[j]).getDisplayUnit()))
                             fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass() + ", original unit = "
-                                    + ((AbstractDoubleScalar<?, ?>) test.content[j]).getDisplayUnit() + ", decoded unit = "
-                                    + ((AbstractDoubleScalar<?, ?>) decoded[j]).getDisplayUnit());
+                                    + ((DoubleScalar<?, ?>) test.content[j]).getDisplayUnit() + ", decoded unit = "
+                                    + ((DoubleScalar<?, ?>) decoded[j]).getDisplayUnit());
                     }
 
                     else if (test.type == 27) // FloatVector types
                     {
-                        AbstractFloatVector<?, ?, ?> fv1 = (AbstractFloatVector<?, ?, ?>) test.content[j];
-                        AbstractFloatVector<?, ?, ?> fv2 = (AbstractFloatVector<?, ?, ?>) decoded[j];
-                        assertEquals(fv1.size(), fv2.size(), "testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
+                        FloatVector<?, ?, ?> fv1 = (FloatVector<?, ?, ?>) test.content[j];
+                        FloatVector<?, ?, ?> fv2 = (FloatVector<?, ?, ?>) decoded[j];
+                        assertEquals(fv1.size(), fv2.size(),
+                                "testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
                                         + ", original value = " + test.content[j].toString() + ", decoded value = "
                                         + decoded[j].toString());
-                        assertTrue(fv1.getDisplayUnit().equals(fv2.getDisplayUnit()), "testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
+                        assertTrue(fv1.getDisplayUnit().equals(fv2.getDisplayUnit()),
+                                "testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
                                         + ", original value = " + test.content[j].toString() + ", decoded value = "
                                         + decoded[j].toString());
-                        assertEquals(fv1.getClass(), fv2.getClass(), "testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
+                        assertEquals(fv1.getClass(), fv2.getClass(),
+                                "testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
                                         + ", original value = " + test.content[j].toString() + ", decoded value = "
                                         + decoded[j].toString());
                         for (int index = 0; index < fv1.size(); index++)
                         {
-                            assertEquals(
-                                    fv1.getSI(index),
-                                    fv2.getSI(index), 0.001, "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
+                            assertEquals(fv1.getSI(index), fv2.getSI(index), 0.001,
+                                    "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
                                             + test.content[0].getClass() + ", original value = " + test.content[j].toString()
                                             + ", decoded value = " + decoded[j].toString());
                         }
@@ -832,22 +833,24 @@ public class TestFieldTypes
                     else if (test.type == 28) // DoubleVector types
                     {
 
-                        AbstractDoubleVector<?, ?, ?> dv1 = (AbstractDoubleVector<?, ?, ?>) test.content[j];
-                        AbstractDoubleVector<?, ?, ?> dv2 = (AbstractDoubleVector<?, ?, ?>) decoded[j];
-                        assertEquals(dv1.size(), dv2.size(), "testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
+                        DoubleVector<?, ?, ?> dv1 = (DoubleVector<?, ?, ?>) test.content[j];
+                        DoubleVector<?, ?, ?> dv2 = (DoubleVector<?, ?, ?>) decoded[j];
+                        assertEquals(dv1.size(), dv2.size(),
+                                "testEncodeDecodeUnitBigEndian size failed for " + test.content[0].getClass()
                                         + ", original value = " + test.content[j].toString() + ", decoded value = "
                                         + decoded[j].toString());
-                        assertTrue(dv1.getDisplayUnit().equals(dv2.getDisplayUnit()), "testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
+                        assertTrue(dv1.getDisplayUnit().equals(dv2.getDisplayUnit()),
+                                "testEncodeDecodeUnitBigEndian unit failed for " + test.content[0].getClass()
                                         + ", original value = " + test.content[j].toString() + ", decoded value = "
                                         + decoded[j].toString());
-                        assertEquals(dv1.getClass(), dv2.getClass(), "testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
+                        assertEquals(dv1.getClass(), dv2.getClass(),
+                                "testEncodeDecodeUnitBigEndian class failed for " + test.content[0].getClass()
                                         + ", original value = " + test.content[j].toString() + ", decoded value = "
                                         + decoded[j].toString());
                         for (int index = 0; index < dv1.size(); index++)
                         {
-                            assertEquals(
-                                    dv1.getSI(index),
-                                    dv2.getSI(index), 0.001, "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
+                            assertEquals(dv1.getSI(index), dv2.getSI(index), 0.001,
+                                    "testEncodeDecodeUnitBigEndian content[" + index + "] failed for "
                                             + test.content[0].getClass() + ", original value = " + test.content[j].toString()
                                             + ", decoded value = " + decoded[j].toString());
                         }
