@@ -23,9 +23,9 @@
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>5.0.1</djunits.version>
-    <djutils.version>2.0.1</djutils.version>
-    <jeromq.version>0.5.2</jeromq.version>
+    <djunits.version>5.1.2</djunits.version>
+    <djutils.version>2.2.0</djutils.version>
+    <jeromq.version>0.5.3</jeromq.version>
     <junit.version>5.10.0</junit.version>
 
     <maven.compiler.version>3.10.1</maven.compiler.version>
@@ -74,7 +74,7 @@
 
     <dependency>
       <groupId>org.djutils</groupId>
-      <artifactId>djutils</artifactId>
+      <artifactId>djutils-base</artifactId>
       <version>${djutils.version}</version>
     </dependency>
 
