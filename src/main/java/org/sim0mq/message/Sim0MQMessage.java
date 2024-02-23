@@ -43,7 +43,7 @@ import org.sim0mq.Sim0MQException;
  * <li>Frame 8-n. Payload, where each field has a 1-byte prefix denoting the type of field.</li>
  * </ul>
  * <p>
- * Copyright (c) 2016-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
+ * Copyright (c) 2016-2024 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * initial version Mar 3, 2017 <br>
@@ -652,7 +652,7 @@ public class Sim0MQMessage implements Serializable
     /**
      * Builder for the Sim0MQMessage. Can string setters together, and call build() at the end to build the actual message.
      * <p>
-     * Copyright (c) 2016-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
+     * Copyright (c) 2016-2024 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>

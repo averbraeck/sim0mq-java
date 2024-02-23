@@ -8,7 +8,7 @@ import org.sim0mq.message.Sim0MQMessage;
  * StatisticsError, MC.4. The Model sends this message as a response to RequestStatistics messages sent by the Federation
  * Manager, when e.g., the requested variable could not be found.
  * <p>
- * Copyright (c) 2016-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
+ * Copyright (c) 2016-2024 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved. <br>
  * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
  * </p>
  * @author <a href="http://www.tbm.tudelft.nl/averbraeck">Alexander Verbraeck</a>
@@ -83,7 +83,7 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
      * Builder for the StartFederate Message. Can string setters together, and call build() at the end to build the actual
      * message.
      * <p>
-     * Copyright (c) 2016-2020 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
+     * Copyright (c) 2016-2024 Delft University of Technology, PO Box 5, 2600 AA, Delft, the Netherlands. All rights reserved.
      * <br>
      * BSD-style license. See <a href="http://sim0mq.org/docs/current/license.html">Sim0MQ License</a>.
      * </p>
