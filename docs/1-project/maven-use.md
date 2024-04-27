@@ -9,12 +9,17 @@ Maven is one of the easiest ways to include Sim0MQ in a Java project. The Maven 
   <dependency>
     <groupId>org.sim0mq</groupId>
     <artifactId>sim0mq</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.2</version>
   </dependency>
 </dependencies>
 ```
 
-Of course, the version number (2.1.0 in the above example) needs to be replaced with the version that one wants to include in the project.
+Of course, the version number (2.1.2 in the above example) needs to be replaced with the version that one wants to include in the project.
+
+
+## Java version
+
+Note that as of sim0mq v2.1.2, Java-17 is needed. Up to version 2.1.1, Java-11 was sufficient, but premier support for Java-11 has already stopped in 2023. Therefore, we upgraded to Java-17.
 
 
 ## Dependencies
