@@ -214,7 +214,7 @@
             <link>https://docs.oracle.com/javase/11/docs/api/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/latest/apidocs/</link>
-            <link>https://djutils.org/docs/latest/djutils/apidocs/</link>
+            <!-- link>https://djutils.org/docs/latest/djutils/apidocs/</link -->
             <link>https://djutils.org/docs/latest/djutils-serialization/apidocs/</link>
             <!-- link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.6.0/</link -->
           </links>
@@ -449,7 +449,7 @@
             <link>https://docs.oracle.com/javase/11/docs/api/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/latest/apidocs/</link>
-            <link>https://djutils.org/docs/latest/djutils/apidocs/</link>
+            <!-- link>https://djutils.org/docs/latest/djutils/apidocs/</link -->
             <link>https://djutils.org/docs/latest/djutils-serialization/apidocs/</link>
             <!-- link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.6.0/</link -->
           </links>
