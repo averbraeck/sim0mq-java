@@ -54,7 +54,7 @@
 
     <menu name="RELATED" inherit="bottom">
       <item name="Sim0MQ Manual" href="http://sim0mq.org" target="_blank" />
-      <item name="DSOL" href="http://simulation.tudelft.nl/dsol/3.0/dsol-core/index.html" target="_blank" />
+      <item name="DSOL" href="https://simulation.tudelft.nl/dsol/manual" target="_blank" />
       <item name="DJUNITS manual" href="http://djunits.org" target="_blank" />
       <item name="0MQ" href="http://zeromq.org" target="_blank" />
       <item name="Simulation@TU Delft" href="http://simulation.tudelft.nl" target="_blank" />
