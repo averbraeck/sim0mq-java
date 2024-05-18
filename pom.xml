@@ -216,7 +216,7 @@
             <link>https://djunits.org/docs/latest/apidocs/</link>
             <link>https://djutils.org/docs/latest/djutils/apidocs/</link>
             <link>https://djutils.org/docs/latest/djutils-serialization/apidocs/</link>
-            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
+            <!-- link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.6.0/</link -->
           </links>
           <additionalJOption>-J-Xmx1024m</additionalJOption>
           <detectJavaApiLink>false</detectJavaApiLink>
@@ -451,7 +451,7 @@
             <link>https://djunits.org/docs/latest/apidocs/</link>
             <link>https://djutils.org/docs/latest/djutils/apidocs/</link>
             <link>https://djutils.org/docs/latest/djutils-serialization/apidocs/</link>
-            <link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.5.2/</link>
+            <!-- link>https://www.javadoc.io/doc/org.zeromq/jeromq/0.6.0/</link -->
           </links>
           <detectLinks>false</detectLinks>
           <detectOfflineLinks>true</detectOfflineLinks>
