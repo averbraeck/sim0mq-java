@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="${project.artifactId} ${project.version}" xmlns="http://maven.apache.org/DECORATION/1.6.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd">
+<site xmlns="http://maven.apache.org/SITE/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 https://maven.apache.org/xsd/site-2.0.0.xsd"
+  name="${project.artifactId} ${project.version}">
 
-  <publishDate position="left" format="dd-MM-yyyy hh:mm" />
+  <publishDate position="left" format="dd-MM-yyyy HH:mm" />
 
-  <bannerLeft>
-    <name>${project.name}</name>
-  </bannerLeft>
-
-  <bannerRight>
-    <name>${project.artifactId} ${project.version}</name>
-  </bannerRight>
+  <bannerLeft name="${project.name}" />
+  <bannerRight name="${project.artifactId} ${project.version}" />
 
   <skin>
     <groupId>org.apache.maven.skins</groupId>
     <artifactId>maven-fluido-skin</artifactId>
     <version>2.0.0-M8</version>
   </skin>
-  
+    
   <body>
+
     <menu name="API">
       <item name="JavaDocs" href="apidocs/index.html" target="_blank" />
     </menu>
@@ -26,7 +23,7 @@
     <menu name="PROJECT REPORTS">
       <item name="Reports" href="project-reports.html" />
       <item name="Source Xref" href="xref/index.html" target="_blank" />
-      <item name="Test JavaDocs" href="testapidocs/index.html" target="_blank" />
+      <item name="Test JavaDocs" href="test-apidocs/index.html" target="_blank" />
       <item name="Test Xref" href="xref-test/index.html" target="_blank" />
       <item name="Checkstyle" href="checkstyle.html" />
       <item name="Surefire report" href="surefire-report.html" />
@@ -36,24 +33,25 @@
       <item name="CPD" href="cpd.html" />
       <item name="PMD" href="pmd.html" />
     </menu>
-      
+     
     <menu name="PROJECT INFO">
       <item name="About" href="index.html" />
-      <item name="Project Summary" href="summary.html" />
+      <item name="Project Summary" href="project-summary.html" />
       <item name="Dependencies" href="dependencies.html" />
-      <item name="Project Team" href="team.html" />
+      <item name="Project Team" href="team-list.html" />
       <item name="Project License" href="license.html" />
       <item name="Versions + Changes" href="changes-report.html" />
+      <item name="Sim0MQ Manual" href="manual/" target="_blank" />
     </menu>
 
     <menu name="RELATED" inherit="bottom">
-      <item name="DSOL manual" href="https://simulation.tudelft.nl/dsol/manual" target="_blank" />
-      <item name="DJUTILS manual" href="https://djutils.org" target="_blank" />
-      <item name="DJUNITS manual" href="https://djunits.org" target="_blank" />
-      <item name="OTS project" href="https://opentrafficsim.org" target="_blank" />
-      <item name="Simulation@TU Delft" href="https://simulation.tudelft.nl" target="_blank" />
+      <item name="DSOL" href="https://simulation.tudelft.nl/dsol/manual" target="_blank" />
+      <item name="DJUNITS manual" href="http://djunits.org" target="_blank" />
+      <item name="DJUTILS manual" href="http://djutils.org" target="_blank" />
+      <item name="0MQ" href="http://zeromq.org" target="_blank" />
+      <item name="Simulation@TU Delft" href="http://simulation.tudelft.nl" target="_blank" />
       <item name="About Sim0MQ" href="index.html" />
     </menu>
 
   </body>
-</project>
+</site>
