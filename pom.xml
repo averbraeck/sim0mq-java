@@ -581,7 +581,7 @@
         </configuration>
       </plugin>
 
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
         <version>${maven.changes.version}</version>
@@ -592,7 +592,7 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
+      </plugin-->
 
     </plugins>
   </reporting>
