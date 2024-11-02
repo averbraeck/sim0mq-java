@@ -90,28 +90,24 @@ public class NumberTime extends Number implements Serializable
         }
     }
   
-    /** {@inheritDoc} */
     @Override
     public int intValue()
     {
         return this.time.intValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public long longValue()
     {
         return this.time.longValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public float floatValue()
     {
         return this.time.floatValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public double doubleValue()
     {

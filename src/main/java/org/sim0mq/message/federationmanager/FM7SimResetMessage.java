@@ -66,7 +66,6 @@ public class FM7SimResetMessage extends Sim0MQMessage
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM7SimResetMessage build() throws Sim0MQException, NullPointerException
         {

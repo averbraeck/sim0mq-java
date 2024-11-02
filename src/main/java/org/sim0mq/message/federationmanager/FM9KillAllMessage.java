@@ -66,7 +66,6 @@ public class FM9KillAllMessage extends Sim0MQMessage
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM9KillAllMessage build() throws Sim0MQException, NullPointerException
         {

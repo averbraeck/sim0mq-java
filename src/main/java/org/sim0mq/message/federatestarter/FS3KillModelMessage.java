@@ -67,7 +67,6 @@ public class FS3KillModelMessage extends Sim0MQMessage
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public FS3KillModelMessage build() throws Sim0MQException, NullPointerException
         {

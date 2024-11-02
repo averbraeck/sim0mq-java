@@ -69,7 +69,6 @@ public class FS1RequestStatusMessage extends Sim0MQMessage
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public FS1RequestStatusMessage build() throws Sim0MQException, NullPointerException
         {

@@ -411,7 +411,6 @@ public class FM2SimRunControlMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM2SimRunControlMessage build() throws Sim0MQException, NullPointerException
         {

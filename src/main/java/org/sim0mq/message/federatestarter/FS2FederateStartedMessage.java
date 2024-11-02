@@ -193,7 +193,6 @@ public class FS2FederateStartedMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FS2FederateStartedMessage build() throws Sim0MQException, NullPointerException
         {

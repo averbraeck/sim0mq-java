@@ -90,28 +90,24 @@ public class NumberDuration extends Number implements Serializable
         }
     }
     
-    /** {@inheritDoc} */
     @Override
     public int intValue()
     {
         return this.duration.intValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public long longValue()
     {
         return this.duration.longValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public float floatValue()
     {
         return this.duration.floatValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public double doubleValue()
     {

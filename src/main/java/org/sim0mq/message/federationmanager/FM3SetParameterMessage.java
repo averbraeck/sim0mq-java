@@ -124,7 +124,6 @@ public class FM3SetParameterMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM3SetParameterMessage build() throws Sim0MQException, NullPointerException
         {

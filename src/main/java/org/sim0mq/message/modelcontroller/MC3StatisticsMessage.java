@@ -133,7 +133,6 @@ public class MC3StatisticsMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public MC3StatisticsMessage build() throws Sim0MQException, NullPointerException
         {

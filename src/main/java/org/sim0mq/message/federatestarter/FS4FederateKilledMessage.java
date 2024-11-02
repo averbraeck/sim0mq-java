@@ -163,7 +163,6 @@ public class FS4FederateKilledMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FS4FederateKilledMessage build() throws Sim0MQException, NullPointerException
         {

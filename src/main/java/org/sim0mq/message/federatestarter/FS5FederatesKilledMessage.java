@@ -124,7 +124,6 @@ public class FS5FederatesKilledMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FS5FederatesKilledMessage build() throws Sim0MQException, NullPointerException
         {

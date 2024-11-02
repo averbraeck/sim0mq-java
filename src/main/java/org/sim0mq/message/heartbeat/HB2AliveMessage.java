@@ -78,7 +78,6 @@ public class HB2AliveMessage extends Sim0MQReply
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public HB2AliveMessage build() throws Sim0MQException, NullPointerException
         {

@@ -127,7 +127,6 @@ public class MC2AckNakMessage extends Sim0MQReply
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public MC2AckNakMessage build() throws Sim0MQException, NullPointerException
         {

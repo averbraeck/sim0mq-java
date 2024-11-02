@@ -502,7 +502,6 @@ public class FM1StartFederateMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM1StartFederateMessage build() throws Sim0MQException, NullPointerException
         {

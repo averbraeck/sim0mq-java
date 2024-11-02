@@ -126,7 +126,6 @@ public class MC1StatusMessage extends Sim0MQReply
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public MC1StatusMessage build() throws Sim0MQException, NullPointerException
         {

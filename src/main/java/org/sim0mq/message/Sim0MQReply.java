@@ -131,7 +131,6 @@ public abstract class Sim0MQReply extends Sim0MQMessage
             return (B) this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public abstract Sim0MQReply build() throws Sim0MQException, NullPointerException;
 

@@ -70,7 +70,6 @@ public class FM5RequestStatus extends Sim0MQMessage
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM5RequestStatus build() throws Sim0MQException, NullPointerException
         {

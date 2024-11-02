@@ -66,7 +66,6 @@ public class FM4SimStartMessage extends Sim0MQMessage
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM4SimStartMessage build() throws Sim0MQException, NullPointerException
         {

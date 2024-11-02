@@ -235,7 +235,6 @@ public class FederateStarter
 
                     new Thread()
                     {
-                        /** {@inheritDoc} */
                         @Override
                         public void run()
                         {

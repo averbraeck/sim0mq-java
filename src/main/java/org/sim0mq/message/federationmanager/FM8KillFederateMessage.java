@@ -95,7 +95,6 @@ public class FM8KillFederateMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM8KillFederateMessage build() throws Sim0MQException, NullPointerException
         {

@@ -108,7 +108,6 @@ public class FM6RequestStatisticsMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public FM6RequestStatisticsMessage build() throws Sim0MQException, NullPointerException
         {

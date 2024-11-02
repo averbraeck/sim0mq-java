@@ -125,7 +125,6 @@ public class MC4StatisticsErrorMessage extends Sim0MQMessage
             return this;
         }
 
-        /** {@inheritDoc} */
         @Override
         public MC4StatisticsErrorMessage build() throws Sim0MQException, NullPointerException
         {

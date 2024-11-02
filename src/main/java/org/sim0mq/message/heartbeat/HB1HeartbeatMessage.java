@@ -67,7 +67,6 @@ public class HB1HeartbeatMessage extends Sim0MQMessage
             // nothing to do.
         }
 
-        /** {@inheritDoc} */
         @Override
         public HB1HeartbeatMessage build() throws Sim0MQException, NullPointerException
         {
