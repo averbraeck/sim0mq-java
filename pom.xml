@@ -23,8 +23,8 @@
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
 
     <sim0mq.version>${project.version}</sim0mq.version>
-    <djunits.version>5.1.4</djunits.version>
-    <djutils.version>2.2.2</djutils.version>
+    <djunits.version>5.2.0</djunits.version>
+    <djutils.version>2.3.0</djutils.version>
     <jeromq.version>0.6.0</jeromq.version>
     <junit.version>5.11.0</junit.version>
 
