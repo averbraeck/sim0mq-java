@@ -209,9 +209,9 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${maven.javadoc.version}</version>
         <configuration>
-          <source>11</source>
+          <source>17</source>
           <links>
-            <link>https://docs.oracle.com/javase/11/docs/api/</link>
+            <link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/latest/apidocs/</link>
             <!-- link>https://djutils.org/docs/latest/djutils/apidocs/</link -->
@@ -444,9 +444,9 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${maven.javadoc.version}</version>
         <configuration>
-          <source>11</source>
+          <source>17</source>
           <links>
-            <link>https://docs.oracle.com/javase/11/docs/api/</link>
+            <link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
             <link>https://tinylog.org/v1/javadoc/</link>
             <link>https://djunits.org/docs/latest/apidocs/</link>
             <!-- link>https://djutils.org/docs/latest/djutils/apidocs/</link -->
