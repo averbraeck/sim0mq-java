@@ -447,7 +447,7 @@ public class TestFieldTypes
                 else
                     message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodePrimitiveBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -490,7 +490,7 @@ public class TestFieldTypes
                 else
                     message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeArrayBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -599,7 +599,7 @@ public class TestFieldTypes
                 else
                     message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeMatrixBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -743,7 +743,7 @@ public class TestFieldTypes
                 else
                     message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message, EndianUtil.BIG_ENDIAN);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass() + ", value "

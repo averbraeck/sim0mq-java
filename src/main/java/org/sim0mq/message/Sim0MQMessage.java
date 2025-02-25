@@ -580,9 +580,7 @@ public class Sim0MQMessage implements Serializable
         Throw.when(bytes.length < 12, Sim0MQException.class, "number of bytes in message < 12: " + bytes.length);
         Throw.when(bytes[10] != 6 || bytes[11] < 0 || bytes[11] > 1, Sim0MQException.class,
                 "Bytes 10+11 in the byte array do not contain a boolean");
-        boolean bigEndian = bytes[11] == 1;
-        Object[] objectArray =
-                TypedMessage.decodeToObjectDataTypes(bytes, bigEndian ? EndianUtil.BIG_ENDIAN : EndianUtil.LITTLE_ENDIAN);
+        Object[] objectArray = TypedMessage.decodeToObjectDataTypes(bytes);
         Throw.when(objectArray.length < 8, Sim0MQException.class, "number of message fields < 8: " + objectArray.length);
         Throw.when(!(objectArray[0] instanceof String) || !(objectArray[0].equals(Sim0MQMessage.VERSION)),
                 Sim0MQException.class, "message[0] does not contain the right version number: " + objectArray[0]);
