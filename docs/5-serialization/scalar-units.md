@@ -16,3 +16,11 @@ The internal storage of the value that is transmitted is always in the SI (or st
 <pre>
 |26|16|11|0x47|0x6A|0x60|0x00|0x00|0x00|0x00|0x00|
 </pre>
+
+
+## Little-endian types
+
+| code | name | description |
+| ------ | ------- | -------------- |
+| 153 (-103) | FLOAT_32_UNIT_LE | Float stored internally as a little-endian float in the corresponding SI unit, with unit type and display unit attached. The total size of the object is 7 bytes. |
+| 154 (-102) | DOUBLE_64_UNIT_LE | Double stored internally as a little-endian double in the corresponding SI unit, with unit type and display unit attached. The total size of the object is 11 bytes |

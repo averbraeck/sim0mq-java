@@ -114,3 +114,13 @@ then the coding is as follows:
 |0x40|0x7A|0x91|0x99|0x99|0x99|0x99|0x9A|
 </pre>
 
+
+## Little-endian matrix types
+
+| code | name | description |
+| ------ | ------- | -------------- |
+| 157 (-99) | FLOAT_32_UNIT_MATRIX_LE | Dense little-endian float matrix, preceded by a 32-bit little-endian row count int and a 32-bit little-endian column count int, with unit type and display unit attached to the entire float matrix. Each float is stored in little-endian order. |
+| 158 (-98) | DOUBLE_64_UNIT_MATRIX_LE | Dense little-endian double matrix, preceded by a 32-bit little-endian row count int and a 32-bit little-endian column count int, with unit type and display unit attached to the entire double matrix. Each double is stored in little-endian order. |
+| 159 (-97) | FLOAT_32_UNIT_COLUMN_MATRIX_LE | Dense little-endian float matrix, preceded by a 32-bit little-endian row count int and a 32-bit little-endian column count int, with a unique unit type and display unit per column of the float matrix. |
+| 160 (-96) | DOUBLE_64_UNIT_COLUMN_MATRIX_LE | Dense little-endian double matrix, preceded by a 32-bit little-endian row count int and a 32-bit little-endian column count int, with a unique unit type and display unit per column of the double matrix. |
+

@@ -24,3 +24,11 @@ After the byte with value 28, the array types have a 32-bit int indicating the n
 </pre>
 
 In this illustration, the 23 bytes have been divided over three lines for readability. The serialized data may not contain such line breaks.
+
+
+## Little-endian types
+
+| code | name | description |
+| ------ | ------- | -------------- |
+| 155 (-101) | FLOAT_32_UNIT_ARRAY_LE | Dense float array, preceded by a little-endian 32-bit number indicating the number of floats, with unit type and display unit attached to the entire float array. Each float is stored in little-endian order. |
+| 156 (-100) | DOUBLE_64_UNIT_ARRAY_LE | Dense double array, preceded by a little-endian 32-bit number indicating the number of doubles, little-endian order, with unit type and display unit attached to the entire double array. Each double is stored in little-endian order. |

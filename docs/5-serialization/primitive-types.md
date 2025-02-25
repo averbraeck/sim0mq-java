@@ -136,3 +136,21 @@ Code "8" indicates that a single UTF-16 character coded by two bytes follows, us
 
 !!! Warning
     For a discussion on little and  big endianness for UTF-8 and UTF-16 strings, see the following discussion at StackExchange: [https://stackoverflow.com/questions/3833693/isn-t-on-big-endian-machines-utf-8s-byte-order-different-than-on-little-endian](https://stackoverflow.com/questions/3833693/isn-t-on-big-endian-machines-utf-8s-byte-order-different-than-on-little-endian), as well as [https://unicode.org/faq/utf_bom.html#utf8-2](https://unicode.org/faq/utf_bom.html#utf8-2) and [https://unicode.org/faq/utf_bom.html#gen6](https://unicode.org/faq/utf_bom.html#gen6)
+
+
+
+## Little-Endian representation of primitive types
+
+| code | name | description |
+| ------ | ------- | -------------- |
+| 128 (-128) | BYTE_8_LE | Byte, 8 bit signed two's complement integer; equal to code 0 |
+| 129 (-127) | SHORT_16_LE | Short, 16 bit signed two's complement integer, little endian order |
+| 130 (-126) | INT_32_LE | Integer, 32 bit signed two's complement integer, little endian order |
+| 131 (-125) | LONG_64_LE | Long, 64 bit signed two's complement integer, little endian order |
+| 132 (-124) | FLOAT_32_LE | Float, single-precision 32-bit IEEE 754 floating point, little endian order |
+| 133 (-123) | DOUBLE_64_LE | Float, double-precision 64-bit IEEE 754 floating point, little endian order |
+| 134 (-122) | BOOLEAN_8_LE | Boolean, sent / received as a byte; 0 = false, 1 = true; equal to code 6 |
+| 135 (-121) | CHAR_8_LE | Char, 8-bit ASCII character; equal to code 7 |
+| 136 (-120) | CHAR_16_LE | Char, 16-bit Unicode character, little-endian order for the 2 bytes |
+
+
