@@ -3,7 +3,7 @@ package org.sim0mq.message;
 import java.io.Serializable;
 
 import org.djutils.exceptions.Throw;
-import org.djutils.serialization.EndianUtil;
+import org.djutils.serialization.Endianness;
 import org.djutils.serialization.SerializationException;
 import org.djutils.serialization.TypedMessage;
 import org.sim0mq.Sim0MQException;
@@ -369,8 +369,8 @@ public class Sim0MQMessage implements Serializable
             simulationContent[i + 8] = content[i];
         }
         return stringEncoding.isUTF8()
-                ? TypedMessage.encodeUTF8(bigEndian ? EndianUtil.BIG_ENDIAN : EndianUtil.LITTLE_ENDIAN, simulationContent)
-                : TypedMessage.encodeUTF16(bigEndian ? EndianUtil.BIG_ENDIAN : EndianUtil.LITTLE_ENDIAN, simulationContent);
+                ? TypedMessage.encodeUTF8(bigEndian ? Endianness.BIG_ENDIAN : Endianness.LITTLE_ENDIAN, simulationContent)
+                : TypedMessage.encodeUTF16(bigEndian ? Endianness.BIG_ENDIAN : Endianness.LITTLE_ENDIAN, simulationContent);
     }
 
     /**
@@ -422,8 +422,8 @@ public class Sim0MQMessage implements Serializable
             simulationContent[i + 10] = content[i];
         }
         return stringEncoding.isUTF8()
-                ? TypedMessage.encodeUTF8(bigEndian ? EndianUtil.BIG_ENDIAN : EndianUtil.LITTLE_ENDIAN, simulationContent)
-                : TypedMessage.encodeUTF16(bigEndian ? EndianUtil.BIG_ENDIAN : EndianUtil.LITTLE_ENDIAN, simulationContent);
+                ? TypedMessage.encodeUTF8(bigEndian ? Endianness.BIG_ENDIAN : Endianness.LITTLE_ENDIAN, simulationContent)
+                : TypedMessage.encodeUTF16(bigEndian ? Endianness.BIG_ENDIAN : Endianness.LITTLE_ENDIAN, simulationContent);
     }
 
     /**
@@ -580,7 +580,11 @@ public class Sim0MQMessage implements Serializable
         Throw.when(bytes.length < 12, Sim0MQException.class, "number of bytes in message < 12: " + bytes.length);
         Throw.when(bytes[10] != 6 || bytes[11] < 0 || bytes[11] > 1, Sim0MQException.class,
                 "Bytes 10+11 in the byte array do not contain a boolean");
-        Object[] objectArray = TypedMessage.decodeToObjectDataTypes(bytes);
+        Throw.when(bytes[0] != 9, Sim0MQException.class, "Byte 0 of message is not equal to 9");
+        int magicLength = Endianness.BIG_ENDIAN.decodeInt(bytes, 1);
+        Throw.when(bytes[5 + magicLength] != 6, Sim0MQException.class, "Byte 1 frame 1 of message is not equal to 6");
+        var endianness = bytes[6 + magicLength] == 1 ? Endianness.BIG_ENDIAN : Endianness.LITTLE_ENDIAN;
+        Object[] objectArray = TypedMessage.decodeToObjectDataTypes(endianness, bytes);
         Throw.when(objectArray.length < 8, Sim0MQException.class, "number of message fields < 8: " + objectArray.length);
         Throw.when(!(objectArray[0] instanceof String) || !(objectArray[0].equals(Sim0MQMessage.VERSION)),
                 Sim0MQException.class, "message[0] does not contain the right version number: " + objectArray[0]);

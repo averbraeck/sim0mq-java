@@ -24,7 +24,7 @@ import org.djunits.value.vfloat.scalar.base.FloatScalar;
 import org.djunits.value.vfloat.vector.FloatDurationVector;
 import org.djunits.value.vfloat.vector.base.FloatVector;
 import org.djunits.value.vfloat.vector.data.FloatVectorDataDense;
-import org.djutils.serialization.EndianUtil;
+import org.djutils.serialization.Endianness;
 import org.djutils.serialization.SerializationException;
 import org.djutils.serialization.TypedMessage;
 import org.junit.jupiter.api.Test;
@@ -400,9 +400,9 @@ public class TestFieldTypes
             TestType test = testTypes.get(i);
             byte[] message;
             if (test.type == 8 || test.type == 10)
-                message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
+                message = TypedMessage.encodeUTF16(Endianness.BIG_ENDIAN, test.content);
             else
-                message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
+                message = TypedMessage.encodeUTF8(Endianness.BIG_ENDIAN, test.content);
             if (message.length != test.bytes.length + 1)
             {
                 fail("testEncodeBigEndian failed for " + test.content[0].getClass() + ", value " + test.content[0].toString()
@@ -443,11 +443,11 @@ public class TestFieldTypes
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF16(Endianness.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF8(Endianness.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(Endianness.BIG_ENDIAN, message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodePrimitiveBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -486,11 +486,11 @@ public class TestFieldTypes
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF16(Endianness.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF8(Endianness.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(Endianness.BIG_ENDIAN, message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeArrayBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -595,11 +595,11 @@ public class TestFieldTypes
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF16(Endianness.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF8(Endianness.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(Endianness.BIG_ENDIAN, message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeMatrixBigEndian failed for " + test.content[0].getClass() + ", value "
@@ -739,11 +739,11 @@ public class TestFieldTypes
             {
                 byte[] message;
                 if (test.type == 8 || test.type == 10 | test.type == 12)
-                    message = TypedMessage.encodeUTF16(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF16(Endianness.BIG_ENDIAN, test.content);
                 else
-                    message = TypedMessage.encodeUTF8(EndianUtil.BIG_ENDIAN, test.content);
+                    message = TypedMessage.encodeUTF8(Endianness.BIG_ENDIAN, test.content);
 
-                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(message);
+                Object[] decoded = TypedMessage.decodeToPrimitiveDataTypes(Endianness.BIG_ENDIAN, message);
                 if (test.content.length != decoded.length)
                 {
                     fail("testEncodeDecodeUnitBigEndian failed for " + test.content[0].getClass() + ", value "
