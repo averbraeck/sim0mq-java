@@ -429,7 +429,7 @@ public class TestMessageTypes
         Object[] decodedObjects = Sim0MQMessage.decodeToArray(bytes);
         compareFields(objectArray, decodedObjects);
 
-        assertEquals("SIM02", message.getMagicNumber());
+        assertEquals("SIM03", message.getMagicNumber());
         assertEquals(headers.senderId, message.getSenderId());
         assertEquals(headers.messageId, message.getMessageId());
         assertEquals(headers.receiverId, message.getReceiverId());

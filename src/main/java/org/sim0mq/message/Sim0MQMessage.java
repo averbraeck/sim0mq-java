@@ -12,7 +12,7 @@ import org.sim0mq.Sim0MQException;
  * Sim0MQMessage contains the abstract body of the message with the first fields of every Sim0MQ message. The message structure
  * of a typical typed Sim0MQ simulation message looks as follows:
  * <ul>
- * <li>Frame 0. Magic number = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 02.</li>
+ * <li>Frame 0. Magic number = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 03.</li>
  * <li>Frame 1. Endianness. A boolean that is True for Big-Endian encoding and false for Little-Endian encosing of the
  * message.</li>
  * <li>Frame 2. Federation id. Federation ids can be provided in different types. Examples are a 64-bit long, or a String with a
@@ -55,7 +55,7 @@ public class Sim0MQMessage implements Serializable
     private static final long serialVersionUID = 20191017L;
 
     /** version of the protocol, magic number. */
-    protected static final String VERSION = "SIM02";
+    protected static final String VERSION = "SIM03";
 
     /**
      * the federation id can be provided in different types. Examples are two 64-bit longs indicating a UUID, or a String with a
@@ -184,7 +184,7 @@ public class Sim0MQMessage implements Serializable
     }
 
     /**
-     * @return Magic number = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 01. Internally, the magic
+     * @return Magic number = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 03. Internally, the magic
      *         number is always coded as a UTF-8 String, so it always starts with a byte equal to 9.
      */
     public final Object getMagicNumber()
