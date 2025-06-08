@@ -11,7 +11,7 @@ All fields are serialized with the standards as defined in the [djunits-serializ
 
 The message structure of a typical typed Sim0MQ simulation message looks as follows:
 
-**Frame 0. Magic number** = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 01. The magic number is always coded as a UTF-8 String, so it always starts with a byte equal to 9.
+**Frame 0. Magic number** = |9|0|0|0|5|S|I|M|#|#| where ## stands for the version number, e.g., 03. The magic number is always coded as a UTF-8 String, so it always starts with a byte equal to 9. The current message protocol described in this manual is version **03**. The number of bytes is always encoded as big-endian.
 
 **Frame 1. Endianness** = boolean _with the 1-byte prefix_ that indicates whether this message using little endian or big endian encoding. Big endian is encoded as **true**, and little endian as **false**.
 
@@ -30,10 +30,13 @@ The message structure of a typical typed Sim0MQ simulation message looks as foll
 **Frame 8-n. Payload**, where each field has a 1-byte prefix denoting the type of field.
 
 !!! Warning
-    Note that the message structure of Sim0MQ version 2 differs from the message structure of Sim0MQ version 1 in the fact that the message type (originally field 6) has been removed. General messages don't indicate whether they denote a NEW, CHANGE or DELETE operation type, as this only applies to updating status of variables or entities in a model, e.g., for animation. Most messages do not concern NEW, CHANGE or DELETE operations and therefore do not need the special field. This makes version 1 messages **incompatible** with version 2 messages.
+    Note that the message structure of Sim0MQ version 2 and higher differs from the message structure of Sim0MQ version 1 in the fact that the message type (originally field 6) has been removed. General messages don't indicate whether they denote a NEW, CHANGE or DELETE operation type, as this only applies to updating status of variables or entities in a model, e.g., for animation. Most messages do not concern NEW, CHANGE or DELETE operations and therefore do not need the special field. This makes version 1 messages **incompatible** with version 2 messages.
 
 !!! Warning
-    Note that as of version 2 of Sim0MQ the endianness holds for the entire message rather than per field. 
+    Note that the number of bytes in the magic number is always encoded as a big-endian number. Since the magic number string has less than 255 bytes, the magic number that can be checked to identify that a byte string is a Sim0MQ message is: `|9|0|0|0|` or even `|9|0|0|5|S|I|M|`.
+    
+!!! Warning
+    Note that as of version 3 of Sim0MQ the endianness holds for the entire message rather than per field. There are no specific encodings anymore in fields for endianness. The endianness is encoded in Frame 1 of the message. All fields from Frame 3 onward follow the endianness specified in Frame 1.
 
 
 ## Example coding standard
@@ -52,7 +55,7 @@ In the rest of the manual (and in the example implementation), the federation id
 Suppose we have a simulation called IDVV.14.2 in which a message to change the (double) simulation speed to the value 0.2 is sent, of which the message type is DSOL.3. The message is sent by "MC.1" and received by "MM1.4". Suppose the message number is 124. The whole message is sent using big endian encoding. Then the message looks as follows (note that the double representation of 0.2 is 0x3FC999999999999A):
 
 ~~~xml
-|9|0|0|0|5|S|I|M|0|1|6|1|9|0|0|0|9|I|D|V|V|.|1|4|.|2| 
+|9|0|0|0|5|S|I|M|0|3|6|1|9|0|0|0|9|I|D|V|V|.|1|4|.|2| 
 |9|0|0|0|4|M|C|.|1|9|0|0|0|5|M|M|1|.|4|9|0|0|0|6|D|S|O|L|.|3| 
 |3|0|0|0|0|0|0|0|124|1|0|1| 
 |5|0x3F|0xC9|0x99|0x99|0x99|0x99|0x99|0x9A|
@@ -61,7 +64,7 @@ Suppose we have a simulation called IDVV.14.2 in which a message to change the (
 or field by field:
 
 ~~~xml
-0. Magic number:   |9|0|0|0|5|S|I|M|0|1|          (String, 5 chars, SIM01)
+0. Magic number:   |9|0|0|0|5|S|I|M|0|3|          (String, 5 chars, SIM03)
 1. Endianness:     |6|1|                          (Boolean, true, Big Endian)
 2. Federation id:  |9|0|0|0|9|I|D|V|V|.|1|4|.|2|  (String, 9 chars, IDVV14.2)
 3. Sender id:      |9|0|0|0|4|M|C|.|1|            (String, 4 chars, MC.1)
