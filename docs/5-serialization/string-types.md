@@ -1,6 +1,9 @@
 # String types (#9 - #10 and #33 - #36)
 
-## 9. UTF-8 Big-endian String
+First, the big-endian encodings are provided. Below, you find the little-endian encodings.
+
+
+## 9a. UTF-8 Big-endian String
 
 After the code "9" that indicates that a UTF-8 string follows, the **number of bytes needed to code the string** is provided with a 32-bit int (using big-endian encoding). This int is itself **not** preceded by a byte indicating it is an int. An ASCII string "Hello" is therefore coded as follows:
 
@@ -28,7 +31,7 @@ Examples:
 <br/>
 
 
-## 10. UTF-16 Big-endian String
+## 10a. UTF-16 Big-endian String
 
 After the code "10" that indicates that a UTF-16BE string follows, the **number of UTF-16 characters (2-byte shorts)** is provided with a 32-bit int (using big-endian encoding). This int is itself **not** preceded by a byte indicating it is an int. An ASCII string "abc" is therefore coded as follows:
 
@@ -54,7 +57,7 @@ Examples:
     For a discussion on little and  big endianness for UTF-8 and UTF-16 strings, see the following discussion at StackExchange: [https://stackoverflow.com/questions/3833693/isn-t-on-big-endian-machines-utf-8s-byte-order-different-than-on-little-endian](https://stackoverflow.com/questions/3833693/isn-t-on-big-endian-machines-utf-8s-byte-order-different-than-on-little-endian), as well as [https://unicode.org/faq/utf_bom.html#utf8-2](https://unicode.org/faq/utf_bom.html#utf8-2) and [https://unicode.org/faq/utf_bom.html#gen6](https://unicode.org/faq/utf_bom.html#gen6)
 
 
-## 33. UTF-8 Big-endian string array
+## 33a. UTF-8 Big-endian string array
 
 Array of UTF-8 Strings. The number of strings is provided in a 32-bit big-endian integer. Each string is preceded by a
 32-bit int indicating the number of bytes in the array that follows. This int is itself not preceded by a byte indicating
@@ -70,7 +73,7 @@ it is an int. As an example, coding two series for a graph is done as follows:
     Note that the int to code the length for each string indicates the number of bytes, not the number of characters.
 
 
-## 34. UTF-16 Big-endian string array
+## 34a. UTF-16 Big-endian string array
 
 Array of UTF-16 Strings. The number of strings is provided in a 32-bit big-endian integer. Each string is preceded by a
 32-bit int indicating the number of shorts (2-byte UTF-16 encoding) in the array that follows. This int is itself not
@@ -87,7 +90,7 @@ for a graph is done as follows:
     Note that the int to code the length for each string indicates the number of shorts, not the number of characters in the original string, nor the number of bytes.
 
 
-## 35. UTF-8 Big-endian string matrix
+## 35a. UTF-8 Big-endian string matrix
 
 Matrix of UTF-8 Strings. First, the number of rows is provided in a 32-bit big-endian integer, followed by the number of
 columns encoded in a 32-bit big-endian integer. Each string is preceded by a 32-bit int indicating the number of bytes in
@@ -110,7 +113,7 @@ row-by-row. In general, the coding is as follows:
     Note that the int to code the length for each string indicates the number of bytes, not the number of characters. 
 
 
-## 36. UTF-16 Big-endian string matrix
+## 36a. UTF-16 Big-endian string matrix
 
 Matrix of UTF-16 Strings. First, the number of rows is provided in a 32-bit big-endian integer, followed by the number of
 columns encoded in a 32-bit big-endian integer. Each string is preceded by a 32-bit int indicating the number of bytes in
@@ -133,18 +136,18 @@ row-by-row. In general, the coding is as follows:
     Note that the int to code the length for each string indicates the number of shorts (2-bytes), not the number of characters in the original string, nor the number of bytes in the encoding.
 
 
-## 137. UTF-8 Little-endian String
+## 9b. UTF-8 Little-endian String
 
-After the code 137 (-119) that indicates that a UTF-8 string follows using little-endian encoding, the **number of bytes needed to code the string** is provided with a 32-bit int (using little endian encoding). This int is itself **not** preceded by a byte indicating it is an int. An ASCII string "Hello" is therefore coded as follows:
+After the code 9 that indicates that a UTF-8 string follows using little-endian encoding, the **number of bytes needed to code the string** is provided with a 32-bit int (using little endian encoding). This int is itself **not** preceded by a byte indicating it is an int. An ASCII string "Hello" is therefore coded as follows:
 
 <pre>
-| 137 | 5 | 0 | 0 | 0 | H | e | l | l | o |
+| 9 | 5 | 0 | 0 | 0 | H | e | l | l | o |
 </pre>
 
 or
 
 <pre>
-| 0x89 | 0x05 | 0x00 | 0x00 | 0x00 | 0x48 | 0x65 | 0x6C | 0x6C | 0x6F |
+| 0x09 | 0x05 | 0x00 | 0x00 | 0x00 | 0x48 | 0x65 | 0x6C | 0x6C | 0x6F |
 </pre>
 
 in hex.
@@ -161,12 +164,12 @@ Examples:
 <br/>
 
 
-## 138. UTF-16 Little-endian String
+## 10b. UTF-16 Little-endian String
 
-After the code 138 (-118) that indicates that a UTF-16LE string follows, the **number of UTF-16 characters (2-byte shorts)** is provided with a 32-bit int (using little-endian encoding). This int is itself **not** preceded by a byte indicating it is an int. An ASCII string "abc" is therefore coded as follows:
+After the code 10 that indicates that a UTF-16LE string follows, the **number of UTF-16 characters (2-byte shorts)** is provided with a 32-bit int (using little-endian encoding). This int is itself **not** preceded by a byte indicating it is an int. An ASCII string "abc" is therefore coded as follows:
 
 <pre>
-| 0x8A | 0x03 | 0x00 | 0x00 | 0x00 | 0x61 | 0x00 | 0x62 | 0x00 | 0x63 | 0x00 |
+| 0x0A | 0x03 | 0x00 | 0x00 | 0x00 | 0x61 | 0x00 | 0x62 | 0x00 | 0x63 | 0x00 |
 </pre><br/>
 
 !!! Note 
@@ -183,9 +186,9 @@ Examples:
 * &#x1F60A; smiley: `| 0x3D | 0xD8 | 0x00 | 0xDE |` (2 shorts, one character)
 
 
-## 161. UTF-8 Little-endian String array
+## 33b. UTF-8 Little-endian String array
 
-The code 161 (-95) indicates a little-endian array of UTF-8 Strings. The number of strings is provided in a 32-bit little-endian integer. Each
+The code 33 an array of UTF-8 Strings. The number of strings is provided in a 32-bit little-endian integer. Each
 string is preceded by a 32-bit int indicating the number of bytes in the array that follows. This int is itself not
 preceded by a byte indicating it is an int. As an example, coding two series for a graph is done as follows:
 
@@ -199,9 +202,9 @@ preceded by a byte indicating it is an int. As an example, coding two series for
     Note that the int to code the length for each string indicates the number of bytes, not the number of characters. 
 
 
-## 162. UTF-16 Little-endian String array
+## 34b. UTF-16 Little-endian String array
 
-The code 162 (-94) indicates a little-endian array of UTF-16 Strings. The number of strings is provided in a 32-bit little-endian integer.
+The code 34 indicates an array of UTF-16 Strings. The number of strings is provided in a 32-bit little-endian integer.
 Each string is preceded by a 32-bit int indicating the number of shorts (2-byte UTF-16 encoding) in the array that
 follows. This int is itself not preceded by a byte indicating it is an int. As an example, coding two series for a graph is done as follows:
 
@@ -215,9 +218,9 @@ follows. This int is itself not preceded by a byte indicating it is an int. As a
     Note that the int to code the length for each string indicates the number of shorts, not the number of characters in the original string, nor the number of bytes. 
 
 
-## 163. UTF-8 Little-endian String matrix
+## 35b. UTF-8 Little-endian String matrix
 
-The code 163 (-93) indicates a little-endian matrix of UTF-8 Strings. First, the number of rows is provided in a 32-bit little-endian integer,
+The code 35 indicates a matrix of UTF-8 Strings. First, the number of rows is provided in a 32-bit little-endian integer,
 followed by the number of columns encoded in a 32-bit little-endian integer. Each string is preceded by a 32-bit int
 indicating the number of bytes in the array that follows. This int is itself not preceded by a byte indicating it is an
 int. The strings are provided row-by-row. In general, the coding is as follows:
@@ -238,9 +241,9 @@ int. The strings are provided row-by-row. In general, the coding is as follows:
     Note that the int to code the length for each string indicates the number of bytes, not the number of characters. 
 
 
-## 164. UTF-16 Little-endian String matrix
+## 36b. UTF-16 Little-endian String matrix
 
-The code 164 (-92) indicates a little-endian matrix of UTF-16 Strings. First, the number of rows is provided in a 32-bit little-endian
+The code 36 indicates a matrix of UTF-16 Strings. First, the number of rows is provided in a 32-bit little-endian
 integer, followed by the number of columns encoded in a 32-bit little-endian integer. Each string is preceded by a 32-bit
 int indicating the number of bytes in the array that follows. This int is itself not preceded by a byte indicating it is
 an int. The strings are provided row-by-row. In general, the coding is as follows:

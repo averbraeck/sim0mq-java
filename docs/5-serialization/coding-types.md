@@ -7,7 +7,7 @@ With strong typing, the receiving program can deserialize the message without a 
 
 ## Endianness
 
-When coding multi-byte values, knowing endianness is of the utmost importance. Endianness indicates whether the most-significant byte comes first or whether the least-significant byte comes first. The Internet and languages like Java use big endian, aka network byte order; the most significant byte comes first. Microsoft products and Intel processors internally use little endian; the least significant byte comes first. As an example, when we code an int (4 bytes) with the value 824, it is coded as follows using decimal notation (824 = 0 \* 256<sup>3</sup> + 0 \* 256<sup>2</sup> + 3 \* 256 + 56 \* 1):
+When coding multi-byte values, knowing endianness is of the utmost importance. Endianness indicates whether the most-significant byte comes first or whether the least-significant byte comes first. The Internet and languages like Java use big endian, aka network byte order; the most significant byte comes first. Microsoft products, and Intel, AMD and Mac processors internally use little endian; the least significant byte comes first. As an example, when we code an int (4 bytes) with the value 824, it is coded as follows using decimal notation (824 = 0 \* 256<sup>3</sup> + 0 \* 256<sup>2</sup> + 3 \* 256 + 56 \* 1):
 
 <pre>
 |  0 |  0 |  3 | 56 | Byte ordering in Big endian
